@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="this_action_may_contain_advertising">Tindakan ini mungkin berisi iklan</string>
+    <string name="Language">Bahasa</string>
+    <string name="Your_opinion_matter_to_us">Opini Anda penting bagi kami!</string>
+    <string name="we_d_greatly_appreciate_if_you_can_rate_us">Jika Anda menikmati %s ini, maukah Anda memberi peringkat pada kami di Google Play, lalu?</string>
+    <string name="may_be_later">Tidak sekarang</string>
+    <string name="thank_u">Terima kasih!</string>
+    <string name="rate">Kecepatan</string>
+    <string name="please_give_rating">Tolong beri saya peringkat!</string>
+    <string name="this_is_item_sample">Ini adalah sampel item!</string>
+    <string name="privacy_policy">Kebijakan pribadi</string>
+    <string name="next">Berikutnya</string>
+    <string name="welcome_back">Selamat Datang kembali!</string>
+    <string name="get_started">Memulai</string>
+    <string name="text_permission">Aplikasi ini membutuhkan izin di bawah ini agar berfungsi dengan baik</string>
+    <string name="tv_continue">Melanjutkan</string>
+    <string name="allow_access">Izinkan akses</string>
+    <string name="desc_dialog_warning_permission">Anda harus mengizinkan semua izin untuk menggunakan aplikasi ini dengan fitur lengkap.</string>
+    <string name="go_to_setting">Pergi ke pengaturan</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="this_action_may_contain_advertising">This action may contain advertising</string>
+    <string name="Language">Language</string>
+    <string name="Your_opinion_matter_to_us">Your Opinion Matter To Us!</string>
+    <string name="we_d_greatly_appreciate_if_you_can_rate_us">If you enjoy this %s, would you mind rating us on the Google Play, then?</string>
+    <string name="may_be_later">Not now</string>
+    <string name="thank_u">Thank you!</string>
+    <string name="rate">Rate</string>
+    <string name="please_give_rating">Please give me a rating!</string>
+    <string name="this_is_item_sample">This is item sample!</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="text_permission">This app needs permissions below to work properly</string>
+    <string name="tv_continue">Continue</string>
+    <string name="allow_access">Allow access</string>
+    <string name="desc_dialog_warning_permission">You must allow all Permission to use this app with full feature.</string>
+    <string name="go_to_setting">Go to setting</string>
+    <string name="welcome_back">Welcome Back!</string>
+
+    <string name="no_internet">No Internet</string>
+    <string name="title_intro_1">Metal Detector</string>
+    <string name="content_intro_1">Detect all metals</string>
+    <string name="title_intro_2">Beep Sound</string>
+    <string name="content_intro_2">Beep sound feature is also available in the app</string>
+    <string name="title_intro_3">Digital Compass</string>
+    <string name="content_intro_3">Accurate, simple and smart compass</string>
+
+</resources>

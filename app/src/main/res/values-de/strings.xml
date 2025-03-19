@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="this_action_may_contain_advertising">Diese Aktion kann Werbung enthalten</string>
+    <string name="Language">Sprache</string>
+    <string name="Your_opinion_matter_to_us">Ihre Meinung ist uns wichtig!</string>
+    <string name="we_d_greatly_appreciate_if_you_can_rate_us">Wenn Sie diesen %s genießen, würde es Ihnen dann etwas ausmachen, uns im Google Play zu bewerten?</string>
+    <string name="may_be_later">Nicht jetzt</string>
+    <string name="thank_u">Danke schön!</string>
+    <string name="rate">Rate</string>
+    <string name="please_give_rating">Bitte geben Sie mir eine Bewertung!</string>
+    <string name="this_is_item_sample">Dies ist eine Artikelnmuster!</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="next">Nächste</string>
+    <string name="get_started">Loslegen</string>
+    <string name="text_permission">Diese App benötigt unten die Berechtigungen, um ordnungsgemäß zu funktionieren</string>
+    <string name="tv_continue">Weitermachen</string>
+    <string name="allow_access">Erlauben den Zugriff</string>
+    <string name="desc_dialog_warning_permission">Sie müssen die gesamte Berechtigung zulassen, diese App mit voller Funktion zu verwenden.</string>
+    <string name="go_to_setting">Gehen Sie zur Einstellung</string>
+    <string name="welcome_back">Willkommen zurück!</string>
+</resources>
