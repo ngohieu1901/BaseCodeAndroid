@@ -26,5 +26,6 @@
     <string name="content_intro_2">Beep sound feature is also available in the app</string>
     <string name="title_intro_3">Digital Compass</string>
     <string name="content_intro_3">Accurate, simple and smart compass</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

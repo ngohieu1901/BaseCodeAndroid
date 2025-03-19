@@ -1,39 +1,55 @@
 package com.metaldetector.detectorapp.detectorapp.ui.feature.main
 
-import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
-import com.metaldetector.detectorapp.detectorapp.databinding.ActivityMainBinding
-import com.metaldetector.detectorapp.detectorapp.base.BaseActivity
-import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
-import com.metaldetector.detectorapp.detectorapp.ui.dialog.RatingDialogFragment
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.metaldetector.detectorapp.detectorapp.theme.BaseProjectOriginalTheme
+import com.metaldetector.detectorapp.detectorapp.ui.feature.intro.IntroScreen
+import com.metaldetector.detectorapp.detectorapp.ui.feature.splash.SplashScreen
 
-private const val TAG = "MainActivity"
-
-class MainActivity : BaseActivity<ActivityMainBinding, CommonVM>() {
-
-    private val sharePrefUtils by lazy { SharePrefUtils(this) }
-
-    override fun setViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-
-    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
-
-    override fun initView() {
-
-    }
-
-    override fun dataCollect() {
-
-    }
-
-    override fun onBackPressedSystem() {
-        if (!sharePrefUtils.isRated && arrayOf(1, 4, 6, 8).contains(sharePrefUtils.countExitApp)) {
-            RatingDialogFragment(true, onClickRate = {
-
-            }).show(supportFragmentManager, "RatingDialogExit")
-        } else {
-            if (!sharePrefUtils.isRated) {
-                sharePrefUtils.countExitApp++
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            BaseProjectOriginalTheme {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "splash") {
+                    composable("splash") {
+                        SplashScreen(navController)
+                    }
+                    composable("intro") {
+                        IntroScreen()
+                    }
+                }
             }
-            finishAffinity()
         }
+    }
+}
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    BaseProjectOriginalTheme {
+        Greeting("Android")
     }
 }

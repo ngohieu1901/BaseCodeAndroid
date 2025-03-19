@@ -1,7 +1,6 @@
 package com.metaldetector.detectorapp.detectorapp.base
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -28,17 +27,11 @@ import com.metaldetector.detectorapp.detectorapp.base.network.NetworkCallbackHan
 import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
 import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName
 import com.metaldetector.detectorapp.detectorapp.ui.dialog.LoadingDialog
-import com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.no_internet.NoInternetActivity
-import com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.splash.SplashActivity
 import com.metaldetector.detectorapp.detectorapp.utils.PermissionUtils
 import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
 import com.metaldetector.detectorapp.detectorapp.utils.SystemUtils
-import com.metaldetector.detectorapp.detectorapp.value.Default.IntentKeys.SCREEN
-import com.metaldetector.detectorapp.detectorapp.value.Default.IntentKeys.SPLASH_ACTIVITY
-import com.metaldetector.detectorapp.detectorapp.widget.currentBundle
 import com.metaldetector.detectorapp.detectorapp.widget.hideNavigation
 import com.metaldetector.detectorapp.detectorapp.widget.hideStatusBar
-import com.metaldetector.detectorapp.detectorapp.widget.launchActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -84,20 +77,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
         viewModel = ViewModelProvider(this)[initViewModel()]
         //internet
         networkCallback = NetworkCallbackHandler {
-            if (!it) {
-                if (this !is NoInternetActivity) {
-                    launchActivity(NoInternetActivity::class.java)
-                }
-            } else {
-                if (this is NoInternetActivity && this.currentBundle()?.getString(SCREEN) != SPLASH_ACTIVITY) {
-                    finish()
-                } else if (this is NoInternetActivity && this.currentBundle()?.getString(SCREEN) == SPLASH_ACTIVITY) {
-                    val myIntent = Intent(this, SplashActivity::class.java)
-                    myIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(myIntent)
-                    finishAffinity()
-                }
-            }
+
         }
         networkCallback?.register(this)
         initView()

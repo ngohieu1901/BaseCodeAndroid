@@ -22,7 +22,7 @@
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
-        android:name="com.metaldetector.detectorapp.detectorapp.application.App"
+        android:name=".application.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,44 +31,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ASA120_Metal_Detector">
         <activity
-            android:name=".ui.feature.screen_base.welcome_back.WelcomeBackActivity"
+            android:name=".ui.feature.main.MainActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.screen_base.permission.PermissionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.screen_base.intro.IntroActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.screen_base.language.LanguageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.screen_base.splash.SplashActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.ASA120_Metal_Detector" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>      <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.feature.screen_base.language_start.LanguageStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.main.MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.feature.screen_base.no_internet.NoInternetActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <service
             android:name=".firebase.services.MyFirebaseMessagingService"
             android:exported="true">
