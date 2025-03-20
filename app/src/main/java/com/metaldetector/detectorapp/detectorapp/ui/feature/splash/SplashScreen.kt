@@ -8,34 +8,57 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,19 +73,19 @@ import com.metaldetector.detectorapp.detectorapp.theme.BaseProjectOriginalTheme
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    LaunchedEffect(true) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            navController.navigate("home") {
-                popUpTo("splash") { inclusive = true }
-            }
-        }, 3000)
-    }
+//    LaunchedEffect(true) {
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            navController.navigate("home") {
+//                popUpTo("splash") { inclusive = true }
+//            }
+//        }, 3000)
+//    }
 
     Column(
         modifier = Modifier
-            .padding(24.dp)
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .padding(start = 24.dp)
     ) {
         ImageNormal(ContentScale.Fit)
         Spacer(modifier = Modifier.height(12.dp))
@@ -73,6 +96,13 @@ fun SplashScreen(navController: NavController) {
         ImageCircle()
         Spacer(modifier = Modifier.height(12.dp))
         ButtonNormal()
+        RadioButtonNormal()
+        Spacer(modifier = Modifier.height(12.dp))
+        RadioButtonWithTitle()
+        Spacer(modifier = Modifier.height(12.dp))
+        RadioButtonWithTitleCustom()
+        Spacer(modifier = Modifier.height(12.dp))
+        TextFieldNormal()
     }
 }
 
@@ -169,8 +199,124 @@ fun ButtonNormal() {
         ),
         border = BorderStroke(2.dp, color = Color.Red)
     ) {
-        Image(painterResource(R.drawable.flag_en), contentDescription = null, modifier = Modifier.padding(end = 8.dp).size(24.dp))
+        Image(
+            painterResource(R.drawable.flag_en),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(24.dp)
+        )
         Text("Click me")
+    }
+}
+
+@Composable
+fun RadioButtonNormal() {
+    Column(modifier = Modifier.padding(start = 24.dp)) {
+        RadioButton(
+            enabled = true, selected = true, onClick = {}, colors = RadioButtonDefaults.colors(
+                selectedColor = Color.Red,
+                unselectedColor = Color.Green,
+                disabledUnselectedColor = Color.LightGray,
+                disabledSelectedColor = Color.Gray,
+            )
+        )
+    }
+}
+
+@Composable
+fun RadioButtonWithTitle() {
+    var isSelected by remember {
+        mutableStateOf(false)
+    }
+    Row(
+        modifier = Modifier
+            .padding(start = 24.dp)
+            .selectable(
+                selected = isSelected,
+                onClick = { isSelected = !isSelected },
+                role = Role.RadioButton
+            )
+    ) {
+        RadioButton(
+            enabled = true,
+            selected = isSelected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = Color.Red,
+                unselectedColor = Color.Green,
+                disabledUnselectedColor = Color.LightGray,
+                disabledSelectedColor = Color.Gray,
+            )
+        )
+        Text(text = "Title", modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun RadioButtonWithTitleCustom() {
+    var isSelected by remember {
+        mutableStateOf(false)
+    }
+    Row(
+        modifier = Modifier
+            .padding(start = 24.dp)
+            .selectable(
+                selected = isSelected,
+                onClick = { isSelected = !isSelected },
+                role = Role.RadioButton
+            )
+    ) {
+        val iconRatio = if (isSelected) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+        Icon(iconRatio, contentDescription = null)
+        Text(text = "Title", modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun TextFieldNormal() {
+    Column(modifier = Modifier.padding(end = 24.dp)) {
+        var firstName by remember {
+            mutableStateOf("")
+        }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        TextField(
+            value = firstName,
+            onValueChange = {
+                firstName = it
+            },
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            label = {
+                Text("First name")
+            },
+            placeholder = {
+                Text(text = "Enter your first name")
+            },
+            leadingIcon = {
+                Icon(Icons.Default.Search, contentDescription = "firstName")
+            },
+            trailingIcon = {
+                IconButton(onClick = {
+                    firstName = ""
+                }) {
+                    Icon(Icons.Default.Clear, contentDescription = "clearFirstName")
+                }
+            },
+            shape = RoundedCornerShape(16.dp),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Phone
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
+        )
     }
 }
 

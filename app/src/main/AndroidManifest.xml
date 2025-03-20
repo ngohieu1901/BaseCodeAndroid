@@ -32,7 +32,7 @@
         android:theme="@style/Theme.ASA120_Metal_Detector">
         <activity
             android:name=".ui.feature.main.MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.ASA120_Metal_Detector" >
             <intent-filter>
