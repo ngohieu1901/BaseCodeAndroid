@@ -1,4 +1,4 @@
-package com.metaldetector.detectorapp.detectorapp.customview
+package com.metaldetector.detectorapp.detectorapp.customview.xml
 
 import android.animation.ObjectAnimator
 import android.content.Context

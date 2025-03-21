@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BaseProjectOriginal"
+rootProject.name = "BaseCodeAndroid"
 include ':app'

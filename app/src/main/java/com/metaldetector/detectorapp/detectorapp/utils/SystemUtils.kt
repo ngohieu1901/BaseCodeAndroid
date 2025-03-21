@@ -19,6 +19,11 @@ import java.util.Locale
 object SystemUtils {
     private var myLocale: Locale? = null
 
+    fun isOnlyNumbers(input: String): Boolean {
+        val regex = "^[0-9]*\$"
+        return input.matches(regex.toRegex())
+    }
+
     // Lưu ngôn ngữ đã cài đặt
     fun saveLocale(context: Context, lang: String?) {
         setPreLanguage(context, lang)

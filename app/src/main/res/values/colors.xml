@@ -8,4 +8,17 @@
     <color name="not_select">#C5C5C5</color>
     <color name="background_app">#292C32</color>
     <color name="text_color">#FFFFFFFF</color>
+
+    <color name="color_1E232E">#1E232E</color>
+    <color name="color_E06038">#E06038</color>
+    <color name="color_0F0F0F">#0F0F0F</color>
+    <color name="color_8B8B8B">#8B8B8B</color>
+    <color name="color_D2D3D5">#D2D3D5</color>
+    <color name="color_F3F4F6">#F3F4F6</color>
+    <color name="color_FFEDE8">#FFEDE8</color>
+    <color name="color_18B428">#18B428</color>
+    <color name="color_E5E5EA">#E5E5EA</color>
+    <color name="color_FFFBFA">#FFFBFA</color>
+    <color name="color_B42318">#B42318</color>
+    <color name="color_FDA29B">#FDA29B</color>
 </resources>
