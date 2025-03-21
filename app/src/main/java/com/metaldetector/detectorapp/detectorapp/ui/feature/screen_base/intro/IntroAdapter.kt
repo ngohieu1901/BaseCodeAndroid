@@ -3,17 +3,12 @@ package com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.intro
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.metaldetector.detectorapp.detectorapp.R
 import com.metaldetector.detectorapp.detectorapp.databinding.ItemIntroAdsNativeBinding
 import com.metaldetector.detectorapp.detectorapp.databinding.ItemIntroBinding
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName.NATIVE_INTRO_FULL
 import com.metaldetector.detectorapp.detectorapp.model.IntroModel
 
 class IntroAdapter(
-    private val activity: AppCompatActivity,
     private val list: List<IntroModel> = emptyList(),
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -61,14 +56,11 @@ class IntroAdapter(
                 viewHolderDefault.binding.apply {
                     ivIntro.setImageResource(introModel.image)
                     tvTitle.setText(introModel.title)
+                    tvContent.setText(introModel.content)
                 }
             }
 
             IntroType.ADS.ordinal -> {
-                val viewHolderAdsNative = holder as IntroAdsNativeVH
-                AdsHelper.loadNativeItem(activity, viewHolderAdsNative.binding.frAds, NATIVE_INTRO_FULL, R.layout.ads_shimmer_intro_full_screen, R.layout.ads_native_intro_full_screen){
-                    notifyItemChanged(position)
-                }
             }
         }
     }

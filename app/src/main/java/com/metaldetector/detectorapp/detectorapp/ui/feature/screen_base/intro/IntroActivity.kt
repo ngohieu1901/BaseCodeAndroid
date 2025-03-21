@@ -5,14 +5,9 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.Admob
 import com.metaldetector.detectorapp.detectorapp.R
 import com.metaldetector.detectorapp.detectorapp.base.BaseActivity
 import com.metaldetector.detectorapp.detectorapp.databinding.ActivityIntroBinding
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName.INTER_INTRO
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName.NATIVE_INTRO
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName.NATIVE_INTRO_FULL
 import com.metaldetector.detectorapp.detectorapp.firebase.event.AdmobEvent
 import com.metaldetector.detectorapp.detectorapp.model.IntroModel
 import com.metaldetector.detectorapp.detectorapp.ui.feature.main.MainActivity
@@ -20,9 +15,12 @@ import com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.permissi
 import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
 import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
 import com.metaldetector.detectorapp.detectorapp.widget.gone
+import com.metaldetector.detectorapp.detectorapp.widget.invisible
 import com.metaldetector.detectorapp.detectorapp.widget.launchActivity
 import com.metaldetector.detectorapp.detectorapp.widget.visible
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IntroActivity : BaseActivity<ActivityIntroBinding, CommonVM>() {
     private var listIntroModel = mutableListOf<IntroModel>()
     private val sharePre: SharePrefUtils by lazy { SharePrefUtils(this) }
@@ -35,20 +33,34 @@ class IntroActivity : BaseActivity<ActivityIntroBinding, CommonVM>() {
                     isFirst = false
                     return
                 }
-
-                AdmobEvent.logEvent(
-                    this@IntroActivity,
-                    "onboarding${binding.viewPager2.currentItem + 1}_view",
-                    Bundle()
-                )
                 binding.apply {
-                    if (
-                        viewPager2.currentItem == listIntroModel.size - 2
-                        && RemoteConfigHelper.getInstance().get_config(this@IntroActivity, NATIVE_INTRO_FULL) && Admob.getInstance().showAllAds
-                    ) {
-                        listOf(linearDots, btnNextTutorial, frAds).forEach { it.gone() }
+                    if (viewPager2.currentItem == listIntroModel.size - 1){
+                        btnNextTutorial.text = getString(R.string.start)
                     } else {
-                        listOf(linearDots, btnNextTutorial, frAds).forEach { it.visible() }
+                        btnNextTutorial.text = getString(R.string.next)
+                    }
+                    binding.apply {
+                        when (position) {
+                            0 -> {
+                                frAds.visible()
+                                lavIntro.invisible()
+                                btnNextTutorial.visible()
+                                btnNextTutorialBottom.gone()
+                            }
+
+                            1, 2 -> {
+                                frAds.visible()
+                                lavIntro.visible()
+                                btnNextTutorial.visible()
+                                btnNextTutorialBottom.gone()
+                            }
+
+                            else -> {
+                                frAds.gone()
+                                btnNextTutorial.invisible()
+                                btnNextTutorialBottom.visible()
+                            }
+                        }
                     }
                 }
                 addBottomDots(position)
@@ -62,36 +74,17 @@ class IntroActivity : BaseActivity<ActivityIntroBinding, CommonVM>() {
     override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
 
     override fun initView() {
-        loadInter(INTER_INTRO)
-        loadNative(
-            NATIVE_INTRO,
-            R.layout.ads_shimmer_intro,
-            R.layout.ads_native_intro,
-        )
-
-        val data = initData()
-        val introAdapter = IntroAdapter(this, data)
+        val introAdapter = IntroAdapter(initData())
         binding.viewPager2.apply {
             adapter = introAdapter
             registerOnPageChangeCallback(myPageChangeCallback)
         }
         addBottomDots(0)
         binding.btnNextTutorial.setOnClickListener {
-            AdmobEvent.logEvent(
-                this@IntroActivity,
-                "onboarding${binding.viewPager2.currentItem + 1}_next_click",
-                Bundle()
-            )
-            if (binding.viewPager2.currentItem == listIntroModel.size - 1) {
-                showInter(
-                    INTER_INTRO,
-                    isReloadAds = false,
-                    onNextAction = {
-                        startNextScreen()
-                    })
-            } else {
-                binding.viewPager2.currentItem += 1
-            }
+            binding.viewPager2.currentItem += 1
+        }
+        binding.btnNextTutorialBottom.setOnClickListener {
+            startNextScreen()
         }
     }
 
@@ -118,21 +111,19 @@ class IntroActivity : BaseActivity<ActivityIntroBinding, CommonVM>() {
                     IntroType.DEFAULT
                 )
             )
-            if (RemoteConfigHelper.getInstance().get_config(this@IntroActivity, NATIVE_INTRO_FULL) && Admob.getInstance().showAllAds) {
-                add(
-                    IntroModel(
-                        R.drawable.ic_launcher_foreground,
-                        R.string.app_name,
-                        R.string.app_name,
-                        IntroType.ADS
-                    )
-                )
-            }
             add(
                 IntroModel(
                     R.drawable.img_intro_3,
-                    R.string.title_intro_3,
-                    R.string.content_intro_3,
+                    R.string.app_name,
+                    R.string.app_name,
+                    IntroType.DEFAULT
+                )
+            )
+            add(
+                IntroModel(
+                    R.drawable.img_intro_4,
+                    R.string.title_intro_4,
+                    R.string.content_intro_4,
                     IntroType.DEFAULT
                 )
             )
@@ -145,7 +136,6 @@ class IntroActivity : BaseActivity<ActivityIntroBinding, CommonVM>() {
         launchActivity(if (sharePre.isPassPermission) MainActivity::class.java else PermissionActivity::class.java)
         finishAffinity()
     }
-
 
     private fun addBottomDots(currentPage: Int) {
         binding.linearDots.removeAllViews()

@@ -1,38 +1,25 @@
 package com.metaldetector.detectorapp.detectorapp.base
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.PopupWindow
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.banner_ads.BannerBuilder
-import com.amazic.library.ads.banner_ads.BannerManager
-import com.amazic.library.ads.callback.InterCallback
-import com.amazic.library.ads.callback.RewardedCallback
-import com.amazic.library.ads.inter_ads.InterManager
-import com.amazic.library.ads.native_ads.NativeBuilder
-import com.amazic.library.ads.native_ads.NativeManager
-import com.amazic.library.ads.reward_ads.RewardManager
-import com.metaldetector.detectorapp.detectorapp.R
 import com.metaldetector.detectorapp.detectorapp.base.network.NetworkCallbackHandler
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.RemoteName
 import com.metaldetector.detectorapp.detectorapp.ui.dialog.LoadingDialog
 import com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.no_internet.NoInternetActivity
 import com.metaldetector.detectorapp.detectorapp.ui.feature.screen_base.splash.SplashActivity
 import com.metaldetector.detectorapp.detectorapp.utils.PermissionUtils
 import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
-import com.metaldetector.detectorapp.detectorapp.utils.SystemUtils
+import com.metaldetector.detectorapp.detectorapp.utils.SystemUtils.setLocale
 import com.metaldetector.detectorapp.detectorapp.value.Default.IntentKeys.SCREEN
 import com.metaldetector.detectorapp.detectorapp.value.Default.IntentKeys.SPLASH_ACTIVITY
 import com.metaldetector.detectorapp.detectorapp.widget.currentBundle
@@ -50,11 +37,9 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
     private var isRegistered = false
     private var networkCallback: NetworkCallbackHandler? = null
 
-    @Inject
-    lateinit var permissionUtils: PermissionUtils
+    protected val permissionUtils by lazy { PermissionUtils(this) }
 
-    @Inject
-    lateinit var sharePref: SharePrefUtils
+    protected val sharePref by lazy { SharePrefUtils(this) }
 
     val exceptionHandler: CoroutineExceptionHandler by lazy { CoroutineExceptionHandler { _, exception ->
         Log.e("coroutineException1901", "${exception.message}")
@@ -68,7 +53,6 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
-        SystemUtils.setLocale(this)
         window.hideNavigation()
         window.hideStatusBar()
         super.onCreate(savedInstanceState)
@@ -108,7 +92,6 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
         super.onResume()
         window.hideStatusBar()
         window.hideNavigation()
-        AdsHelper.enableResume(this)
     }
 
     override fun onDestroy() {
@@ -149,59 +132,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
         }
     }
 
-    protected fun loadBanner() {
-        val frBanner = findViewById<FrameLayout>(R.id.fr_banner)
-        if (frBanner != null) {
-            val bannerManager = BannerManager(
-                this,
-                frBanner,
-                this,
-                BannerBuilder().isIdApi,
-                RemoteName.BANNER_ALL
-            )
-            bannerManager.setAlwaysReloadOnResume(true)
-        }
-    }
-
-    protected fun loadNative(
-        adsKey: String?,
-        idLayoutShimmer: Int,
-        idLayoutNative: Int
-    ) {
-        val frAds = findViewById<FrameLayout>(R.id.fr_ads)
-        if (frAds != null) {
-            val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative)
-            nativeBuilder.listIdAd = AdmobApi.getInstance().getListIDByName(adsKey)
-            val nativeManager = NativeManager(this, this, nativeBuilder, adsKey)
-            nativeManager.setIntervalReloadNative(
-                RemoteConfigHelper.getInstance().get_config_long(this, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000
-            )
-        }
-    }
-
-    protected fun loadInter(adsKey: String?) {
-        InterManager.loadInterAds(this, adsKey)
-    }
-
-    protected fun showInter(adsKey: String?, isReloadAds: Boolean, onNextAction: () -> Unit) {
-        InterManager.showInterAds(this, adsKey, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
-    }
-
-    protected fun loadReward(adsKey: String?) {
-        RewardManager.loadRewardAds(this, adsKey)
-    }
-
-    protected fun showReward(adsKey: String?, isReloadAds: Boolean, onNextAction: () -> Unit) {
-        RewardManager.showRewardAds(this, adsKey, object : RewardedCallback(){
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase?.let { setLocale(it) })
     }
 }

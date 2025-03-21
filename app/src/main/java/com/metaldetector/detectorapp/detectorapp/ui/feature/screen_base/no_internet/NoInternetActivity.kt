@@ -6,10 +6,11 @@ import android.provider.Settings
 import androidx.activity.OnBackPressedCallback
 import com.metaldetector.detectorapp.detectorapp.base.BaseActivity
 import com.metaldetector.detectorapp.detectorapp.databinding.ActivityNoInternetBinding
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
 import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
 import com.metaldetector.detectorapp.detectorapp.widget.tap
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NoInternetActivity: BaseActivity<ActivityNoInternetBinding, CommonVM>() {
     override fun setViewBinding(): ActivityNoInternetBinding {
         return ActivityNoInternetBinding.inflate(layoutInflater)
@@ -29,7 +30,6 @@ class NoInternetActivity: BaseActivity<ActivityNoInternetBinding, CommonVM>() {
                 val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
                 startActivity(panelIntent)
             } else {
-                AdsHelper.disableResume(this)
                 val wifiSettingsIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
                 startActivity(wifiSettingsIntent)
             }

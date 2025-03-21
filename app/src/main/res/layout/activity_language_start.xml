@@ -7,39 +7,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rl_top"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="8dp"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp">
 
         <TextView
             android:id="@+id/tv_language"
-            style="@style/TextHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
-            android:layout_toStartOf="@+id/iv_done"
             android:gravity="start"
+            android:fontFamily="@font/poppins_semi_bold"
             android:lines="1"
             android:text="@string/Language"
-            android:textSize="24sp" />
+            android:textSize="20sp"
+            android:textColor="@color/text_color_900"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_select_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_language"
+            android:text="@string/please_select_language_to_continue"
+            android:textColor="@color/text_color_500"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="14sp" />
 
         <ImageView
             android:id="@+id/iv_done"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
             android:padding="5dp"
+            android:visibility="gone"
             android:src="@drawable/ic_check_language" />
-    </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

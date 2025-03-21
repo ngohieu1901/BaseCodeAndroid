@@ -2,8 +2,9 @@ package com.metaldetector.detectorapp.detectorapp.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import javax.inject.Inject
 
-class SharePrefUtils(context: Context) {
+class SharePrefUtils @Inject constructor(context: Context) {
     private val pre: SharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = pre.edit()
 

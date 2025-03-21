@@ -10,7 +10,9 @@ import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
 import com.metaldetector.detectorapp.detectorapp.widget.invisible
 import com.metaldetector.detectorapp.detectorapp.widget.launchActivity
 import com.metaldetector.detectorapp.detectorapp.widget.tap
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LanguageFragment : BaseFragment<FragmentLanguageBinding, CommonVM>() {
     private lateinit var adapter: LanguageAdapter
     private var lang = "en"

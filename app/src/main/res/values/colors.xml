@@ -4,8 +4,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--    color app-->
-    <color name="app_color">#3A8DFF</color>
-    <color name="not_select">#C5C5C5</color>
-    <color name="background_app">#292C32</color>
-    <color name="text_color">#FFFFFFFF</color>
+    <color name="app_color">#006FFF</color>
+    <color name="not_select">#D1D5DB</color>
+    <color name="background_app">#f2f2f2</color>
+    <color name="text_color">#2E2F3F</color>
+    <color name="text_color_500">#6B7280</color>
+    <color name="text_color_900">#111827</color>
 </resources>

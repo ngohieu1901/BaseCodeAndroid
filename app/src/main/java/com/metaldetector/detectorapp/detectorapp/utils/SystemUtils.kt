@@ -9,8 +9,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import android.widget.Toast
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
 import com.metaldetector.detectorapp.detectorapp.model.LanguageModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,24 +25,32 @@ object SystemUtils {
     }
 
     // Load lại ngôn ngữ đã lưu và thay đổi chúng
-    fun setLocale(context: Context?) {
-        if (context != null) {
-            val language = getPreLanguage(context)
-            if (language != "") {
-                changeLang(language, context)
-            }
-        }
+    fun setLocale(context: Context) : Context {
+        val language = getPreLanguage(context)
+        val langToApply = if (language.isBlank()) Locale.getDefault().toString() else language
+        Log.d("sdfsdjf", "setLocale: $langToApply")
+        return changeLang(langToApply, context)
     }
 
     // method phục vụ cho việc thay đổi ngôn ngữ.
-    private fun changeLang(lang: String, context: Context) {
-        if (lang.equals("", ignoreCase = true)) return
-        myLocale = Locale(lang)
-        saveLocale(context, lang)
-        myLocale?.let { Locale.setDefault(it) }
-        val config = Configuration()
-        config.locale = myLocale
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+    fun changeLang(lang: String, context: Context): Context {
+        val deviceLanguageParts = when {
+            lang.contains("_") -> lang.split("_")
+            lang.contains("-") -> lang.split("-")
+            else -> listOf(lang)
+        }
+        val appLanguageCode = if (deviceLanguageParts.size > 1) {
+            Locale(deviceLanguageParts[0], deviceLanguageParts[1])
+        }else{
+            Locale(deviceLanguageParts[0])
+        }
+
+        Locale.setDefault(appLanguageCode)
+
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(appLanguageCode)
+
+        return context.createConfigurationContext(config)
     }
 
     fun getPreLanguage(mContext: Context?): String {
@@ -51,7 +59,7 @@ object SystemUtils {
         return preferences.getString("KEY_LANGUAGE", "").toString()
     }
 
-    private fun setPreLanguage(context: Context, language: String?) {
+    fun setPreLanguage(context: Context, language: String?) {
         if (language != null && language != "") {
             val preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
             val editor = preferences.edit()
@@ -61,15 +69,25 @@ object SystemUtils {
     }
 
     fun listLanguage(): MutableList<LanguageModel> {
-        val list: MutableList<LanguageModel> = ArrayList()
-        list.add(LanguageModel("Hindi", "hi"))
-        list.add(LanguageModel("Spanish", "es"))
-        list.add(LanguageModel("French", "fr"))
-        list.add(LanguageModel("Portuguese", "pt"))
-        list.add(LanguageModel("Indonesian", "in"))
-        list.add(LanguageModel("German", "de"))
-        list.add(LanguageModel("English", "en"))
-        return list
+        val languageList = listOf(
+            LanguageModel("Español", "es"),
+            LanguageModel("Français", "fr"),
+            LanguageModel("हिन्दी", "hi"),
+            LanguageModel("English", "en"),
+            LanguageModel("Português (Brazil)", "pt-rBR"),
+            LanguageModel("Português (Portu)", "pt-rPT"),
+            LanguageModel("日本語", "ja"),
+            LanguageModel("Deutsch", "de"),
+            LanguageModel("中文 (简体)", "zh-rCN"),
+            LanguageModel("中文 (繁體)", "zh-rTW"),
+            LanguageModel("عربي", "ar"),
+            LanguageModel("বাংলা", "bn"),
+            LanguageModel("Русский", "ru"),
+            LanguageModel("Türkçe", "tr"),
+            LanguageModel("한국인", "ko"),
+            LanguageModel("Indonesian", "in")
+        )
+        return languageList.toMutableList()
     }
 
     fun haveNetworkConnection(context: Context): Boolean {
@@ -108,8 +126,6 @@ object SystemUtils {
     }
 
     fun shareUrl(context: Context, text: String) {
-        if (context is Activity)
-            AdsHelper.disableResume(context)
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, text)

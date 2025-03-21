@@ -9,8 +9,10 @@ import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
 import com.metaldetector.detectorapp.detectorapp.widget.invisible
 import com.metaldetector.detectorapp.detectorapp.widget.launchActivity
 import com.metaldetector.detectorapp.detectorapp.widget.tap
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class LanguageActivity : BaseActivity<ActivityLanguageBinding, CommonVM>() {
     private var listLanguage: ArrayList<LanguageModel> = ArrayList()
     private lateinit var adapter: LanguageAdapter
@@ -22,7 +24,6 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding, CommonVM>() {
     override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
 
     override fun initView() {
-        loadBanner()
         setCodeLanguage()
 
         adapter = LanguageAdapter(onClick = {

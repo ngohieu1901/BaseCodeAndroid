@@ -9,15 +9,14 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
-import com.metaldetector.detectorapp.detectorapp.firebase.ads.AdsHelper
+import javax.inject.Inject
 
-class PermissionUtils(val activity: Activity?) {
+class PermissionUtils @Inject constructor(private val activity: Activity?) {
     fun isOverlayPermissionGranted(): Boolean {
         return Settings.canDrawOverlays(activity)
     }
 
     fun requestOverlayPermission(activity: Activity, requestCode: Int = 1000) {
-        AdsHelper.disableResume(activity)
         val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
         intent.data = Uri.parse("package:${activity.packageName}")
         activity.startActivityForResult(intent, requestCode)

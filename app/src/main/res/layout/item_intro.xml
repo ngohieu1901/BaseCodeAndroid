@@ -32,11 +32,11 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="8dp"
-            android:fontFamily="@font/inter_semi_bold"
+            android:fontFamily="@font/poppins_semi_bold"
             android:gravity="center"
             android:text="@string/title_intro_1"
-            android:textColor="@color/white"
-            android:textSize="27sp"
+            android:textColor="@color/text_color"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/tvContent" />
 
         <TextView
@@ -44,12 +44,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:fontFamily="@font/inter_regular"
+            android:fontFamily="@font/poppins_regular"
             android:gravity="center_horizontal"
             android:lines="2"
             android:maxLines="2"
             android:text="content"
-            android:textColor="#6e6e6e"
+            android:textColor="@color/text_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/ivIntro" />
 

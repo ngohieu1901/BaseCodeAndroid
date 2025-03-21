@@ -12,11 +12,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_33sdp"
-        android:layout_marginBottom="@dimen/_33sdp"
+        android:layout_marginVertical="16dp"
         android:fontFamily="@font/inter_semi_bold"
-        android:text="Permission"
-        android:textColor="@color/white"
+        android:text="@string/permission"
+        android:textColor="@color/text_color"
         android:textSize="21sp" />
 
     <androidx.core.widget.NestedScrollView
@@ -31,42 +30,41 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_140sdp"
+                android:layout_width="130dp"
+                android:layout_height="160dp"
                 android:layout_marginHorizontal="95dp"
-                android:layout_marginBottom="@dimen/_9sdp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="16dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/img_permission" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_20sdp"
-                android:fontFamily="@font/inter_regular"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:text="@string/text_permission"
-                android:textColor="@color/white"
+                android:textColor="@color/text_color"
+                android:layout_marginHorizontal="50dp"
                 android:textSize="14sp" />
 
             <LinearLayout
-                android:layout_width="@dimen/_275sdp"
-                android:layout_height="@dimen/_48sdp"
-                android:layout_marginStart="@dimen/_13sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_55sdp"
-                android:background="@drawable/bg_allow_access"
-                android:gravity="center_vertical"
-                android:paddingStart="@dimen/_13sdp"
-                android:paddingEnd="@dimen/_18sdp"
-                android:paddingBottom="8dp">
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="18dp"
+                android:background="@drawable/bg_allow_permission"
+                android:paddingHorizontal="24dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="@font/inter_medium"
+                    android:fontFamily="@font/poppins_semi_bold"
                     android:text="@string/allow_access"
-                    android:textColor="@color/white"
+                    android:textColor="@color/text_color_900"
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -77,16 +75,67 @@
                     android:thumb="@drawable/switch_thumb" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="18dp"
+                android:background="@drawable/bg_allow_permission"
+                android:paddingHorizontal="24dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:text="@string/overlay"
+                    android:textColor="@color/text_color_900"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/iv_switch_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:track="@drawable/switch_track"
+                    android:thumb="@drawable/switch_thumb" />
+            </LinearLayout>
+
+
             <TextView
                 android:id="@+id/tv_continue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_20sdp"
-                android:fontFamily="@font/inter_semi_bold"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:text="@string/tv_continue"
-                android:textAllCaps="true"
+                android:layout_marginHorizontal="16dp"
                 android:textColor="@color/white"
-                android:textSize="21sp" />
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_btn_app_color"
+                android:paddingHorizontal="22dp"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/tv_skip"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/skip"
+                android:layout_marginHorizontal="16dp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_btn_app_color"
+                android:paddingHorizontal="22dp"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:layout_marginBottom="16dp"
+                />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

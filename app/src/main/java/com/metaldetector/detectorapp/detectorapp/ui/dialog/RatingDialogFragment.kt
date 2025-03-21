@@ -11,10 +11,10 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.metaldetector.detectorapp.detectorapp.R
-import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
-import com.metaldetector.detectorapp.detectorapp.databinding.DialogRatingBinding
 import com.metaldetector.detectorapp.detectorapp.base.BaseDialogFragment
+import com.metaldetector.detectorapp.detectorapp.databinding.DialogRatingBinding
 import com.metaldetector.detectorapp.detectorapp.firebase.event.AdmobEvent
+import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
 import com.metaldetector.detectorapp.detectorapp.view_model.CommonVM
 import com.metaldetector.detectorapp.detectorapp.widget.tap
 

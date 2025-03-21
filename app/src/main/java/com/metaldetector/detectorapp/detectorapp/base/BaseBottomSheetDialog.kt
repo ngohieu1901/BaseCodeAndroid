@@ -1,5 +1,6 @@
 package com.metaldetector.detectorapp.detectorapp.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +10,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.metaldetector.detectorapp.detectorapp.R
 import com.metaldetector.detectorapp.detectorapp.utils.PermissionUtils
 import com.metaldetector.detectorapp.detectorapp.utils.SharePrefUtils
-import com.metaldetector.detectorapp.detectorapp.utils.SystemUtils
+import com.metaldetector.detectorapp.detectorapp.utils.SystemUtils.setLocale
 import com.metaldetector.detectorapp.detectorapp.widget.hideNavigation
 import javax.inject.Inject
 
 abstract class BaseBottomSheetDialog<VB : ViewBinding>(private val isCancel: Boolean) : BottomSheetDialogFragment() {
     lateinit var binding: VB
 
-    @Inject
-    lateinit var permissionUtils: PermissionUtils
+    protected val permissionUtils by lazy { PermissionUtils(requireActivity()) }
 
-    @Inject
-    lateinit var sharePref: SharePrefUtils
+    protected val sharePref by lazy { SharePrefUtils(requireContext()) }
+
 
     protected abstract fun initView()
     protected abstract fun initClickListener()
@@ -31,7 +31,6 @@ abstract class BaseBottomSheetDialog<VB : ViewBinding>(private val isCancel: Boo
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        SystemUtils.setLocale(activity)
         binding = setViewBinding(inflater, container)
         isCancelable = isCancel
         initView()
@@ -52,4 +51,8 @@ abstract class BaseBottomSheetDialog<VB : ViewBinding>(private val isCancel: Boo
         dialog?.dismiss()
         super.onDetach()
     }
+    override fun onAttach(context: Context) {
+        super.onAttach(setLocale(context))
+    }
+
 }
