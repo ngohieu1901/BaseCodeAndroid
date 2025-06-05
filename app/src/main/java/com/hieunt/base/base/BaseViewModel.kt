@@ -34,6 +34,10 @@ abstract class BaseViewModel<S : Any> : ViewModel() {
         uiStore.dispatchStateUi(uiState = uiState)
     }
 
+    protected fun updateStateUi(uiState: S) {
+        uiStore.updateStateUi(uiState = uiState)
+    }
+
     protected fun dispatchError(error: Throwable) {
         _errorLiveEvent.postValue(error)
     }

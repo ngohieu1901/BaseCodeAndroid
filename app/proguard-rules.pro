@@ -1,33 +1,12 @@
 # ---------- MẶC ĐỊNH CÓ -----------------
 
-# support-design
--dontwarn android.support.design.**
--keep class android.support.design.** { *; }
--keep interface android.support.design.** { *; }
--keep public class android.support.design.R$* { *; }
--ignorewarnings
-
 # support v4
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.** { *; }
 
-
-# support-v7-appcompat
--keep public class android.support.v7.widget.** { *; }
--keep public class android.support.v7.internal.widget.** { *; }
--keep public class android.support.v7.internal.view.menu.** { *; }
-
-
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
-
-
-# butter knife
--keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
--keep class butterknife.*
--keepclasseswithmembernames class * { @butterknife.* <methods>; }
--keepclasseswithmembernames class * { @butterknife.* <fields>; }
 
 # OkHttp
 -keepattributes Signature
@@ -39,18 +18,12 @@
 
 # google ads
 -keep class com.google.android.gms.internal.** { *; }
--keep class com.amazic.ads.**{ *; }
-#lib chart
--keep class com.github.toanmt.mpcharts.**{ *; }
-
-
-
 
 # ---------- NẾU CALL API HOẶC DÙNG FIREBASE READTIME THÌ ADD CLASS VS MODEL SỬ DỤNG   -----------------
 
--keep class com.hieunt.base.ui.feature.screen_base.splash.SplashActivity.** { *; }
+-keep class com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.** { *; }
 -keep class com.hieunt.base.application.** { *; }
--keep class com.hieunt.base.model.** { *; }
+-keep class com.hieunt.base.domain.model.** { *; }
 
 # ---------- TÙY TỪNG PROJECT CÓ DÙNG KO NẾU DÙNG THÌ ADD OR NHỮNG CLASS STATIC ----------
 
@@ -98,9 +71,5 @@
  -keep,allowobfuscation,allowshrinking class retrofit2.Response
  -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
- -keep class com.hieunt.base.ui.feature.converting.ConvertingFragment.** { *; }
- -keep class com.hieunt.base.pdf_tools_lib.text_to_pdf.** { *; }
- -keep class com.pdfeditor.** { *; }
- -keep class com.office.docx.word.reader.api.** { *; }
- -keep class com.aspose.cells.** { *; }
- -keep class com.artifex.mupdfdemo.** { *; }
+-keep class com.hieunt.base.data.dto** { *; }
+-keep class com.hieunt.base.domain.model.** { *; }

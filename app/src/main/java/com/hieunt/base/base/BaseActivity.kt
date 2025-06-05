@@ -25,7 +25,7 @@ import com.hieunt.base.R
 import com.hieunt.base.base.network.NetworkCallbackHandler
 import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
-import com.hieunt.base.ui.components.dialogs.LoadingDialog
+import com.hieunt.base.presentations.components.dialogs.LoadingDialog
 import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.hideNavigation

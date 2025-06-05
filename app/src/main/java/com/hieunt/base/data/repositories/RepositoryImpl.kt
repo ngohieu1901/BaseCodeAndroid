@@ -3,6 +3,7 @@ package com.hieunt.base.data.repositories
 import com.hieunt.base.data.services.local.LocalService
 import com.hieunt.base.data.services.remote.RemoteService
 import com.hieunt.base.di.IoDispatcher
+import com.hieunt.base.domain.repository.Repository
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton

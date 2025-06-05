@@ -2,8 +2,12 @@ package com.hieunt.base.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SharePrefUtils(context: Context) {
+@Singleton
+class SharePrefUtils @Inject constructor(@ApplicationContext context: Context) {
     private val pre: SharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = pre.edit()
 

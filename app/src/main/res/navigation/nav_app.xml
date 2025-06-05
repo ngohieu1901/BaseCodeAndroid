@@ -7,7 +7,21 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.hieunt.base.ui.feature.main.MainFragment"
+        android:name="com.hieunt.base.presentations.feature.main.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_languageFragment"
+            app:destination="@id/languageFragment"
+            app:enterAnim="@anim/fade_slide_in_left"
+            app:exitAnim="@anim/fade_slide_out_right"
+            app:popEnterAnim="@anim/fade_slide_in_left"
+            app:popExitAnim="@anim/fade_slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.hieunt.base.presentations.feature.screen_base.language.LanguageFragment"
+        android:label="LanguageFragment"
+        tools:layout="@layout/fragment_language"/>
 </navigation>

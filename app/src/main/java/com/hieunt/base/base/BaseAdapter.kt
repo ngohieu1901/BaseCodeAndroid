@@ -8,18 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class BaseAdapter<M : Any, VH : BaseViewHolder<M, *>> : RecyclerView.Adapter<VH>() {
     protected val listData = mutableListOf<M>()
 
-    protected abstract fun viewHolder(viewType: Int, parent: ViewGroup): VH
+    protected abstract fun createViewHolder(viewType: Int, parent: ViewGroup): VH
 
-    protected abstract fun layout(position: Int): Int
+    protected abstract fun layoutResource(position: Int): Int
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        viewHolder(viewType, parent)
+        createViewHolder(viewType, parent)
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         holder.bindData(listData[position])
     }
 
-    override fun getItemViewType(position: Int): Int = layout(position)
+    override fun getItemViewType(position: Int): Int = layoutResource(position)
 
     override fun getItemCount(): Int = listData.size
 

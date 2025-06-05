@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace 'com.hieunt.base'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.hieunt.base"
         minSdk 26
-        targetSdk 34
+        compileSdk 35
         versionCode 100
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -48,6 +48,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     bundle {
 
         language {
@@ -62,10 +63,7 @@ android {
             enableSplit = true
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -101,7 +99,7 @@ dependencies {
     //lottie
     implementation "com.airbnb.android:lottie:6.6.0"
     //firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation 'com.google.firebase:firebase-messaging'
@@ -109,26 +107,26 @@ dependencies {
     implementation 'com.google.firebase:firebase-config'
     //ads
     implementation 'com.github.DuongNT3012:AmazicLibrary:1.7.2'
-    implementation 'com.google.android.gms:play-services-ads:24.2.0'
+    implementation 'com.google.android.gms:play-services-ads:24.3.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.google.android.play:review:2.0.2'
     //mediation
     implementation 'com.google.ads.mediation:fyber:8.3.7.0'
-    implementation 'com.google.ads.mediation:facebook:6.19.0.1'
+    implementation 'com.google.ads.mediation:facebook:6.20.0.0'
     implementation 'com.google.ads.mediation:vungle:7.5.0.0'
     implementation 'com.google.ads.mediation:applovin:13.2.0.1'
-    implementation 'com.google.ads.mediation:pangle:6.5.0.9.0'
-    implementation 'com.google.ads.mediation:ironsource:8.8.0.0'
+    implementation 'com.google.ads.mediation:pangle:7.2.0.3.0'
+    implementation 'com.google.ads.mediation:ironsource:8.9.0.0'
     implementation 'com.unity3d.ads:unity-ads:4.11.3'
-    implementation 'com.google.ads.mediation:unity:4.14.2.0'
+    implementation 'com.google.ads.mediation:unity:4.15.0.0'
     implementation 'com.google.ads.mediation:mintegral:16.9.71.0'
     //billing
     implementation "com.android.billingclient:billing:7.1.1"
     //Nav
-    implementation "androidx.navigation:navigation-fragment-ktx:2.8.9"
-    implementation "androidx.navigation:navigation-ui-ktx:2.8.9"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.9.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.9.0"
     //viewmodel
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1'
     // retrofit
     def retrofit_version = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -140,7 +138,7 @@ dependencies {
     //hilt nav
     implementation "androidx.hilt:hilt-navigation-fragment:1.2.0"
     // moshi
-    def moshi_version = '1.14.0'
+    def moshi_version = '1.15.1'
     implementation "com.squareup.moshi:moshi:$moshi_version"
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     //room
@@ -152,4 +150,7 @@ dependencies {
     def ok_httpclient_version = '4.12.0'
     implementation "com.squareup.okhttp3:okhttp:$ok_httpclient_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$ok_httpclient_version"
+    //rxjava
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
 }

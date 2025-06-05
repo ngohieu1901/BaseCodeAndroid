@@ -5,47 +5,67 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.hieunt.base.R
 import com.hieunt.base.utils.PermissionUtils
-import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.hideNavigation
 import com.hieunt.base.widget.hideStatusBar
 
-abstract class BaseDialogFragment<VB : ViewBinding>(private val isCancel: Boolean) : DialogFragment() {
-    protected val permissionUtils by lazy { PermissionUtils(requireActivity())}
-    protected val sharePref by lazy { SharePrefUtils(requireContext())}
+abstract class BaseDialogFragment<VB : ViewBinding>(
+    private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB,
+) : DialogFragment() {
+    protected val permissionUtils by lazy { PermissionUtils(requireActivity()) }
+    private var isCancelableCustom: Boolean = true
 
-    lateinit var binding: VB
+    private var _binding: VB? = null
+    protected val binding get() = _binding!!
 
-    protected abstract fun initView()
+    protected abstract fun setupView()
+    protected abstract fun initData()
     protected abstract fun dataCollect()
-    protected abstract fun setViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
 
+    fun setCancelableCustom(cancelable: Boolean): BaseDialogFragment<VB> {
+        this.isCancelableCustom = cancelable
+        return this
+    }
+
+    @CallSuper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = isCancelableCustom
+        initData()
+        dataCollect()
+    }
+
+    @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = setViewBinding(inflater, container)
-        isCancelable = isCancel
-        initView()
-        return binding.root
-    }
+    ) = inflate(
+        inflater,
+        container,
+        false,
+    ).also { _binding = it }.root
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.hideNavigation()
         dialog?.window?.hideStatusBar()
-        dataCollect()
+        setupView()
     }
 
-    override fun getTheme(): Int {
-        return R.style.BaseDialog
+    @CallSuper
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
+    @CallSuper
     override fun onDetach() {
         try {
             dismiss()
@@ -55,7 +75,12 @@ abstract class BaseDialogFragment<VB : ViewBinding>(private val isCancel: Boolea
         super.onDetach()
     }
 
+    @CallSuper
     override fun onAttach(context: Context) {
         super.onAttach(setLocale(context))
+    }
+
+    override fun getTheme(): Int {
+        return R.style.BaseDialog
     }
 }

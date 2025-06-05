@@ -11,7 +11,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
 import com.hieunt.base.firebase.ads.AdsHelper
-import com.hieunt.base.model.LanguageModel
+import com.hieunt.base.domain.model.LanguageModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

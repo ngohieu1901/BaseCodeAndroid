@@ -9,7 +9,7 @@ import android.os.Environment
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import com.hieunt.base.firebase.ads.AdsHelper
-import com.hieunt.base.value.Default
+import com.hieunt.base.constants.Constants
 
 class PermissionUtils(val activity: Activity?) {
     fun isOverlayPermissionGranted(): Boolean {
@@ -27,7 +27,7 @@ class PermissionUtils(val activity: Activity?) {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             Environment.isExternalStorageManager()
         } else {
-            isGrantMultiplePermissions(Default.STORAGE_PERMISSION_API_SMALLER_30)
+            isGrantMultiplePermissions(Constants.STORAGE_PERMISSION_API_SMALLER_30)
         }
     }
 

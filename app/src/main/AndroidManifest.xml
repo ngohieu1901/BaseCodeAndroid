@@ -32,30 +32,30 @@
         </provider>
 
         <activity
-            android:name=".ui.feature.screen_base.welcome_back.WelcomeBackActivity"
+            android:name=".presentations.feature.screen_base.welcome_back.WelcomeBackActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.screen_base.uninstall.ProblemActivity"
+            android:name=".presentations.feature.screen_base.uninstall.ProblemActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.screen_base.uninstall.UninstallActivity"
+            android:name=".presentations.feature.screen_base.uninstall.UninstallActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.screen_base.permission.PermissionActivity"
+            android:name=".presentations.feature.screen_base.permission.PermissionActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.screen_base.intro.IntroActivity"
+            android:name=".presentations.feature.screen_base.intro.IntroActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.screen_base.splash.SplashActivity"
+            android:name=".presentations.feature.screen_base.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <meta-data
@@ -67,11 +67,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.feature.screen_base.language_start.LanguageStartActivity"
+            android:name=".presentations.feature.screen_base.language_start.LanguageStartActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.feature.container.ContainerActivity"
+            android:name=".presentations.feature.container.ContainerActivity"
             android:exported="true"
             android:screenOrientation="portrait" >
 <!--            <intent-filter>-->
@@ -80,7 +80,7 @@
 <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".ui.feature.screen_base.no_internet.NoInternetActivity"
+            android:name=".presentations.feature.screen_base.no_internet.NoInternetActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

@@ -1,7 +1,6 @@
 package com.hieunt.base.base
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.PopupWindow
+import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -32,12 +32,13 @@ import com.amazic.library.ads.reward_ads.RewardManager
 import com.hieunt.base.R
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.utils.PermissionUtils
-import com.hieunt.base.utils.SystemUtils.setLocale
 import kotlinx.coroutines.CoroutineExceptionHandler
 
-abstract class BaseFragment<VB : ViewBinding> : Fragment() {
+abstract class BaseFragment<VB : ViewBinding>(
+    private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
+) : Fragment() {
     private var _binding: VB? = null
-    lateinit var binding: VB
+    protected val binding get() = _binding!!
 
     protected val permissionUtils by lazy { PermissionUtils(requireActivity())}
 
@@ -45,9 +46,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         Log.e("coroutineException1901", "${exception.message}")
     } }
 
-    protected abstract fun setViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
-    protected abstract fun initView()
-    protected abstract fun initClickListener()
+    protected abstract fun initData()
+    protected abstract fun setupView()
     protected abstract fun dataCollect()
 
     open fun hideSoftKeyboard() {
@@ -58,30 +58,33 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
+    @CallSuper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initData()
+        dataCollect()
+    }
+
+    @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding?.let {
-            binding = it
-        } ?: run {
-            _binding = setViewBinding(inflater, container)
-            binding = _binding!!
-        }
-        initView()
-        initClickListener()
-        return binding.root
-    }
+    ) = inflate(
+        inflater,
+        container,
+        false,
+    ).also { _binding = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dataCollect()
+        setupView()
     }
 
+    @CallSuper
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 
     fun safeNavigate(
@@ -265,9 +268,5 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
                 onNextAction()
             }
         }, isReloadAds)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(setLocale(context))
     }
 }

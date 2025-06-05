@@ -1,6 +1,6 @@
 package com.hieunt.base.di
 
-import com.hieunt.base.data.repositories.Repository
+import com.hieunt.base.domain.repository.Repository
 import com.hieunt.base.data.repositories.RepositoryImpl
 import dagger.Binds
 import dagger.Module
