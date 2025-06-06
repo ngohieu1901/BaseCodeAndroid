@@ -1,12 +1,14 @@
 package com.hieunt.base.base
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hieunt.base.ui_state.UiStateStore
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.update
 
 abstract class BaseViewModel<S : Any> : ViewModel() {
     abstract fun initState(): S
@@ -16,10 +18,14 @@ abstract class BaseViewModel<S : Any> : ViewModel() {
     val currentState: S
         get() = uiStore.uiState
 
-    private val _errorLiveEvent: MutableLiveData<Throwable> = MutableLiveData<Throwable>()
+    private val _errorFlow = MutableSharedFlow<Throwable>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
-    val errorLiveEvent: LiveData<Throwable>
-        get() = _errorLiveEvent
+    val errorFlow: SharedFlow<Throwable>
+        get() = _errorFlow
 
     private val _loadingState : MutableStateFlow<Boolean> = MutableStateFlow(value = false)
 
@@ -30,6 +36,10 @@ abstract class BaseViewModel<S : Any> : ViewModel() {
         Log.e("coroutineException1901", "${exception.message}")
     }
 
+    protected fun dispatchError(error: Throwable) {
+        _errorFlow.tryEmit(error)
+    }
+
     protected fun dispatchStateUi(uiState: S) {
         uiStore.dispatchStateUi(uiState = uiState)
     }
@@ -38,11 +48,11 @@ abstract class BaseViewModel<S : Any> : ViewModel() {
         uiStore.updateStateUi(uiState = uiState)
     }
 
-    protected fun dispatchError(error: Throwable) {
-        _errorLiveEvent.postValue(error)
-    }
-
     protected fun dispatchStateLoading(isShowLoading: Boolean){
         _loadingState.value = isShowLoading
+    }
+
+    protected fun updateStateLoading(isShowLoading: Boolean){
+        _loadingState.update { isShowLoading }
     }
 }
