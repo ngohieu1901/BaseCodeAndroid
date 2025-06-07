@@ -1,11 +1,11 @@
-package com.hieunt.base.ui_state
+package com.hieunt.base.state
 
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class ErrorsFlow {
+class ErrorsState {
     private val _errors = MutableSharedFlow<Throwable>(
         replay = 0,
         extraBufferCapacity = 1,

@@ -49,7 +49,7 @@ class ContainerActivity : BaseActivity<ActivityContainerBinding>() {
     override fun dataCollect() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewmodel.uiStore.collect {
+                viewmodel.uiState.collect {
 
                 }
             }

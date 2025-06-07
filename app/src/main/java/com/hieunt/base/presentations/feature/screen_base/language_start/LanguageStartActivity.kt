@@ -126,7 +126,7 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>() {
     override fun dataCollect() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiStore.collect {
+                viewModel.uiState.collect {
                     when (it) {
                         is LanguageUiState.Idle -> {}
 

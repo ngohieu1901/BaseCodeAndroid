@@ -1,4 +1,4 @@
-package com.hieunt.base.ui_state
+package com.hieunt.base.state
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

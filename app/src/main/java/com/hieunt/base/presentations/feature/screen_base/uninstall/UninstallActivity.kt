@@ -86,7 +86,7 @@ class UninstallActivity : BaseActivity<ActivityUninstallBinding>() {
 
     override fun dataCollect() {
         lifecycleScope.launch {
-            viewmodel.uiStore.collect {
+            viewmodel.uiState.collect {
                 uninstallAdapter.submitList(it.listAnswer)
             }
         }
