@@ -13,15 +13,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseViewModel<LanguageStartUiState>() {
-    override fun initState(): LanguageStartUiState = LanguageStartUiState()
+class LanguageStartViewModel @Inject constructor(
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : BaseViewModel<LanguageUiState>() {
+    override fun initState(): LanguageUiState = LanguageUiState.Idle
 
-    init {
-        initListLanguage()
-    }
-
-    private fun initListLanguage() {
+    fun initListLanguage() {
         viewModelScope.launch(exceptionHandler + ioDispatcher) {
+            dispatchStateUi(LanguageUiState.Loading)
             val lists: MutableList<LanguageModelNew> = ArrayList()
             lists.add(LanguageModelNew("Español", "es", false, R.drawable.ic_span_flag))
             lists.add(LanguageModelNew("Français", "fr", false, R.drawable.ic_french_flag))
@@ -49,16 +48,26 @@ class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDis
                 lists.add(3, it.copy(isShowAnim = true))
             } ?: lists.set(3, lists[3].copy(isShowAnim = true))
 
-            dispatchStateUi(currentState.copy(listLanguage = lists))
+            dispatchStateUi(LanguageUiState.Language(listLanguage = lists))
+        }.invokeOnCompletion {
+            if (it != null) dispatchStateUi(LanguageUiState.Error(it))
         }
     }
 
     fun setSelectLanguage(isoLanguage: String) {
         viewModelScope.launch(exceptionHandler + ioDispatcher) {
-            val listUpdate = currentState.listLanguage.map {
-                it.copy(isShowAnim = false, isCheck = it.isoLanguage == isoLanguage)
+            when (val state = currentState) {
+                is LanguageUiState.Language -> {
+                    val listUpdate = state.listLanguage.map {
+                        it.copy(isShowAnim = false, isCheck = it.isoLanguage == isoLanguage)
+                    }
+                    dispatchStateUi(state.copy(listLanguage = listUpdate))
+                }
+
+                else -> {
+                    Log.w("LanguageVM", "Ignoring setSelectLanguage because current state is not LanguageState")
+                }
             }
-            dispatchStateUi(currentState.copy(listLanguage = listUpdate))
         }
     }
 }

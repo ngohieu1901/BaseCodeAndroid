@@ -6,6 +6,4 @@ data class LanguageModelNew(
     var isCheck: Boolean,
     var image: Int? = null,
     var isShowAnim: Boolean = false,
-){
-    constructor() : this("", "", false, 0, isShowAnim = false) {}
-}
+)

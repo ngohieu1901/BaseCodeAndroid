@@ -25,6 +25,7 @@ import com.hieunt.base.utils.SystemUtils
 import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.logEvent
 import com.hieunt.base.widget.tap
+import com.hieunt.base.widget.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -71,6 +72,8 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>() {
             R.layout.native_large_language_custom,
             R.layout.shimmer_native_large_language_custom,
         )
+
+        viewModel.initListLanguage()
 
         binding.cvSave.apply {
             setCardBackgroundColor(Color.parseColor("#D1D5DB"))
@@ -124,8 +127,20 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStore.collect {
-                    launch {
-                        adapter.submitList(it.listLanguage)
+                    when (it) {
+                        is LanguageUiState.Idle -> {}
+
+                        is LanguageUiState.Language -> {
+                            dismissLoading()
+                            adapter.submitList(it.listLanguage)
+                        }
+                        is LanguageUiState.Loading -> {
+                            showLoading()
+                        }
+
+                        is LanguageUiState.Error -> {
+                            toast(it.e.message.toString())
+                        }
                     }
                 }
             }

@@ -43,7 +43,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     protected val exceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, exception ->
-            Log.e("coroutineException1901", "${exception.message}")
+            Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
         }
     }
 

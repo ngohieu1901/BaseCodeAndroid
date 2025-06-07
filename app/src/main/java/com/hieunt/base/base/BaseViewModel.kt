@@ -2,43 +2,25 @@ package com.hieunt.base.base
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.hieunt.base.ui_state.ErrorsFlow
+import com.hieunt.base.ui_state.LoadingState
 import com.hieunt.base.ui_state.UiStateStore
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.update
 
-abstract class BaseViewModel<S : Any> : ViewModel() {
+abstract class BaseViewModel<S : Any>: ViewModel() {
     abstract fun initState(): S
 
     val uiStore by lazy { UiStateStore(this.initState()) }
 
-    val currentState: S
-        get() = uiStore.uiState
+    val errorsFlow by lazy { ErrorsFlow() }
 
-    private val _errorFlow = MutableSharedFlow<Throwable>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    val loadingState by lazy { LoadingState() }
 
-    val errorFlow: SharedFlow<Throwable>
-        get() = _errorFlow
+    val currentState: S get() = uiStore.uiState
 
-    private val _loadingState : MutableStateFlow<Boolean> = MutableStateFlow(value = false)
-
-    val loadingState : MutableStateFlow<Boolean>
-        get() = _loadingState
-
-    protected val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        Log.e("coroutineException1901", "${exception.message}")
-    }
-
-    protected fun dispatchError(error: Throwable) {
-        _errorFlow.tryEmit(error)
-    }
+    protected val exceptionHandler by lazy { CoroutineExceptionHandler { _, exception ->
+        Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
+    } }
 
     protected fun dispatchStateUi(uiState: S) {
         uiStore.dispatchStateUi(uiState = uiState)
@@ -48,11 +30,11 @@ abstract class BaseViewModel<S : Any> : ViewModel() {
         uiStore.updateStateUi(uiState = uiState)
     }
 
-    protected fun dispatchStateLoading(isShowLoading: Boolean){
-        _loadingState.value = isShowLoading
+    protected fun dispatchError(error: Throwable) {
+        errorsFlow.emitError(error)
     }
 
-    protected fun updateStateLoading(isShowLoading: Boolean){
-        _loadingState.update { isShowLoading }
+    protected fun dispatchStateLoading(isShowLoading: Boolean){
+        loadingState.updateLoadingState(isShowLoading)
     }
 }
