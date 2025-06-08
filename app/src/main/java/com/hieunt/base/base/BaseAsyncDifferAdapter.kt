@@ -37,9 +37,6 @@ abstract class BaseAsyncDifferAdapter<M : Any, VH : BaseViewHolder<M, *>> : Recy
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    fun submitList(newList: List<M>) {
-        if (newList == differ.currentList) return
-        differ.submitList(newList)
-    }
+    fun submitList(newList: List<M>) = differ.submitList(newList)
 
 }

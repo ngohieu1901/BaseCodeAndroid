@@ -34,7 +34,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
     protected lateinit var binding: VB
     private var isRegistered = false
     private var networkCallback: NetworkCallbackHandler? = null
@@ -123,7 +123,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             popupWindow.showAsDropDown(view, -22, 0, Gravity.TOP or Gravity.END)
         }
     }
-
 
     suspend fun showLoading() {
         withContext(Dispatchers.Main) {
