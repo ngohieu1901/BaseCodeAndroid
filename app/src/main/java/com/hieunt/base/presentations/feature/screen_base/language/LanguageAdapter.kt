@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseAdapter
+import com.hieunt.base.base.BaseSyncDifferAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemLanguageBinding
 import com.hieunt.base.domain.model.LanguageModel
@@ -13,7 +13,7 @@ import com.hieunt.base.widget.layoutInflate
 
 class LanguageAdapter(
     val onClick: (lang: LanguageModel) -> Unit
-) : BaseAdapter<LanguageModel, LanguageAdapter.LanguageVH>()  {
+) : BaseSyncDifferAdapter<LanguageModel, LanguageAdapter.LanguageVH>()  {
 
     inner class LanguageVH(binding: ItemLanguageBinding) :
         BaseViewHolder<LanguageModel, ItemLanguageBinding>(binding) {
@@ -63,10 +63,10 @@ class LanguageAdapter(
     }
 
     fun setCheck(code: String) {
-        val oldIndex = listData.indexOfFirst { it.active }
-        val newIndex = listData.indexOfFirst { it.code == code }
+        val oldIndex = currentList.indexOfFirst { it.active }
+        val newIndex = currentList.indexOfFirst { it.code == code }
 
-        for (item in listData) {
+        for (item in currentList) {
             item.active = item.code == code
         }
 
@@ -81,4 +81,8 @@ class LanguageAdapter(
     )
 
     override fun layoutResource(position: Int): Int = R.layout.item_language
+
+    override fun areItemsTheSame(oldItem: LanguageModel, newItem: LanguageModel): Boolean = oldItem.code == newItem.code
+
+    override fun areContentsTheSame(oldItem: LanguageModel, newItem: LanguageModel): Boolean = oldItem == newItem
 }

@@ -4,7 +4,8 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseAdapter
+import com.hieunt.base.base.BaseAsyncDifferAdapter
+import com.hieunt.base.base.BaseSyncDifferAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemLanguageBinding
 import com.hieunt.base.domain.model.LanguageModelNew
@@ -14,7 +15,7 @@ import com.hieunt.base.widget.visible
 
 class LanguageStartAdapter(
     val onClick: (lang: LanguageModelNew) -> Unit
-) : BaseAdapter<LanguageModelNew, LanguageStartAdapter.LanguageVH>() {
+) : BaseSyncDifferAdapter<LanguageModelNew, LanguageStartAdapter.LanguageVH>() {
 
     inner class LanguageVH(binding: ItemLanguageBinding) :
         BaseViewHolder<LanguageModelNew, ItemLanguageBinding>(binding) {
@@ -57,4 +58,7 @@ class LanguageStartAdapter(
     )
 
     override fun layoutResource(position: Int): Int = R.layout.item_language
+    override fun areItemsTheSame(oldItem: LanguageModelNew, newItem: LanguageModelNew): Boolean = oldItem.isoLanguage == newItem.isoLanguage
+
+    override fun areContentsTheSame(oldItem: LanguageModelNew, newItem: LanguageModelNew): Boolean = oldItem == newItem
 }
