@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.hieunt.base.R
-import com.hieunt.base.data.result.AppResult
+import com.hieunt.base.data.result.DataResult
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,11 +74,11 @@ object FilesUtils {
         return dateFormat.format(date)
     }
 
-    fun shareFileWithPath(context: Context, path: String): AppResult<Boolean> {
+    fun shareFileWithPath(context: Context, path: String): DataResult<Boolean> {
         try {
             val file = File(path)
             if (!file.exists()) {
-                return AppResult.Error(Exception("File not found"))
+                return DataResult.Error(Exception("File not found"))
             }
 
             val extension = file.extension.lowercase()
@@ -97,9 +97,9 @@ object FilesUtils {
             }
 
             context.startActivity(Intent.createChooser(intentShare, context.getString(R.string.share_file)))
-            return AppResult.Success(true)
+            return DataResult.Success(true)
         } catch (e: Exception) {
-            return AppResult.Error(Exception(e.message))
+            return DataResult.Error(Exception(e.message))
         }
     }
 

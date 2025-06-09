@@ -2,7 +2,7 @@ package com.hieunt.base.presentations.feature.screen_base.uninstall
 
 import androidx.lifecycle.viewModelScope
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseViewModel
+import com.hieunt.base.base.BaseMvvmViewModel
 import com.hieunt.base.di.IoDispatcher
 import com.hieunt.base.domain.model.AnswerModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UninstallViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseViewModel<UninstallUiState>() {
+class UninstallViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseMvvmViewModel<UninstallUiState>() {
     override fun initState(): UninstallUiState = UninstallUiState()
 
     init {

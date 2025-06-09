@@ -2,7 +2,7 @@ package com.hieunt.base.data.resources
 
 import android.content.Context
 import androidx.annotation.StringRes
-import com.hieunt.base.domain.common.ResourceProvider
+import com.hieunt.base.domain.resource.ResourceProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

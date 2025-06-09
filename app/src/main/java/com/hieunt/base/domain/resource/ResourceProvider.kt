@@ -1,4 +1,4 @@
-package com.hieunt.base.domain.common
+package com.hieunt.base.domain.resource
 
 import androidx.annotation.StringRes
 

@@ -1,4 +1,4 @@
-package com.hieunt.base.data.services.remote
+package com.hieunt.base.data.remote
 
 import com.hieunt.base.base.network.BaseRemoteService
 import com.hieunt.base.base.network.NetworkResult
@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteService @Inject constructor(private val appApi: Lazy<AppApi>): BaseRemoteService() {
+class RemoteDataSource @Inject constructor(private val appApi: Lazy<AppApi>): BaseRemoteService() {
     suspend fun getAllData(): NetworkResult<List<AppModel>> {
         return callApi { appApi.get().getAllData() }
     }

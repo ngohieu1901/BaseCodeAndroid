@@ -7,8 +7,10 @@ import com.hieunt.base.state.LoadingState
 import com.hieunt.base.state.UiState
 import kotlinx.coroutines.CoroutineExceptionHandler
 
-abstract class BaseViewModel<S : Any>: ViewModel() {
+abstract class BaseMviViewModel<S : Any, I : Any> : ViewModel() {
     abstract fun initState(): S
+
+    abstract fun processIntent(intent: I)
 
     val uiState by lazy { UiState(this.initState()) }
 

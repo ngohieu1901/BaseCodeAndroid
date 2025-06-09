@@ -4,7 +4,7 @@ import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseViewModel
+import com.hieunt.base.base.BaseMvvmViewModel
 import com.hieunt.base.di.IoDispatcher
 import com.hieunt.base.domain.model.LanguageModelNew
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LanguageStartViewModel @Inject constructor(
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) : BaseViewModel<LanguageUiState>() {
+class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseMvvmViewModel<LanguageUiState>() {
     override fun initState(): LanguageUiState = LanguageUiState.Idle
 
     fun initListLanguage() {
