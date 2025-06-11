@@ -3,6 +3,7 @@ package com.hieunt.base.base
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.hieunt.base.widget.tap
@@ -14,6 +15,7 @@ open class BaseViewHolder<M : Any, VB : ViewBinding>(val binding: VB) : Recycler
         private var isItemClickable = false
     }
 
+    @CallSuper
     open fun bindData(data: M) {
         binding.root.tap {
             if (!isItemClickable) { // chặn click nhiều item cùng lúc
@@ -26,5 +28,6 @@ open class BaseViewHolder<M : Any, VB : ViewBinding>(val binding: VB) : Recycler
         }
     }
 
+    @CallSuper
     open fun onItemClickListener(data: M) = Unit
 }
