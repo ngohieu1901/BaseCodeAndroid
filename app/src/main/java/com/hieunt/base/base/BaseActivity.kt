@@ -30,16 +30,15 @@ import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.hideNavigation
 import com.hieunt.base.widget.hideStatusBar
+import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
     protected lateinit var binding: VB
     private var isRegistered = false
     private var networkCallback: NetworkCallbackHandler? = null
 
-    protected val permissionUtils by lazy { PermissionUtils(this)}
+    protected val permissionUtils by lazy { PermissionUtils(this) }
 
     protected val exceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, exception ->
@@ -124,17 +123,21 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         }
     }
 
-    suspend fun showLoading() {
-        withContext(Dispatchers.Main) {
-            if (loadingDialog.isShowing.not())
-                loadingDialog.show()
-        }
+    fun showLoading() {
+        if (loadingDialog.isShowing.not())
+            loadingDialog.show()
     }
 
-    suspend fun dismissLoading() {
-        withContext(Dispatchers.Main) {
-            if (loadingDialog.isShowing) loadingDialog.dismiss()
-        }
+    fun dismissLoading() {
+        if (loadingDialog.isShowing) loadingDialog.dismiss()
+    }
+
+    fun renderStateLoading(isShowLoading: Boolean) {
+        if (isShowLoading) showLoading() else dismissLoading()
+    }
+
+    fun renderStateError(error: Throwable) {
+        toast(error.message.toString())
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -162,13 +165,17 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
     ) {
         val frAds = findViewById<FrameLayout>(R.id.fr_ads)
         if (frAds != null) {
-            val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
+            val nativeBuilder =
+                NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
             nativeBuilder.listIdAdMain = AdmobApi.getInstance().getListIDByName(adsKey)
             if (adsKey in RemoteName.LIST_DOUBLE_NATIVE) {
                 nativeBuilder.listIdAdSecondary = AdmobApi.getInstance().getListIDByName(adsKey)
             }
             val nativeManager = NativeManager(this, this, nativeBuilder, adsKey)
-            nativeManager.setIntervalReloadNative(RemoteConfigHelper.getInstance().get_config_long(this, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000)
+            nativeManager.setIntervalReloadNative(
+                RemoteConfigHelper.getInstance()
+                    .get_config_long(this, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000
+            )
         }
     }
 
@@ -177,15 +184,19 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         adsKey1: String,
         adsKey2: String,
         idLayoutNative: Int,
-        idLayoutShimmer: Int
+        idLayoutShimmer: Int,
     ) {
         val frAds = findViewById<FrameLayout>(R.id.fr_ads)
         if (frAds != null) {
-            val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
+            val nativeBuilder =
+                NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
             nativeBuilder.listIdAdMain = AdmobApi.getInstance().getListIDByName(adsKey1)
             nativeBuilder.listIdAdSecondary = AdmobApi.getInstance().getListIDByName(adsKey2)
             val nativeManager = NativeManager(this, this, nativeBuilder, remoteKey)
-            nativeManager.setIntervalReloadNative(RemoteConfigHelper.getInstance().get_config_long(this@BaseActivity, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000)
+            nativeManager.setIntervalReloadNative(
+                RemoteConfigHelper.getInstance()
+                    .get_config_long(this@BaseActivity, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000
+            )
             nativeManager.setAlwaysReloadOnResume(true)
         }
     }

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class BaseAsyncDifferAdapter<M : Any, VH : BaseViewHolder<M, *>> : RecyclerView.Adapter<VH>() {
+abstract class BaseAdapter<M : Any, VH : BaseViewHolder<M, *>> : RecyclerView.Adapter<VH>() {
     val currentList: List<M> get() = differ.currentList
 
     protected abstract fun createViewHolder(viewType: Int, parent: ViewGroup): VH
@@ -17,12 +17,12 @@ abstract class BaseAsyncDifferAdapter<M : Any, VH : BaseViewHolder<M, *>> : Recy
     protected abstract fun areContentsTheSame(oldItem: M, newItem: M): Boolean
 
     private val differ by lazy {
-        AsyncListDiffer(this@BaseAsyncDifferAdapter, object : DiffUtil.ItemCallback<M>() {
+        AsyncListDiffer(this@BaseAdapter, object : DiffUtil.ItemCallback<M>() {
             override fun areItemsTheSame(oldItem: M, newItem: M): Boolean =
-                this@BaseAsyncDifferAdapter.areItemsTheSame(oldItem, newItem)
+                this@BaseAdapter.areItemsTheSame(oldItem, newItem)
 
             override fun areContentsTheSame(oldItem: M, newItem: M): Boolean =
-                this@BaseAsyncDifferAdapter.areContentsTheSame(oldItem, newItem)
+                this@BaseAdapter.areContentsTheSame(oldItem, newItem)
         })
     }
 

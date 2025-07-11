@@ -32,6 +32,7 @@ import com.amazic.library.ads.reward_ads.RewardManager
 import com.hieunt.base.R
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.utils.PermissionUtils
+import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 
 abstract class BaseFragment<VB : ViewBinding>(
@@ -152,12 +153,20 @@ abstract class BaseFragment<VB : ViewBinding>(
         }
     }
 
-    suspend fun showLoading() {
+    private fun showLoading() {
         (activity as? BaseActivity<*>)?.showLoading()
     }
 
-    suspend fun dismissLoading() {
+    private fun dismissLoading() {
         (activity as? BaseActivity<*>)?.dismissLoading()
+    }
+
+    fun renderStateLoading(isShowLoading: Boolean){
+        if (isShowLoading) showLoading() else dismissLoading()
+    }
+
+    fun renderStateError(error: Throwable) {
+        toast(error.message.toString())
     }
 
     protected fun loadBanner() {

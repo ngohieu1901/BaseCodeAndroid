@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseAsyncDifferAdapter
 import com.hieunt.base.base.BaseSyncDifferAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemLanguageBinding
