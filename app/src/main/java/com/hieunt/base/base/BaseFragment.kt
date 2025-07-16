@@ -1,6 +1,7 @@
 package com.hieunt.base.base
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -32,6 +33,7 @@ import com.amazic.library.ads.reward_ads.RewardManager
 import com.hieunt.base.R
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.utils.PermissionUtils
+import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 
@@ -57,6 +59,10 @@ abstract class BaseFragment<VB : ViewBinding>(
                 activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(setLocale(context))
     }
 
     @CallSuper
