@@ -127,6 +127,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             finish()
             return
         }
+
+        sharePref.countOpenApp += 1
         logEvent(EventName.splash_open)
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.splash_open + "_" + sharePref.countOpenApp)
