@@ -11,18 +11,8 @@ import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>() {
-    override fun setViewBinding(): ActivityNoInternetBinding {
-        return ActivityNoInternetBinding.inflate(layoutInflater)
-    }
-
+class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>(ActivityNoInternetBinding::inflate) {
     override fun initView() {
-        val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finishAffinity()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.tvTryAgain.tap {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
@@ -39,4 +29,7 @@ class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>() {
 
     }
 
+    override fun handleOnBackPressed() {
+        finishAffinity()
+    }
 }

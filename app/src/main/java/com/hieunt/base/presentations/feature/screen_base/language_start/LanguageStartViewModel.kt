@@ -1,19 +1,24 @@
 package com.hieunt.base.presentations.feature.screen_base.language_start
 
-import android.content.res.Resources
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseMvvmViewModel
 import com.hieunt.base.di.IoDispatcher
 import com.hieunt.base.domain.model.LanguageModelNew
+import com.hieunt.base.utils.SystemUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseMvvmViewModel<LanguageUiState>() {
+class LanguageStartViewModel @Inject constructor(
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @ApplicationContext private val context: Context,
+) : BaseMvvmViewModel<LanguageUiState>() {
     override fun initState(): LanguageUiState = LanguageUiState.Idle
 
     fun initListLanguage() {
@@ -24,8 +29,22 @@ class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDis
             lists.add(LanguageModelNew("Français", "fr", false, R.drawable.ic_french_flag))
             lists.add(LanguageModelNew("हिन्दी", "hi", false, R.drawable.ic_hindi_flag))
             lists.add(LanguageModelNew("English", "en", false, R.drawable.ic_english_flag))
-            lists.add(LanguageModelNew("Português (Brazil)", "pt-rBR", false, R.drawable.ic_brazil_flag))
-            lists.add(LanguageModelNew("Português (Portu)", "pt-rPT", false, R.drawable.ic_portuguese_flag))
+            lists.add(
+                LanguageModelNew(
+                    "Português (Brazil)",
+                    "pt-rBR",
+                    false,
+                    R.drawable.ic_brazil_flag
+                )
+            )
+            lists.add(
+                LanguageModelNew(
+                    "Português (Portu)",
+                    "pt-rPT",
+                    false,
+                    R.drawable.ic_portuguese_flag
+                )
+            )
             lists.add(LanguageModelNew("日本語", "ja", false, R.drawable.ic_japan_flag))
             lists.add(LanguageModelNew("Deutsch", "de", false, R.drawable.ic_german_flag))
             lists.add(LanguageModelNew("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
@@ -37,14 +56,15 @@ class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDis
             lists.add(LanguageModelNew("한국인 ", "ko", false, R.drawable.ic_korean_flag))
             lists.add(LanguageModelNew("Indonesia", "in", false, R.drawable.flag_indonesia))
 
-            val systemLang: String = Resources.getSystem().configuration.locales[0].language
-            Log.e("lllllllllllllllll", "systemLang: $systemLang")
-            val systemLangModel = lists.find { it.isoLanguage.contains(systemLang) }
-            systemLangModel?.let {
-                Log.e("lllllllllllllllll", "systemLangModel: $it")
-                lists.remove(it)
-                lists.add(3, it.copy(isShowAnim = true))
-            } ?: lists.set(3, lists[3].copy(isShowAnim = true))
+            val languagePre = SystemUtils.getPreLanguage(context)
+            val selectedLang = lists.find { it.isoLanguage == languagePre }
+
+            selectedLang?.let { lang ->
+                lang.isCheck = true
+                lists.remove(lang)
+                lists.add(0, lang)
+            }
+
 
             dispatchStateUi(LanguageUiState.Language(listLanguage = lists))
         }.invokeOnCompletion {
@@ -63,7 +83,10 @@ class LanguageStartViewModel @Inject constructor(@IoDispatcher private val ioDis
                 }
 
                 else -> {
-                    Log.w("LanguageVM", "Ignoring setSelectLanguage because current state is not LanguageState")
+                    Log.w(
+                        "LanguageVM",
+                        "Ignoring setSelectLanguage because current state is not LanguageState"
+                    )
                 }
             }
         }

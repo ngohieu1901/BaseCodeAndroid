@@ -1,10 +1,8 @@
 package com.hieunt.base.presentations.feature.screen_base.welcome_back
 
-import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.ads.app_open_ads.AppOpenManager
 import com.amazic.library.ads.callback.AppOpenCallback
-import com.amazic.library.ads.callback.BannerCallback
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityWelcomeBackBinding
@@ -16,53 +14,56 @@ import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WelcomeBackActivity : BaseActivity<ActivityWelcomeBackBinding>() {
+class WelcomeBackActivity :
+    BaseActivity<ActivityWelcomeBackBinding>(ActivityWelcomeBackBinding::inflate) {
 
     override fun initView() {
-        loadNative(NATIVE_WB, R.layout.ads_shimmer_large_button_above, R.layout.ads_native_large_button_above)
-        Admob.getInstance().loadBannerAds(
-            this,
-            AdmobApi.getInstance().getListIDByName(RemoteName.BANNER_SETTING),
-            binding.bannerSetting,
-            object : BannerCallback() {},
-            {},
-            RemoteName.BANNER_SETTING
+        loadNative(
+            remoteKey = NATIVE_WB,
+            remoteKeySecondary = NATIVE_WB,
+            adsKeyMain = NATIVE_WB,
+            adsKeySecondary = NATIVE_WB,
+            idLayoutNative = R.layout.ads_native_large_button_above,
+            idLayoutShimmer = R.layout.ads_shimmer_large_button_above
         )
 
         binding.tvContinue.tap {
-            loadAndShowResumeAds()
+            finish()
         }
-
     }
 
     private fun loadAndShowResumeAds() {
-        AppOpenManager.getInstance().loadAndShowResumeAds(this, AdmobApi.getInstance().getListIDByName(RemoteName.RESUME_WB), object : AppOpenCallback() {
-            override fun onAdDismissedFullScreenContent() {
-                super.onAdDismissedFullScreenContent()
-                launchActivity(ContainerActivity::class.java)
-                finishAffinity()
-            }
+        AppOpenManager.getInstance().loadAndShowResumeAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(RemoteName.RESUME_WB),
+            object : AppOpenCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    launchActivity(ContainerActivity::class.java)
+                    finishAffinity()
+                }
 
-            override fun onAdFailedToShowFullScreenContent() {
-                super.onAdFailedToShowFullScreenContent()
-                launchActivity(ContainerActivity::class.java)
-                finishAffinity()
-            }
+                override fun onAdFailedToShowFullScreenContent() {
+                    super.onAdFailedToShowFullScreenContent()
+                    launchActivity(ContainerActivity::class.java)
+                    finishAffinity()
+                }
 
-            override fun onAdFailedToLoad() {
-                super.onAdFailedToLoad()
-                launchActivity(ContainerActivity::class.java)
-                finishAffinity()
-            }
-        }, RemoteName.RESUME_WB)
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    launchActivity(ContainerActivity::class.java)
+                    finishAffinity()
+                }
+            },
+            RemoteName.RESUME_WB
+        )
     }
 
     override fun dataCollect() {
 
     }
 
-    override fun onBackPressedSystem() {
-    }
+    override fun handleOnBackPressed() {
 
-    override fun setViewBinding(): ActivityWelcomeBackBinding = ActivityWelcomeBackBinding.inflate(layoutInflater)
+    }
 }

@@ -5,9 +5,11 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.PopupWindow
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
@@ -21,11 +23,14 @@ import com.amazic.library.ads.inter_ads.InterManager
 import com.amazic.library.ads.native_ads.NativeBuilder
 import com.amazic.library.ads.native_ads.NativeManager
 import com.amazic.library.ads.reward_ads.RewardManager
+import com.google.android.play.core.install.model.InstallStatus
 import com.hieunt.base.R
 import com.hieunt.base.base.network.NetworkCallbackHandler
 import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.presentations.components.dialogs.LoadingDialog
+import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.appUpdateManager
+import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.installStateUpdatedListener
 import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.hideNavigation
@@ -33,8 +38,9 @@ import com.hieunt.base.widget.hideStatusBar
 import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 
-abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
-    protected lateinit var binding: VB
+abstract class BaseActivity<VB : ViewBinding>(
+    private val bindingInflater: (LayoutInflater) -> VB,
+) : AppCompatActivity() {    protected lateinit var binding: VB
     private var isRegistered = false
     private var networkCallback: NetworkCallbackHandler? = null
 
@@ -46,7 +52,13 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         }
     }
 
-    protected abstract fun setViewBinding(): VB
+    private val backPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                this@BaseActivity.handleOnBackPressed()
+            }
+        }
+
     private val loadingDialog by lazy { LoadingDialog(this) }
     protected abstract fun initView()
     protected abstract fun dataCollect()
@@ -56,15 +68,10 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         window.hideNavigation()
         window.hideStatusBar()
         super.onCreate(savedInstanceState)
-        binding = setViewBinding()
-        //onBackPress
-        onBackPressedDispatcher.addCallback(this) {
-            isEnabled = false
-            onBackPressedSystem()
-            isEnabled = true
-        }
+        binding = bindingInflater.invoke(layoutInflater)
         setContentView(binding.root)
-        //view_model
+        //onBackPress
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         //internet
 //        networkCallback = NetworkCallbackHandler {
 //            if (!it) {
@@ -97,16 +104,28 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         window.hideStatusBar()
         window.hideNavigation()
         AdsHelper.enableResume(this)
+        installStateUpdatedListener?.let { appUpdateManager?.registerListener(it) }
+        appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
+            // If the update is downloaded but not installed,
+            // notify the user to complete the update.
+            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                appUpdateManager?.completeUpdate()
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        networkCallback?.unregister()
+        networkCallback?.unregister()
+        installStateUpdatedListener?.let { appUpdateManager?.unregisterListener(it) }
     }
 
-    open fun onBackPressedSystem() {
+    open fun handleOnBackPressed() {
+        backPressedCallback.isEnabled = false
         onBackPressedDispatcher.onBackPressed()
+        backPressedCallback.isEnabled = true
     }
+
 
     protected fun showPopupWindow(view: View, popupWindow: PopupWindow) {
         val location = IntArray(2)
@@ -144,109 +163,131 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         super.attachBaseContext(newBase?.let { setLocale(it) })
     }
 
-    protected fun loadBanner() {
-        val frBanner = findViewById<FrameLayout>(R.id.fr_banner)
-        if (frBanner != null) {
-            val bannerManager = BannerManager(
-                this,
-                frBanner,
-                this,
-                BannerBuilder().isIdApi,
-                RemoteName.BANNER_ALL
-            )
-            bannerManager.setAlwaysReloadOnResume(true)
-        }
+    fun loadCollapseBanner(adsKey: String) {
+//        val frContainerAds = findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
+//        if (frContainerAds != null) {
+//            val collapseBannerBuilder = CollapseBannerBuilder()
+//            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(adsKey))
+//            val collapseBannerManager = CollapseBannerManager(this, frContainerAds, this, collapseBannerBuilder, adsKey)
+//            collapseBannerManager.setIntervalReloadBanner(
+//                RemoteConfigHelper.getInstance().get_config_long(this, Constants.RemoteKeys.collapse_banner_reload_interval) * 1000
+//            )
+//            collapseBannerManager.setAlwaysReloadOnResume(true)
+//        }
+    }
+
+    protected fun loadBanner(adsKey: String) {
+//        val banner = findViewById<FrameLayout>(R.id.banner_container_view)
+//        if (banner != null) {
+//            val bannerBuilder = BannerBuilder(this, frAds, true)
+//            bannerBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKey))
+//            val bannerManager = BannerManager(this, this, bannerBuilder, adsKey)
+//            bannerManager.setAlwaysReloadOnResume(true)
+//            //if load multiple id native
+//            /*val bannerBuilder = BannerBuilder(this, frAds, true)
+//            bannerBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKey))
+//            bannerBuilder.setListIdAdSecondary()
+//            bannerBuilder.setListIdAdBackup()
+//            val bannerManager = BannerManager(this, this, bannerBuilder, adsKey)
+//            bannerManager.remoteKeySecondary = ""
+//            bannerManager.remoteKeyBackup = ""
+//            bannerManager.setAlwaysReloadOnResume(true)*/
+//        }
     }
 
     protected fun loadNative(
-        adsKey: String,
-        idLayoutShimmer: Int,
-        idLayoutNative: Int,
-    ) {
-        val frAds = findViewById<FrameLayout>(R.id.fr_ads)
-        if (frAds != null) {
-            val nativeBuilder =
-                NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
-            nativeBuilder.listIdAdMain = AdmobApi.getInstance().getListIDByName(adsKey)
-            if (adsKey in RemoteName.LIST_DOUBLE_NATIVE) {
-                nativeBuilder.listIdAdSecondary = AdmobApi.getInstance().getListIDByName(adsKey)
-            }
-            val nativeManager = NativeManager(this, this, nativeBuilder, adsKey)
-            nativeManager.setIntervalReloadNative(
-                RemoteConfigHelper.getInstance()
-                    .get_config_long(this, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000
-            )
-        }
-    }
-
-    fun loadDoubleNative(
         remoteKey: String,
-        adsKey1: String,
-        adsKey2: String,
+        remoteKeySecondary: String,
+        adsKeyMain: String,
+        adsKeySecondary: String,
         idLayoutNative: Int,
         idLayoutShimmer: Int,
-    ) {
+        idNativeMeta: Int = idLayoutNative,
+    ): NativeManager? {
         val frAds = findViewById<FrameLayout>(R.id.fr_ads)
         if (frAds != null) {
-            val nativeBuilder =
-                NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
-            nativeBuilder.listIdAdMain = AdmobApi.getInstance().getListIDByName(adsKey1)
-            nativeBuilder.listIdAdSecondary = AdmobApi.getInstance().getListIDByName(adsKey2)
-            val nativeManager = NativeManager(this, this, nativeBuilder, remoteKey)
+            val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idNativeMeta, true)
+            nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
+            // set secondary list id ads if load double native
+            nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
+            // set backup list id ads if need load backup ads when loading ads fail
+//            nativeBuilder.setListIdAdBackup(AdmobApi.getInstance().getListIDByName(adsKeyBackup))
+            val nativeManager = NativeManager(this, this, nativeBuilder, remoteKey, remoteKeySecondary)
+//            nativeManager.remoteKeyBackup = adsKeyBackup
+            nativeManager.timeOutCallAds = 12000
             nativeManager.setIntervalReloadNative(
-                RemoteConfigHelper.getInstance()
-                    .get_config_long(this@BaseActivity, RemoteName.INTERVAL_RELOAD_NATIVE) * 1000
+                RemoteConfigHelper.getInstance().get_config_long(this, RemoteConfigHelper.interval_reload_native) * 1000,
             )
             nativeManager.setAlwaysReloadOnResume(true)
+            return nativeManager
+        } else {
+            return null
         }
     }
 
-    protected fun loadInter(adsKey: String?, remoteKey: String?) {
-        InterManager.loadInterAds(this, adsKey, remoteKey)
-    }
-
-    protected fun loadInter(adsKey: String?) {
-        InterManager.loadInterAds(this, adsKey, adsKey)
-    }
-
-    protected fun showInter(
-        adsKey: String?,
-        remoteKey: String?,
-        isReloadAds: Boolean,
+    protected fun loadAndShowInter(
+        adsKey: String,
+        remoteKey: String,
         onNextAction: () -> Unit,
     ) {
-        InterManager.showInterAds(this, adsKey, remoteKey, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
+        InterManager.loadAndShowInterAds(
+            this,
+            adsKey,
+            remoteKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
+            },
+        )
     }
 
-    protected fun showInter(adsKey: String?, isReloadAds: Boolean, onNextAction: () -> Unit) {
-        InterManager.showInterAds(this, adsKey, adsKey, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
+    protected fun loadAndShowInter(
+        adsKey: String,
+        onNextAction: () -> Unit,
+    ) {
+        InterManager.loadAndShowInterAds(
+            this,
+            adsKey,
+            adsKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
+            },
+        )
     }
 
     protected fun loadReward(adsKey: String?) {
         RewardManager.loadRewardAds(this, adsKey, adsKey)
     }
 
-    protected fun loadReward(adsKey: String?, remoteKey: String?) {
+    protected fun loadReward(
+        adsKey: String?,
+        remoteKey: String?,
+    ) {
         RewardManager.loadRewardAds(this, adsKey, remoteKey)
     }
 
-    protected fun showReward(adsKey: String?, isReloadAds: Boolean, onNextAction: () -> Unit) {
-        RewardManager.showRewardAds(this, adsKey, adsKey, object : RewardedCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
+    protected fun showReward(
+        adsKey: String?,
+        isReloadAds: Boolean,
+        onNextAction: () -> Unit,
+    ) {
+        RewardManager.showRewardAds(
+            this,
+            adsKey,
+            adsKey,
+            object : RewardedCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction()
+                }
+            },
+            isReloadAds,
+        )
     }
 
     protected fun showReward(
@@ -255,11 +296,17 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         isReloadAds: Boolean,
         onNextAction: () -> Unit,
     ) {
-        RewardManager.showRewardAds(this, adsKey, remoteKey, object : RewardedCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction()
-            }
-        }, isReloadAds)
+        RewardManager.showRewardAds(
+            this,
+            adsKey,
+            remoteKey,
+            object : RewardedCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction()
+                }
+            },
+            isReloadAds,
+        )
     }
 }

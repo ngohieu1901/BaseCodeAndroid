@@ -10,11 +10,7 @@ import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProblemActivity : BaseActivity<ActivityProblemBinding>() {
-    override fun setViewBinding(): ActivityProblemBinding {
-        return ActivityProblemBinding.inflate(layoutInflater)
-    }
-
+class ProblemActivity : BaseActivity<ActivityProblemBinding>(ActivityProblemBinding::inflate) {
     override fun initView() {
         binding.apply {
             listOf(tvExplore, tvTryAgain, noUninstall, ivBack).forEachIndexed { int, button ->

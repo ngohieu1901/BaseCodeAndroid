@@ -10,17 +10,20 @@ object RemoteName {
     const val NATIVE_INTRO_2 = "native_intro_2"
     const val INTER_INTRO = "inter_intro"
     const val NATIVE_INTRO_FULL = "native_intro_full"
+    const val NATIVE_INTRO_FULL_2 = "native_intro_full_2"
+    const val NATIVE_INTRO_FULL1 = "native_intro_full1"
+    const val NATIVE_INTRO_FULL1_2 = "native_intro_full1_2"
     const val NATIVE_PERMISSION = "native_permission"
     const val NATIVE_WB = "native_wb"
     const val NATIVE_ALL = "native_all"
     const val BANNER_ALL = "banner_all"
-    const val INTER_FILE_BACK = "inter_file_back"
+    const val INTER_ALL = "inter_all"
     const val RESUME_WB = "resume_wb"
     const val CONVERT_FILE = "convert_file"
     const val BANNER_SETTING = "banner_setting"
-    const val TEST_FLOW = "test_flow"
 
     const val INTERVAL_RELOAD_NATIVE  = "interval_reload_native"
+    const val INTERVAL_INTER_ALL = "interval_inter_all"
 
     val LIST_DOUBLE_NATIVE = mutableListOf(
         NATIVE_INTRO_FULL,
@@ -38,7 +41,6 @@ object RemoteName {
         NATIVE_LANG,
         NATIVE_LANG_2,
         NATIVE_ALL,
-        INTER_FILE_BACK,
         RESUME_WB,
         CONVERT_FILE,
         NATIVE_WB

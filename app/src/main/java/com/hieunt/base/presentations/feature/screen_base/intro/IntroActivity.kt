@@ -1,10 +1,15 @@
 package com.hieunt.base.presentations.feature.screen_base.intro
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
+import com.amazic.library.organic.TechManager
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityIntroBinding
@@ -15,7 +20,10 @@ import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_2
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.domain.model.IntroModel
+import com.hieunt.base.presentations.components.dialogs.RatingDialogFragment
 import com.hieunt.base.presentations.feature.container.ContainerActivity
+import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity.Companion.isShowNativeIntroPreloadAtSplash
+import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity.Companion.nativeIntroPreload
 import com.hieunt.base.presentations.feature.screen_base.permission.PermissionActivity
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.gone
@@ -31,20 +39,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class IntroActivity : BaseActivity<ActivityIntroBinding>() {
+class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
     private var listIntroModel = mutableListOf<IntroModel>()
+    private lateinit var introAdapter: IntroAdapter
 
     @Inject
     lateinit var sharePref: SharePrefUtils
 
-    @Inject
-    @MainDispatcher
-    lateinit var mainDispatcher: CoroutineDispatcher
-
     var isFirst = true
-
-    private lateinit var parentJob: Job
-    private lateinit var scope: CoroutineScope
+    private var isPause = false
 
     private val myPageChangeCallback: ViewPager2.OnPageChangeCallback =
         object : ViewPager2.OnPageChangeCallback() {
@@ -54,43 +57,40 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
                     return
                 }
 
-                logEvent("onboarding${binding.viewPager2.currentItem + 1}_view")
-
-                binding.apply {
-                    if (viewPager2.currentItem == listIntroModel.size - 1) {
-                        btnNextTutorial.text = getString(R.string.start)
-                    } else {
-                        btnNextTutorial.text = getString(R.string.next)
+                when (listIntroModel[position].type) {
+                    IntroType.GUIDE_1 -> {
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_1_view")
                     }
+
+                    IntroType.ADS -> {
+                        introAdapter.notifyNativeAdFullScreen()
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_2_view")
+                    }
+
+                    IntroType.GUIDE_2 -> {
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_3_view")
+                    }
+
+                    IntroType.GUIDE_3 -> {
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_4_view")
+                    }
+
+                    IntroType.ADS_1 -> {
+                        introAdapter.notifyNativeAdFullScreen1()
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_5_view")
+                    }
+
+                    IntroType.GUIDE_4 -> {
+                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_6_view")
+                    }
+                }
+                binding.apply {
                     if (listIntroModel[position].type == IntroType.ADS) {
-                        listOf(frAds,linearDots,btnNextTutorial).forEach {
+                        listOf(frAds, linearDots, btnNextTutorial).forEach {
                             it.gone()
                         }
-                        scope.launch {
-                            launch {
-                                animationView.visible()
-                                delay(1000)
-                                animationView.gone()
-                            }
-                            launch {
-                                delay(4000)
-                                ivClose.visible()
-                            }
-                            launch {
-                                delay(7000)
-                                viewPager2.currentItem += 1
-                            }
-                        }
                     } else {
-                        if (parentJob.isActive) {
-                            parentJob.cancel()
-                            parentJob = Job()
-                            scope = CoroutineScope(mainDispatcher + parentJob)
-                        }
-                        ivClose.gone()
-                        animationView.gone()
-
-                        listOf(frAds,linearDots,btnNextTutorial).forEach {
+                        listOf(frAds, linearDots, btnNextTutorial).forEach {
                             it.visible()
                         }
                     }
@@ -99,47 +99,58 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
             }
         }
 
-    override fun setViewBinding(): ActivityIntroBinding {
-        return ActivityIntroBinding.inflate(LayoutInflater.from(this))
-    }
-
     override fun initView() {
         logEvent(EventName.onboarding_1_view)
         logEvent(EventName.onboard_open)
+
         sharePref.countOpenAppTestFlow += 1
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.onboard_open + "_" + sharePref.countOpenApp)
         }
-        loadInter(INTER_INTRO)
-        loadDoubleNative(
-            NATIVE_INTRO,
+
+        loadNative(
             NATIVE_INTRO,
             NATIVE_INTRO_2,
-            R.layout.ads_native_large_button_below,
-            R.layout.ads_shimmer_large_button_below,
+            NATIVE_INTRO,
+            NATIVE_INTRO_2,
+            R.layout.ads_native_small_button_above,
+            R.layout.ads_shimmer_small_button_above,
         )
 
-        parentJob = Job()
-        scope = CoroutineScope(mainDispatcher + parentJob)
+        introAdapter = IntroAdapter(this, initData())
 
-        val introAdapter = IntroAdapter(this, initData())
         binding.viewPager2.apply {
             adapter = introAdapter
             registerOnPageChangeCallback(myPageChangeCallback)
         }
+
         addBottomDots(0)
+
         binding.btnNextTutorial.setOnClickListener {
             if (binding.viewPager2.currentItem == listIntroModel.size - 1) {
-                showInter(
-                    INTER_INTRO,
-                    isReloadAds = false,
-                    onNextAction = {
+                if (listOf(2, 5, 9).contains(sharePref.countOpenIntro) && !sharePref.isRated && sharePref.isPassPermission) {
+                    RatingDialogFragment(
+                        isFinishActivity = false,
+                        onClickRate = {},
+                        onDismissListener = {
+                            loadAndShowInter(INTER_INTRO, INTER_INTRO) {
+                                logEvent(EventName.onboarding_next_click)
+                                if (sharePref.countOpenApp <= 10) {
+                                    logEvent(EventName.onboarding_next_click + "_" + sharePref.countOpenApp)
+                                }
+                                startNextScreen()
+                            }
+                        },
+                    ).show(supportFragmentManager, "RatingDialogFragment")
+                } else {
+                    loadAndShowInter(INTER_INTRO, INTER_INTRO) {
                         logEvent(EventName.onboarding_next_click)
                         if (sharePref.countOpenApp <= 10) {
                             logEvent(EventName.onboarding_next_click + "_" + sharePref.countOpenApp)
                         }
                         startNextScreen()
-                    })
+                    }
+                }
             } else {
                 binding.viewPager2.currentItem += 1
             }
@@ -158,26 +169,15 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
                     R.drawable.img_intro_1,
                     R.string.title_intro_1,
                     R.string.content_intro_1,
-                    IntroType.DEFAULT
+                    IntroType.GUIDE_1
                 )
             )
-            add(
-                IntroModel(
-                    R.drawable.img_intro_2,
-                    R.string.title_intro_2,
-                    R.string.content_intro_2,
-                    IntroType.DEFAULT
-                )
-            )
-            add(
-                IntroModel(
-                    R.drawable.img_intro_3,
-                    R.string.title_intro_3,
-                    R.string.content_intro_3,
-                    IntroType.DEFAULT
-                )
-            )
-            if (Admob.getInstance().checkCondition(this@IntroActivity, RemoteName.NATIVE_INTRO_FULL)) {
+            if (Admob.getInstance().checkCondition(
+                    this@IntroActivity,
+                    RemoteName.NATIVE_INTRO_FULL
+                ) || Admob.getInstance()
+                    .checkCondition(this@IntroActivity, RemoteName.NATIVE_INTRO_FULL_2)
+            ) {
                 add(
                     IntroModel(
                         R.drawable.ic_logo_app,
@@ -189,10 +189,41 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
             }
             add(
                 IntroModel(
+                    R.drawable.img_intro_2,
+                    R.string.title_intro_2,
+                    R.string.content_intro_2,
+                    IntroType.GUIDE_2
+                )
+            )
+            add(
+                IntroModel(
+                    R.drawable.img_intro_3,
+                    R.string.title_intro_3,
+                    R.string.content_intro_3,
+                    IntroType.GUIDE_3
+                )
+            )
+            if (Admob.getInstance().checkCondition(
+                    this@IntroActivity,
+                    RemoteName.NATIVE_INTRO_FULL1
+                ) || Admob.getInstance()
+                    .checkCondition(this@IntroActivity, RemoteName.NATIVE_INTRO_FULL1_2)
+            ) {
+                add(
+                    IntroModel(
+                        R.drawable.ic_logo_app,
+                        R.string.app_name,
+                        R.string.app_name,
+                        IntroType.ADS_1
+                    )
+                )
+            }
+            add(
+                IntroModel(
                     R.drawable.img_intro_4,
                     R.string.title_intro_4,
                     R.string.content_intro_4,
-                    IntroType.DEFAULT
+                    IntroType.GUIDE_4
                 )
             )
 
@@ -223,23 +254,30 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
         }
     }
 
-    override fun onBackPressedSystem() {
+    override fun handleOnBackPressed() {
         finishAffinity()
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (parentJob.isActive) {
-            parentJob.cancel()
-            parentJob = Job()
-            scope = CoroutineScope(mainDispatcher + parentJob)
-        }
+    override fun onResume() {
+        super.onResume()
+        isPause = false
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!isPause) {
+                showNativeIntroPreloadAtSplash()
+            }
+        }, 1000)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (parentJob.isActive) {
-            parentJob.cancel()
+    override fun onPause() {
+        super.onPause()
+        isPause = true
+    }
+
+    private fun showNativeIntroPreloadAtSplash() {
+        if (nativeIntroPreload != null && !isShowNativeIntroPreloadAtSplash && !TechManager.getInstance().isTech(this)) {
+            val adView: NativeAdView = layoutInflater.inflate(R.layout.ads_native_small_button_above, binding.frAds, false) as NativeAdView
+            binding.frAds.addView(adView)
+            Admob.getInstance().populateNativeAdView(nativeIntroPreload, adView)
         }
     }
 }

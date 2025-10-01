@@ -39,4 +39,10 @@ abstract class BaseAdapter<M : Any, VH : BaseViewHolder<M, *>> : RecyclerView.Ad
 
     fun submitList(newList: List<M>) = differ.submitList(newList)
 
+
+    fun submitList(newList: List<M>, onCommitted: () -> Unit) {
+        differ.submitList(newList) {
+            onCommitted()
+        }
+    }
 }

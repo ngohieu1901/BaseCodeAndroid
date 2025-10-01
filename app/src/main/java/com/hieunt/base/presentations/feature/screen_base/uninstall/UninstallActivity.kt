@@ -23,17 +23,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UninstallActivity : BaseActivity<ActivityUninstallBinding>() {
+class UninstallActivity : BaseActivity<ActivityUninstallBinding>(ActivityUninstallBinding::inflate) {
     private val viewmodel: UninstallViewModel by viewModels()
     private lateinit var uninstallAdapter: UninstallAdapter
 
     @Inject
     @IoDispatcher
     lateinit var ioDispatcher: CoroutineDispatcher
-
-    override fun setViewBinding(): ActivityUninstallBinding {
-        return ActivityUninstallBinding.inflate(layoutInflater)
-    }
 
     override fun initView() {
         binding.apply {

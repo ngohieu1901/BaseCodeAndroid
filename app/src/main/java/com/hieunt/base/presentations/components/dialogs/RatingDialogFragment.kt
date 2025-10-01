@@ -1,5 +1,6 @@
 package com.hieunt.base.presentations.components.dialogs
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.RatingBar.OnRatingBarChangeListener
@@ -15,8 +16,16 @@ import com.hieunt.base.firebase.event.AdmobEvent
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.tap
 
-class RatingDialogFragment(private val isFinishActivity: Boolean, private val onClickRate: () -> Unit) : BaseDialogFragment<DialogRatingBinding>(DialogRatingBinding::inflate) {
+class RatingDialogFragment(
+    private val isFinishActivity: Boolean,
+    private val onClickRate: () -> Unit,
+    private val onDismissListener: () -> Unit = {},
+) : BaseDialogFragment<DialogRatingBinding>(DialogRatingBinding::inflate) {
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener()
+    }
     override fun setupView() {
         AdmobEvent.logEvent(context, "rate_show", Bundle())
         binding.tvContent.text = getString(

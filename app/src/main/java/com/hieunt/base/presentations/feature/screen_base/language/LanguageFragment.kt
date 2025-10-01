@@ -22,8 +22,6 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
     }
 
     override fun setupView() {
-        loadNative(RemoteName.NATIVE_ALL, R.layout.shimmer_custom_all, R.layout.native_custom_all)
-
         adapter = LanguageAdapter(onClick = {
             lang = it.code
             adapter.setCheck(it.code)

@@ -12,6 +12,7 @@ import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.constants.Constants
 import com.hieunt.base.databinding.ActivityPermissionBinding
 import com.hieunt.base.firebase.ads.AdsHelper
+import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_PERMISSION
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.components.dialogs.WarningPermissionDialogFragment
@@ -25,19 +26,22 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PermissionActivity : BaseActivity<ActivityPermissionBinding>() {
+class PermissionActivity : BaseActivity<ActivityPermissionBinding>(ActivityPermissionBinding::inflate) {
     private val callStoragePermission = callMultiplePermissions {
         binding.ivSwitch.isChecked = true
         binding.ivSwitch.isEnabled = false
     }
 
-    override fun setViewBinding(): ActivityPermissionBinding {
-        return ActivityPermissionBinding.inflate(layoutInflater)
-    }
-
     override fun initView() {
         logEvent(EventName.permission_open)
-        loadNative(NATIVE_PERMISSION, R.layout.shimmer_native_large_language_custom, R.layout.native_large_language_custom)
+        loadNative(
+            remoteKey = NATIVE_PERMISSION,
+            remoteKeySecondary = NATIVE_PERMISSION,
+            adsKeyMain = NATIVE_PERMISSION,
+            adsKeySecondary = NATIVE_PERMISSION,
+            idLayoutNative = R.layout.ads_native_large_button_above,
+            idLayoutShimmer = R.layout.ads_shimmer_large_button_above
+        )
 
         binding.ivSwitch.setOnCheckedChangeListener { _, isChecked ->
             logEvent(EventName.permission_allow_click)

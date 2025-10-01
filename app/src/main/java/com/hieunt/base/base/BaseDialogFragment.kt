@@ -5,9 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.amazic.library.Utils.RemoteConfigHelper
+import com.amazic.library.ads.admob.AdmobApi
+import com.amazic.library.ads.native_ads.NativeBuilder
+import com.amazic.library.ads.native_ads.NativeManager
 import com.hieunt.base.R
 import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
@@ -82,5 +87,30 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
 
     override fun getTheme(): Int {
         return R.style.BaseDialog
+    }
+
+    protected fun loadNative(
+        remoteKey: String,
+        remoteKeySecondary: String,
+        adsKeyMain: String,
+        adsKeySecondary: String,
+        idLayoutNative: Int,
+        idLayoutShimmer: Int,
+    ): NativeManager? {
+        val frAds = binding.root.findViewById<FrameLayout>(R.id.fr_ads)
+        if (frAds != null) {
+            val nativeBuilder = NativeBuilder(requireContext(), frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
+            nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
+            nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
+            val nativeManager = NativeManager(requireContext(), viewLifecycleOwner, nativeBuilder, remoteKey, remoteKeySecondary)
+            nativeManager.timeOutCallAds = 12000
+            nativeManager.setIntervalReloadNative(
+                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteConfigHelper.interval_reload_native) * 1000,
+            )
+            nativeManager.setAlwaysReloadOnResume(true)
+            return nativeManager
+        } else {
+            return null
+        }
     }
 }
