@@ -14,7 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.hieunt.base.R
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 fun AppCompatActivity.changeStatusBarColor(@ColorRes color: Int, lightStatusBar: Boolean = false) {
     if (window != null) {
@@ -103,3 +109,14 @@ fun Activity.finishWithAnimation() {
 fun AppCompatActivity.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
+
+fun LifecycleOwner.launchAndRepeatWhenStarted(
+    launchBlock: suspend () -> Unit,
+    vararg launchBlocks: suspend () -> Unit,
+): Job =
+    lifecycleScope.launch {
+        repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+            launch { launchBlock() }
+            launchBlocks.forEach { launch { it() } }
+        }
+    }

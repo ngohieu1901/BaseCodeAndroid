@@ -6,9 +6,16 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 //start activity
 fun Fragment.launchActivity(
@@ -56,4 +63,26 @@ fun Fragment.findParentNavController(): NavController? {
         parent = parent.parentFragment
     }
     return parent?.parentFragment?.findNavController()
+}
+
+fun Fragment.launchAndRepeatWhenViewStarted(
+    launchBlock: suspend () -> Unit,
+    vararg launchBlocks: suspend () -> Unit,
+): Job =
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+            launch { launchBlock() }
+            launchBlocks.forEach { launch { it() } }
+        }
+    }
+
+fun <T> Fragment.collectLatestLifecycleFlow(
+    flow: Flow<T>,
+    action: suspend (T) -> Unit,
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            flow.collectLatest(action)
+        }
+    }
 }

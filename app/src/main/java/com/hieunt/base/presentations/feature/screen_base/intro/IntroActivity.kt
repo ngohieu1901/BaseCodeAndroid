@@ -103,7 +103,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
         logEvent(EventName.onboarding_1_view)
         logEvent(EventName.onboard_open)
 
-        sharePref.countOpenAppTestFlow += 1
+        sharePref.countOpenIntro += 1
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.onboard_open + "_" + sharePref.countOpenApp)
         }
