@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.viewbinding.ViewBinding
+import androidx.core.graphics.drawable.toDrawable
 
 abstract class BasePopupWindow<VB : ViewBinding>(
     context: Context,
-    bindingInflater: (LayoutInflater) -> VB
+    bindingInflater: (LayoutInflater) -> VB,
 ) : PopupWindow(context) {
 
     protected val binding: VB
@@ -26,7 +27,7 @@ abstract class BasePopupWindow<VB : ViewBinding>(
     }
 
     private fun setBackground() {
-        setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
     }
 
 }

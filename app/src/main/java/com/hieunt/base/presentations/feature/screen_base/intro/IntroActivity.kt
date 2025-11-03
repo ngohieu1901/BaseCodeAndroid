@@ -85,7 +85,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
                     }
                 }
                 binding.apply {
-                    if (listIntroModel[position].type == IntroType.ADS) {
+                    if (listIntroModel[position].type == IntroType.ADS || listIntroModel[position].type == IntroType.ADS_1 ) {
                         listOf(frAds, linearDots, btnNextTutorial).forEach {
                             it.gone()
                         }
@@ -103,7 +103,6 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
         logEvent(EventName.onboarding_1_view)
         logEvent(EventName.onboard_open)
 
-        sharePref.countOpenIntro += 1
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.onboard_open + "_" + sharePref.countOpenApp)
         }
@@ -128,7 +127,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
 
         binding.btnNextTutorial.setOnClickListener {
             if (binding.viewPager2.currentItem == listIntroModel.size - 1) {
-                if (listOf(2, 5, 9).contains(sharePref.countOpenIntro) && !sharePref.isRated && sharePref.isPassPermission) {
+                if (listOf(2, 5, 9).contains(sharePref.countOpenHome) && !sharePref.isRated && sharePref.isPassPermission) {
                     RatingDialogFragment(
                         isFinishActivity = false,
                         onClickRate = {},

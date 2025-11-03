@@ -46,19 +46,13 @@ class SharePrefUtils @Inject constructor(@ApplicationContext context: Context) {
             editor.apply()
         }
 
-    var countOpenIntro
-        get() = pre.getInt("countOpenIntro", 0)
-        set(value) {
-            editor.putInt("countOpenIntro", value)
-            editor.apply()
-        }
-
     var countOpenHome
-        get() = pre.getInt("countOpenHome", 0)
+        get() = pre.getInt("countOpenHome", 1)
         set(value) {
             editor.putInt("countOpenHome", value)
             editor.apply()
         }
+
 
     var countOpenAppTestFlow
         get() = pre.getInt("countOpenAppTestFlow", 0)

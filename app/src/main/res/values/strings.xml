@@ -63,5 +63,7 @@
     <string name="updated_and_ready_welcome_back">Updated and ready – welcome back!</string>
     <string name="there_is_no_internet_connection_please_check_your_internet_connection">There is no internet connection! \n Please check your internet connection!</string>
     <string name="no">No</string>
+    <string name="applying_your_language_settings">Applying your language settings</string>
+    <string name="we_re_setting_up_your_language_preferences">We\'re setting up your language preferences.</string>
 
 </resources>

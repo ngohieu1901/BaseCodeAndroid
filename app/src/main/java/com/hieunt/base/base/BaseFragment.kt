@@ -39,6 +39,7 @@ import com.hieunt.base.R
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.INTER_ALL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_ALL
+import com.hieunt.base.firebase.ads.RemoteName.NATIVE_BANNER
 import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.toast
@@ -117,13 +118,21 @@ abstract class BaseFragment<VB : ViewBinding>(
         @IdRes resId: Int,
         args: Bundle? = null,
     ) {
-        findNavControllerOrNull()?.navigate(resId, args)
+        try {
+            findNavControllerOrNull()?.navigate(resId, args)
+        } catch (e: Exception) {
+            Log.e("safeNavigate", "safeNavigate: $e")
+        }
     }
 
     fun safeNavigate(
         navDirections: NavDirections
     ) {
-        findNavControllerOrNull()?.navigate(navDirections)
+        try {
+            findNavControllerOrNull()?.navigate(navDirections)
+        } catch (e: Exception) {
+            Log.e("safeNavigate", "safeNavigate: $e")
+        }
     }
 
     private fun findNavControllerOrNull(): NavController? {
@@ -137,7 +146,11 @@ abstract class BaseFragment<VB : ViewBinding>(
     fun safeNavigateParentNav(
         navDirections: NavDirections
     ) {
-        findParentNavController().navigate(navDirections)
+        try {
+            findParentNavController().navigate(navDirections)
+        } catch (e: Exception) {
+            Log.e("safeNavigate", "safeNavigate: $e")
+        }
     }
 
     private fun findParentNavController(): NavController {
@@ -155,12 +168,6 @@ abstract class BaseFragment<VB : ViewBinding>(
                 it.popBackStack()
             }
         }
-    }
-
-    fun replaceFragment(id: Int, fragment: Fragment) {
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.replace(id, fragment)
-        ft.commit()
     }
 
     fun showPopupWindow(view: View, popupWindow: PopupWindow) {
@@ -336,37 +343,56 @@ abstract class BaseFragment<VB : ViewBinding>(
         )
     }
 
-//    fun loadCollapseBanner(adsKey: String): CollapseBannerManager? {
-//        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
-//        if (frContainerAds != null) {
-//            val collapseBannerBuilder = CollapseBannerBuilder()
-//            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(adsKey))
-//            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, this, collapseBannerBuilder, adsKey)
-//            collapseBannerManager.setIntervalReloadBanner(
-//                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
-//            )
-//            collapseBannerManager.setAlwaysReloadOnResume(true)
-//            return collapseBannerManager
-//        } else {
-//            return null
-//        }
-//    }
+    protected fun loadCollapseBanner(remoteKey: String): CollapseBannerManager? {
+        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
+        if (frContainerAds != null) {
+            val collapseBannerBuilder = CollapseBannerBuilder()
+            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(RemoteName.COLLAPSE_BANNER))
+            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, viewLifecycleOwner, collapseBannerBuilder, remoteKey)
+            collapseBannerManager.setIntervalReloadBanner(
+                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
+            )
+            collapseBannerManager.setAlwaysReloadOnResume(true)
+            return collapseBannerManager
+        }
+        return null
+    }
 
-//    fun loadCollapseBanner(adsKey: String, remoteKey: String): CollapseBannerManager? {
-//        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
-//        if (frContainerAds != null) {
-//            val collapseBannerBuilder = CollapseBannerBuilder()
-//            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(adsKey))
-//            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, this, collapseBannerBuilder, remoteKey)
-//            collapseBannerManager.setIntervalReloadBanner(
-//                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
-//            )
-//            collapseBannerManager.setAlwaysReloadOnResume(true)
-//            return collapseBannerManager
-//        } else {
-//            return null
-//        }
-//    }
+    protected fun loadCollapseBanner(adsKey: String, remoteKey: String): CollapseBannerManager? {
+        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
+        if (frContainerAds != null) {
+            val collapseBannerBuilder = CollapseBannerBuilder()
+            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(adsKey))
+            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, viewLifecycleOwner, collapseBannerBuilder, remoteKey)
+            collapseBannerManager.setIntervalReloadBanner(
+                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
+            )
+            collapseBannerManager.setAlwaysReloadOnResume(true)
+            return collapseBannerManager
+        } else {
+            return null
+        }
+    }
 
+    protected fun loadNativeBanner(remoteKey: String): CollapseBannerManager? {
+        val testAdsBanner = RemoteConfigHelper.getInstance().get_config(requireContext(), RemoteName.TEST_ADS_BANNER)
+        /*
+            testAdsBanner = true -> native
+            testAdsBanner = false -> collapse
+         */
+        if (testAdsBanner) {
+            loadNative(
+                NATIVE_BANNER,
+                NATIVE_BANNER,
+                NATIVE_BANNER,
+                NATIVE_BANNER,
+                R.layout.native_meta_small_with_button_below,
+                R.layout.shimmer_native_meta_small_with_button_below,
+            )
+            return null
+        } else {
+            return loadCollapseBanner(remoteKey = remoteKey)
+        }
+    }
 
 }

@@ -32,6 +32,10 @@
         </provider>
 
         <activity
+            android:name=".presentations.feature.screen_base.language_start_new.LanguageStartNewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".presentations.feature.screen_base.welcome_back.WelcomeBackActivity"
             android:exported="false"
             android:launchMode="singleTask"
@@ -58,9 +62,9 @@
             android:name=".presentations.feature.screen_base.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+<!--            <meta-data-->
+<!--                android:name="android.app.shortcuts"-->
+<!--                android:resource="@xml/shortcuts" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

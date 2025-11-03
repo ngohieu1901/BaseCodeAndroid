@@ -11,20 +11,10 @@ import com.hieunt.base.widget.tap
 open class BaseViewHolder<M : Any, VB : ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
     protected val context: Context by lazy { binding.root.context }
 
-    companion object {
-        private var isItemClickable = false
-    }
-
     @CallSuper
     open fun bindData(data: M) {
         binding.root.tap {
-            if (!isItemClickable) { // chặn click nhiều item cùng lúc
-                isItemClickable = true
-                onItemClickListener(data)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    isItemClickable = false
-                }, 200)
-            }
+            onItemClickListener(data)
         }
     }
 

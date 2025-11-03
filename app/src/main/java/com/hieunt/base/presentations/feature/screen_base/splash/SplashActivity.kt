@@ -25,6 +25,7 @@ import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.constants.Constants
 import com.hieunt.base.databinding.ActivitySplashBinding
 import com.hieunt.base.firebase.ads.AdsHelper
+import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.TURN_OFF_CONFIGS
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity
@@ -46,7 +47,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         var isShowSplashAds = false
         var isCloseSplashAds = false
         var isShowNativeLanguagePreloadAtSplash = false
+        var isShowNativeClickLanguagePreloadAtSplash = false
         var nativeLanguagePreload: NativeAd? = null
+        var nativeLanguageClickPreload: NativeAd? = null
         var appUpdateManager: AppUpdateManager? = null
         var installStateUpdatedListener: InstallStateUpdatedListener? = null
     }
@@ -224,14 +227,14 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             // Case welcome back above ads resume
 //            AsyncSplash.getInstance().setInitWelcomeBackAboveResumeAds(WelcomeBackActivity::class.java)
             // Case welcome back below ads resume
-            AsyncSplash.getInstance()
-                .setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
+//            AsyncSplash.getInstance().setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
             AsyncSplash.getInstance().handleAsync(
                 this,
                 this,
                 lifecycleScope,
                 onAsyncSplashDone = {
                     preloadANativeMainLanguage()
+                    preloadANativeClickLanguage()
                     AdsHelper.turnOffAllAds()
                 },
                 onNoInternetAction = {
@@ -269,6 +272,24 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 }
             },
             native_language,
+        )
+    }
+
+    private fun preloadANativeClickLanguage() {
+        Admob.getInstance().loadNativeAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(RemoteName.NATIVE_CLICK),
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                    super.onNativeAdLoaded(nativeAd)
+                    nativeLanguageClickPreload = nativeAd
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    isShowNativeClickLanguagePreloadAtSplash = true
+                }
+            }, RemoteName.NATIVE_CLICK
         )
     }
 
