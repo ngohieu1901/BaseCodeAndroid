@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseMvvmViewModel
+import com.hieunt.base.base.BaseViewModel
 import com.hieunt.base.di.IoDispatcher
 import com.hieunt.base.domain.model.LanguageModelNew
 import com.hieunt.base.utils.SystemUtils
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LanguageStartViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationContext private val context: Context,
-) : BaseMvvmViewModel<LanguageUiState>() {
+) : BaseViewModel<LanguageUiState>() {
     override fun initState(): LanguageUiState = LanguageUiState.Idle
 
     fun initListLanguage() {

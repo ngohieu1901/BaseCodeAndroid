@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class UninstallActivity : BaseActivity<ActivityUninstallBinding>(ActivityUninstallBinding::inflate) {
@@ -56,7 +57,7 @@ class UninstallActivity : BaseActivity<ActivityUninstallBinding>(ActivityUninsta
                 }
 
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.parse("package:$packageName")
+                    data = "package:$packageName".toUri()
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 startActivity(intent)
@@ -82,7 +83,7 @@ class UninstallActivity : BaseActivity<ActivityUninstallBinding>(ActivityUninsta
 
     override fun dataCollect() {
         lifecycleScope.launch {
-            viewmodel.uiState.collect {
+            viewmodel.uiStateStore.collect {
                 uninstallAdapter.submitList(it.listAnswer)
             }
         }

@@ -2,20 +2,18 @@ package com.hieunt.base.presentations.feature.screen_base.uninstall
 
 import androidx.lifecycle.viewModelScope
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseMvvmViewModel
-import com.hieunt.base.di.IoDispatcher
+import com.hieunt.base.base.BaseViewModel
 import com.hieunt.base.domain.model.AnswerModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UninstallViewModel @Inject constructor(@IoDispatcher private val ioDispatcher: CoroutineDispatcher): BaseMvvmViewModel<UninstallUiState>() {
+class UninstallViewModel @Inject constructor(): BaseViewModel<UninstallUiState>() {
     override fun initState(): UninstallUiState = UninstallUiState()
 
     init {
-        viewModelScope.launch (ioDispatcher + exceptionHandler) {
+        viewModelScope.launch (exceptionHandler) {
             val listData = mutableListOf<AnswerModel>().apply {
                 add(AnswerModel(name = R.string.difficult_to_use, isSelected = true))
                 add(AnswerModel(name = R.string.too_many_ads))
@@ -28,7 +26,7 @@ class UninstallViewModel @Inject constructor(@IoDispatcher private val ioDispatc
     }
 
     fun updateListAnswer(data: AnswerModel) {
-        viewModelScope.launch (ioDispatcher + exceptionHandler) {
+        viewModelScope.launch (exceptionHandler) {
             val listUpdated = currentState.listAnswer.map {
                 if (data.name == it.name) {
                     it.copy(isSelected = true)

@@ -2,12 +2,12 @@ package com.hieunt.base.presentations.feature.screen_base.language_start
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -98,7 +98,7 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>(Activit
 
         if (SystemUtils.getPreLanguage(this).isBlank()) {
             binding.cvSave.apply {
-                setCardBackgroundColor(Color.parseColor("#D1D5DB"))
+                setCardBackgroundColor("#D1D5DB".toColorInt())
                 isEnabled = false
             }
         }
@@ -120,7 +120,7 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>(Activit
             binding.tvLanguage.text = getLocalizedString(this, isoLanguage, R.string.Language)
             binding.tvSave.text = getLocalizedString(this, isoLanguage, R.string.save)
             binding.cvSave.apply {
-                setCardBackgroundColor(Color.parseColor("#E42427"))
+                setCardBackgroundColor("#E42427".toColorInt())
                 isEnabled = true
             }
         })
@@ -159,7 +159,7 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>(Activit
     override fun dataCollect() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
+                viewModel.uiStateStore.collect {
                     when (it) {
                         is LanguageUiState.Idle -> {}
 

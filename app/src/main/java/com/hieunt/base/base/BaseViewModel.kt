@@ -4,28 +4,26 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.hieunt.base.state.ErrorsState
 import com.hieunt.base.state.LoadingState
-import com.hieunt.base.state.UiState
+import com.hieunt.base.state.UiStateStore
 import kotlinx.coroutines.CoroutineExceptionHandler
 
-abstract class BaseMviViewModel<S : Any, I : Any> : ViewModel() {
+abstract class BaseViewModel<S : Any> : ViewModel() {
     abstract fun initState(): S
 
-    abstract fun processIntent(intent: I)
+    val uiStateStore by lazy { UiStateStore(this.initState()) }
 
-    val uiState by lazy { UiState(this.initState()) }
+    val currentState: S get() = uiStateStore.currentUiState
 
     val errorsState by lazy { ErrorsState() }
 
     val loadingState by lazy { LoadingState() }
 
-    val currentState: S get() = uiState.currentUiState
-
-    protected val exceptionHandler by lazy { CoroutineExceptionHandler { _, exception ->
-        Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
-    } }
+    protected val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        Log.e("coroutineException1901", "${exception.message}")
+    }
 
     protected fun dispatchStateUi(uiState: S) {
-        this.uiState.updateStateUi(uiState = uiState)
+        this.uiStateStore.updateStateUi(uiState = uiState)
     }
 
     protected fun dispatchStateError(error: Throwable) {
