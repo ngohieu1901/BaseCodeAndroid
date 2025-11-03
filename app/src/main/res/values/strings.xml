@@ -16,14 +16,14 @@
     <string name="tv_continue">Continue</string>
     <string name="allow_access">Allow access</string>
     <string name="desc_dialog_warning_permission">You must allow all Permission to use this app with full feature.</string>
-    <string name="title_intro_1">Read Multiple File Types</string>
-    <string name="content_intro_1">Easily open PDF, Word, Excel, and PowerPoint documents.</string>
-    <string name="title_intro_2">Edit Your PDF Easily</string>
-    <string name="content_intro_2">Highlight content or add your signature directly in PDFs.</string>
-    <string name="title_intro_3">Merge PDFs Easily</string>
-    <string name="content_intro_3">Quickly and effortlessly combine multiple PDF documents into a single file</string>
-    <string name="title_intro_4">Convert to PDF Instantly</string>
-    <string name="content_intro_4">Turn Word, Excel, or image files into high-quality PDFs.</string>
+    <string name="title_intro_1">Title Intro 1</string>
+    <string name="content_intro_1">Quickly open and read XLS, XLSX, and CSV files on your phone with ease.</string>
+    <string name="title_intro_2">Powerful Sheet Manager</string>
+    <string name="content_intro_2">Manage all your spreadsheet files anytime with simple yet professional tools.</string>
+    <string name="title_intro_3">Work Made Simple</string>
+    <string name="content_intro_3">Stay productive anywhere — no need to sit at your desktop all day.</string>
+    <string name="title_intro_4">Smooth Sheet Navigation</string>
+    <string name="content_intro_4">Easily browse through spreadsheets and locate your data in seconds.</string>
     <string name="please_select_language_to_continue">Please select language to continue</string>
     <string name="start">Start</string>
     <string name="no_internet">No Internet</string>
@@ -65,5 +65,12 @@
     <string name="no">No</string>
     <string name="applying_your_language_settings">Applying your language settings</string>
     <string name="we_re_setting_up_your_language_preferences">We\'re setting up your language preferences.</string>
+    <string name="permission">Permission</string>
+    <string name="skip">Skip</string>
+    <string name="all_files">All files</string>
+    <string name="settings">Settings</string>
+    <string name="exit_app">Exit app?</string>
+    <string name="are_you_sure_you_want_to_exit_the_app">Are you sure you want to exit the app?</string>
+    <string name="exit">Exit</string>
 
 </resources>

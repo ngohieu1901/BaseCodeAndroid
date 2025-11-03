@@ -28,9 +28,8 @@ import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.TURN_OFF_CONFIGS
 import com.hieunt.base.firebase.event.EventName
-import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity
+import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewActivity
 import com.hieunt.base.presentations.feature.screen_base.no_internet.NoInternetActivity
-import com.hieunt.base.presentations.feature.screen_base.welcome_back.WelcomeBackActivity
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.logEvent
@@ -116,7 +115,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         }
 
     private fun startNextScreen() {
-        launchActivity(LanguageStartActivity::class.java)
+        launchActivity(LanguageStartNewActivity::class.java)
 //        launchActivity(ContainerActivity::class.java)
         finishAffinity()
     }

@@ -42,6 +42,7 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(ActivityPermi
             idLayoutNative = R.layout.ads_native_large_button_above,
             idLayoutShimmer = R.layout.ads_shimmer_large_button_above
         )
+        binding.tvContinue.text = getString(if (permissionUtils.isGrantAllFilesPermissionStorage()) R.string.tv_continue else R.string.skip)
 
         binding.ivSwitch.setOnCheckedChangeListener { _, isChecked ->
             logEvent(EventName.permission_allow_click)
@@ -78,6 +79,7 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(ActivityPermi
             repeatOnLifecycle(Lifecycle.State.RESUMED){
                 binding.ivSwitch.isChecked = permissionUtils.isGrantAllFilesPermissionStorage()
                 binding.ivSwitch.isEnabled = !permissionUtils.isGrantAllFilesPermissionStorage()
+                binding.tvContinue.text = getString(if (permissionUtils.isGrantAllFilesPermissionStorage()) R.string.tv_continue else R.string.skip)
             }
         }
     }

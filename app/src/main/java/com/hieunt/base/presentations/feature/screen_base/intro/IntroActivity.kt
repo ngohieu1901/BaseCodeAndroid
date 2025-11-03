@@ -2,7 +2,6 @@ package com.hieunt.base.presentations.feature.screen_base.intro
 
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
@@ -13,13 +12,12 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityIntroBinding
-import com.hieunt.base.di.MainDispatcher
+import com.hieunt.base.domain.model.IntroModel
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.INTER_INTRO
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_2
 import com.hieunt.base.firebase.event.EventName
-import com.hieunt.base.domain.model.IntroModel
 import com.hieunt.base.presentations.components.dialogs.RatingDialogFragment
 import com.hieunt.base.presentations.feature.container.ContainerActivity
 import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity.Companion.isShowNativeIntroPreloadAtSplash
@@ -31,11 +29,6 @@ import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.logEvent
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint

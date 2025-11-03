@@ -4,44 +4,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--    color app-->
-    <color name="app_color">#E42427</color>
+    <color name="app_color">#4CB4B6</color>
     <color name="not_select">#C5C5C5</color>
-    <color name="background_app">#f2f2f2</color>
+    <color name="background_app">#f7f7f7</color>
     <color name="color_800">#1F2937</color>
     <color name="color_700">#374151</color>
     <color name="color_500">#6B7280</color>
     <color name="color_300">#D1D5DB</color>
     <color name="color_400">#9CA3AF</color>
     <color name="color_200">#E5E7EB</color>
-    <color name="start_color">#E42427</color>
-    <color name="end_color">#FE4548</color>
-    <color name="colorAccent">#ffdf1e13</color>
-    <color name="colorPrimary">#ffdf1e13</color>
-    <color name="colorPrimaryDark">#ffd51c10</color>
-    <color name="toolbar">#1E1A2C</color>
-    <color name="text_color">#ffffff</color>
-    <color name="theamcolor">#fc0029</color>
-    <color name="app_text_color">#ff7e7e7e</color>
-    <color name="busy_indicator">#c0202020</color>
-    <color name="button_material_dark">#ff5a595b</color>
-    <color name="button_material_light">#ffd6d7d7</color>
-    <color name="button_normal">#00000000</color>
-    <color name="button_pressed">#8c8c8c8c</color>
-    <color name="dialogInfoColor">#41403f</color>
-    <color name="dialog_cancel_color">#dd1b1a</color>
-    <color name="editortxt">#ff717171</color>
-    <color name="error_color_material_dark">#ff7043</color>
-    <color name="error_color_material_light">#ff5722</color>
-    <color name="itemInfocolor">#41403f</color>
-    <color name="itemTitleColor">#dd1b1a</color>
-    <color name="unselectedText">#e78a89</color>
-    <color name="whitetransfer">#4dffffff</color>
-    <color name="text_pressed">#FFFFFF</color>
-    <color name="text_border_normal">#8C8C8C</color>
-    <color name="text_border_pressed">#2572AC</color>
-    <color name="text_border_focused">#8C8C8C</color>
-    <color name="header">#FF33B5E5</color>
-    <color name="actionbar_tint">#FF33B5E5</color>
-    <color name="thumbnail_selected_background">#bba8a8a8</color>
+
+    <color name="start_color">#4CB4B6</color>
+    <color name="end_color">#4CB4B6</color>
 
 </resources>

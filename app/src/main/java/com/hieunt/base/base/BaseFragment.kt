@@ -202,13 +202,13 @@ abstract class BaseFragment<VB : ViewBinding>(
     }
 
     protected fun loadBanner(adsKey: String) {
-        val banner = binding.root.findViewById<FrameLayout>(R.id.fr_banner)
-        if (banner != null) {
-            val bannerBuilder = BannerBuilder(requireActivity(), banner, true)
-            bannerBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKey))
-            val bannerManager = BannerManager(requireActivity(), viewLifecycleOwner, bannerBuilder, adsKey)
-            bannerManager.setAlwaysReloadOnResume(true)
-        }
+//        val banner = binding.root.findViewById<FrameLayout>(R.id.fr_banner)
+//        if (banner != null) {
+//            val bannerBuilder = BannerBuilder(requireActivity(), banner, true)
+//            bannerBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKey))
+//            val bannerManager = BannerManager(requireActivity(), viewLifecycleOwner, bannerBuilder, adsKey)
+//            bannerManager.setAlwaysReloadOnResume(true)
+//        }
     }
 
     protected fun loadNative(

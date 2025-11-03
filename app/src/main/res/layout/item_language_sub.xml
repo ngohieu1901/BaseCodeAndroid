@@ -11,7 +11,6 @@
         android:id="@+id/ivFlag"
         android:layout_width="40dp"
         android:layout_height="34dp"
-        android:scaleType="fitXY"
         tools:srcCompat="@tools:sample/avatars"
         android:layout_marginEnd="8dp"/>
 

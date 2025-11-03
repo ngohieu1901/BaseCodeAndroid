@@ -1,14 +1,14 @@
 package com.hieunt.base.presentations.feature.screen_base.language
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseFragment
 import com.hieunt.base.databinding.FragmentLanguageBinding
 import com.hieunt.base.domain.model.LanguageParentModel
 import com.hieunt.base.domain.model.LanguageSubModel
-import com.hieunt.base.presentations.feature.container.ContainerActivity
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewAdapter
 import com.hieunt.base.utils.SystemUtils
-import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,17 +26,15 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
             setLanguageDefault(),
             onClickSubLanguage = {
                 model = it
+                selectLanguage()
             },
-            onClickDropDown = {
-
-            }
+            onClickDropDown = {}
         )
 
         binding.recyclerView.adapter = adapter
         binding.ivBack.tap {
             popBackStack()
         }
-        binding.ivCheck.tap { selectLanguage() }
     }
 
     override fun dataCollect() {
@@ -45,8 +43,9 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
 
     private fun selectLanguage() {
         SystemUtils.saveLocale(requireContext(), model.isoLanguage)
-        launchActivity(ContainerActivity::class.java)
-        requireActivity().finishAffinity()
+        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(model.isoLanguage)
+        AppCompatDelegate.setApplicationLocales(appLocale)
+        popBackStack()
     }
 
     private fun setLanguageDefault(): List<LanguageParentModel> {
