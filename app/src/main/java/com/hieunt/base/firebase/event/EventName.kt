@@ -16,6 +16,11 @@ object EventName {
     const val home_open = "home_open"
 
 
+    const val setting_view = "setting_view"
+    const val setting_language_click = "setting_language_click"
+    const val setting_privacy_policy_click = "setting_privacy_policy_click"
+    const val setting_share_click = "setting_share_click"
+
     const val uninstall_explore_click = "uninstall_explore_click"
     const val uninstall_try_again_click = "uninstall_try_again_click"
     const val dontuninstall_click = "dontuninstall_click"
