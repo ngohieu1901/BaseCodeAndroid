@@ -19,6 +19,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.hieunt.base.R
+import com.hieunt.base.firebase.event.AdmobEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -98,14 +99,6 @@ inline fun <reified T : Parcelable> AppCompatActivity.currentParcelable(key: Str
     }
 }
 
-fun AppCompatActivity.lastActivity(): String {
-    return intent.getBundleExtra("data_bundle")?.putString("last_activity", "").toString()
-}
-
-fun Activity.finishWithAnimation() {
-    finish()
-}
-
 fun AppCompatActivity.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
@@ -120,3 +113,7 @@ fun LifecycleOwner.launchAndRepeatWhenStarted(
             launchBlocks.forEach { launch { it() } }
         }
     }
+
+fun Activity.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
+    AdmobEvent.logEvent(this, nameEvent, bundle)
+}

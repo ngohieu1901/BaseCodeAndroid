@@ -3,6 +3,7 @@ package com.hieunt.base.widget
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.hieunt.base.firebase.event.AdmobEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -85,4 +87,18 @@ fun <T> Fragment.collectLatestLifecycleFlow(
             flow.collectLatest(action)
         }
     }
+}
+
+fun Fragment.callMultiplePermissions(
+    callbackPermission: (Boolean) -> Unit
+): ActivityResultLauncher<Array<String>> {
+    return registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { callback ->
+        callbackPermission.invoke(!callback.containsValue(false))
+    }
+}
+
+fun Fragment.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
+    AdmobEvent.logEvent(requireContext(), nameEvent, bundle)
 }

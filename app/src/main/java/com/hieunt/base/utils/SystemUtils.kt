@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import android.widget.Toast
 import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.domain.model.LanguageModel
@@ -61,6 +62,24 @@ object SystemUtils {
             val editor = preferences.edit()
             editor.putString("KEY_LANGUAGE", language)
             editor.apply()
+        }
+    }
+
+    fun getPreLanguageName(mContext: Context?): String {
+        if (mContext == null) return "English (Uk)"
+        val preferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE)
+        Log.d("SystemUtils", "getPreLanguageName: ${preferences.getString("KEY_LANGUAGE_NAME", "").toString()}")
+        return preferences.getString("KEY_LANGUAGE_NAME", "").toString()
+    }
+
+    fun setPreLanguageName(context: Context, language: String) {
+        if (language != "") {
+            val preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+            val editor = preferences.edit()
+            editor.putString("KEY_LANGUAGE_NAME", language)
+            editor.apply()
+            Log.d("SystemUtils", "setPreLanguageName: $language")
+
         }
     }
 

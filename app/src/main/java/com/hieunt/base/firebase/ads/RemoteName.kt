@@ -16,6 +16,7 @@ object RemoteName {
     const val NATIVE_PERMISSION = "native_per"
     const val NATIVE_WB = "native_wb"
     const val NATIVE_ALL = "native_all"
+    const val NATIVE_POPUP = "native_popup"
     const val NATIVE_CLICK = "native_click"
     const val INTER_ALL = "inter_all"
     const val RESUME_WB = "resume_wb"
@@ -47,5 +48,6 @@ object RemoteName {
         NATIVE_CLICK,
         COLLAPSE_BANNER,
         NATIVE_BANNER,
+        NATIVE_POPUP,
     )
 }

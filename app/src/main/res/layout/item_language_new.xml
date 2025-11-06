@@ -31,6 +31,13 @@
             android:textSize="14sp"
             android:fontFamily="@font/inter_medium" />
 
+        <RadioButton
+            android:id="@+id/rb_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/bg_button_rb_language"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/img_dropdown"
             android:layout_width="24dp"

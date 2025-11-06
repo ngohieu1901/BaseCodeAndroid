@@ -1,10 +1,10 @@
 package com.hieunt.base.domain.model
 
 data class LanguageParentModel(
-    var languageName: String,
-    var isoLanguage: String,
-    var isCheck: Boolean,
-    var image: Int? = null,
-    var listLanguageSubModel: MutableList<LanguageSubModel>,
-    var isExpand: Boolean = false
+    val languageName: String,
+    val isoLanguage: String,
+    val isCheck: Boolean,
+    val image: Int,
+    val listLanguageSubModel: List<LanguageSubModel>,
+    val isExpand: Boolean = false
 )

@@ -1,9 +1,12 @@
 package com.hieunt.base.presentations.feature.screen_base.language_start_new
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.activity.viewModels
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
@@ -16,8 +19,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityLanguageStartNewBinding
-import com.hieunt.base.domain.model.LanguageParentModel
-import com.hieunt.base.domain.model.LanguageSubModel
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_LANG
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_LANG_2
@@ -32,23 +33,29 @@ import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.C
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.utils.SystemUtils
 import com.hieunt.base.widget.launchActivity
+import com.hieunt.base.widget.launchAndRepeatWhenStarted
 import com.hieunt.base.widget.logEvent
 import com.hieunt.base.widget.tap
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
+class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
     ActivityLanguageStartNewBinding::inflate
 ) {
+    private val viewModel: LanguageStartNewViewModel by viewModels()
+
     @Inject
     lateinit var sharePref: SharePrefUtils
 
+    private lateinit var adapter: LanguageStartNewAdapter
+
     private var isPause = false
-    private var adapter: LanguageStartNewAdapter? = null
-    private var model = LanguageSubModel()
     private var isChooseLanguage = false
+    private var languageName = ""
+    private var languageCode = ""
 
     companion object {
         var isLogEventLanguageUserView = false
@@ -57,6 +64,8 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
     }
 
     override fun initView() {
+        viewModel.initLanguagesStart()
+
         logEvent(EventName.language_fo_open)
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.language_fo_open + "_" + sharePref.countOpenApp)
@@ -84,27 +93,42 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
         preloadANativeMainIntro()
 
         adapter = LanguageStartNewAdapter(
-            setLanguageDefault(),
-            onClickSubLanguage = {
+            onSelectLanguage = { languageName, languageCode ->
+                this@LanguageStartNewActivity.languageName = languageName
+                this@LanguageStartNewActivity.languageCode = languageCode
+
+                viewModel.selectLanguage(languageName)
+
                 logEvent(EventName.language_fo_choose)
                 if (sharePref.countOpenApp <= 10 && !isChooseLanguage) {
                     logEvent(EventName.language_fo_choose + "_" + sharePref.countOpenApp)
                 }
+                if (!isChooseLanguage) {
+                    isChooseLanguage = true
+                    nativeManager?.cancelAutoReloadNative()
+                    showNativeClickLanguagePreloadAtSplash()
+                }
                 SystemUtils.setLocale(this)
                 binding.ivDone.visible()
-                binding.ivDone.isEnabled = true
-                model = it
-                //---------
-                val isArabic = model.isoLanguage == "ar"
-                window.decorView.layoutDirection =
-                    if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+
+                binding.tvSelectLanguage.text = getLocalizedString(
+                    this,
+                    languageCode,
+                    R.string.please_select_language_to_continue
+                )
+                binding.tvLanguage.text = getLocalizedString(this, languageCode, R.string.Language)
+                binding.tvTitleApply.text =
+                    getLocalizedString(this, languageCode, R.string.applying_your_language_settings)
+                binding.tvContentApply.text = getLocalizedString(
+                    this,
+                    languageCode,
+                    R.string.we_re_setting_up_your_language_preferences
+                )
             },
-            onClickDropDown = {
-                nativeManager?.cancelAutoReloadNative()
-                showNativeClickLanguagePreloadAtSplash()
+            onExpand = {
+                viewModel.handleExpand(it)
             }
         )
-
         binding.recyclerView.adapter = adapter
 
         binding.ivDone.tap {
@@ -113,12 +137,18 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
                 !TechManager.getInstance().isTech(this) &&
                 Admob.getInstance().interstitialAdSplash != null
             ) {
-                Admob.getInstance().showInterAds(this, Admob.getInstance().interstitialAdSplash, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
-                        startNextAct()
-                    }
-                }, false, "inter_splash")
+                Admob.getInstance().showInterAds(
+                    this,
+                    Admob.getInstance().interstitialAdSplash,
+                    object : InterCallback() {
+                        override fun onNextAction() {
+                            super.onNextAction()
+                            startNextAct()
+                        }
+                    },
+                    false,
+                    "inter_splash"
+                )
             } else {
                 startNextAct()
             }
@@ -126,19 +156,26 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
     }
 
     private fun startNextAct() {
-        logEvent(EventName.language_fo_save_click, bundle = Bundle().apply {putString(ParamName.language_name, model.languageName)})
+        logEvent(
+            EventName.language_fo_save_click,
+            bundle = Bundle().apply { putString(ParamName.language_name, languageName) })
         if (sharePref.countOpenApp <= 10) {
             logEvent(EventName.language_fo_save_click + "_" + sharePref.countOpenApp)
         }
         sharePref.isFirstSelectLanguage = false
-        SystemUtils.setPreLanguage(this@LanguageStartNewActivity, model.isoLanguage)
+        SystemUtils.setPreLanguageName(this@LanguageStartNewActivity, languageName)
+        SystemUtils.setPreLanguage(this@LanguageStartNewActivity, languageCode)
         SystemUtils.setLocale(this)
         launchActivity(IntroActivity::class.java)
         finish()
     }
 
     override fun dataCollect() {
-
+        launchAndRepeatWhenStarted({
+            viewModel.uiStateStore.collectLatest {
+                adapter.submitList(it.listLanguage)
+            }
+        })
     }
 
     private fun preloadANativeMainIntro() {
@@ -176,7 +213,10 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
                     if (!isLogEventLanguageUserView && !isPause) {
                         EventTrackingHelper.logEvent(this, "language_user_view")
                         if (sharePref.countOpenApp <= 10) {
-                            EventTrackingHelper.logEvent(this, "language_user_view" + "_${sharePref.countOpenApp}")
+                            EventTrackingHelper.logEvent(
+                                this,
+                                "language_user_view" + "_${sharePref.countOpenApp}"
+                            )
                             isLogEventLanguageUserView = true
                         }
                     }
@@ -185,7 +225,10 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
                 if (isLogEventLanguageUserView && !isPause) {
                     EventTrackingHelper.logEvent(this, "language_user_view")
                     if (sharePref.countOpenApp <= 10) {
-                        EventTrackingHelper.logEvent(this, "language_user_view" + "_${sharePref.countOpenApp}")
+                        EventTrackingHelper.logEvent(
+                            this,
+                            "language_user_view" + "_${sharePref.countOpenApp}"
+                        )
                         isLogEventLanguageUserView = true
                     }
                 }
@@ -194,8 +237,14 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
     }
 
     private fun showNativeLanguagePreloadAtSplash() {
-        if (nativeLanguagePreload != null && !isShowNativeLanguagePreloadAtSplash && !TechManager.getInstance().isTech(this)) {
-            val adView: NativeAdView = layoutInflater.inflate(R.layout.ads_native_large_button_above, binding.frAds, false) as NativeAdView
+        if (nativeLanguagePreload != null && !isShowNativeLanguagePreloadAtSplash && !TechManager.getInstance()
+                .isTech(this)
+        ) {
+            val adView: NativeAdView = layoutInflater.inflate(
+                R.layout.ads_native_large_button_above,
+                binding.frAds,
+                false
+            ) as NativeAdView
             binding.frAds.addView(adView)
             Admob.getInstance().populateNativeAdView(nativeLanguagePreload, adView)
         }
@@ -213,79 +262,16 @@ class LanguageStartNewActivity: BaseActivity<ActivityLanguageStartNewBinding>(
         }
     }
 
-    private fun setLanguageDefault(): List<LanguageParentModel> {
-        val lists: MutableList<LanguageParentModel> = ArrayList()
-        lists.add(
-            LanguageParentModel(
-                "English", "en", false, R.drawable.ic_english_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_el_uk,"English (UK)", "en", false),
-                    LanguageSubModel(R.drawable.flag_el_us,"English (US)", "en", false),
-                    LanguageSubModel(R.drawable.flag_el_india,"English (India)", "en", false),
-                    LanguageSubModel(R.drawable.flag_el_international,"English (International)", "en", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "Hindi", "hi", false, R.drawable.ic_hindi_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_hindi_india,"Hindi (Standard – India)", "hi", false),
-                    LanguageSubModel(R.drawable.flag_hindi_el,"Hindi (Hinglish)", "hi", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "Spanish", "es", false, R.drawable.ic_span_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_spain_spain,"Spanish (Spain)", "es", false),
-                    LanguageSubModel(R.drawable.flag_spain_latin,"Spanish (Latin America)", "es", false),
-                    LanguageSubModel(R.drawable.flag_spain_mexico,"Spanish (Mexico)", "es", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "French", "fr", false, R.drawable.ic_french_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_fr_fr,"French (France)", "fr", false),
-                    LanguageSubModel(R.drawable.flag_fr_canada,"French (Canada)", "fr", false),
-                    LanguageSubModel(R.drawable.flag_fr_afica,"French (Africa)", "fr", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "German", "de", false, R.drawable.ic_german_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_de_de,"German (Germany)", "de", false),
-                    LanguageSubModel(R.drawable.flag_de_austria,"German (Austria)", "de", false),
-                    LanguageSubModel(R.drawable.flag_de_switzer,"German (Switzerland)", "de", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "Indonesian", "in", false, R.drawable.ic_indo_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_indo_spain,"Indonesian (Standard)", "in", false),
-//                    LanguageSubModel(R.drawable.flag_indo_spain,"Indonesian (Informal, English combined)", "in", false),
-                    LanguageSubModel(R.drawable.flag_indo_japan,"Indonesian (Javanese-influenced)", "in", false)
-                )
-            )
-        )
-        lists.add(
-            LanguageParentModel(
-                "Portuguese", "pt", false, R.drawable.ic_portuguese_flag,
-                mutableListOf(
-                    LanguageSubModel(R.drawable.flag_pt_pt,"Portuguese (Portugal)", "pt", false),
-                    LanguageSubModel(R.drawable.flag_pt_brazil,"Portuguese (Brazil)", "pt", false),
-                    LanguageSubModel(R.drawable.flag_pt_afica,"Portuguese (Africa)", "pt", false)
-                )
-            )
-        )
-        
-        return lists
+    private fun getLocalizedString(context: Context, languageCode: String, resId: Int): String {
+        val localeParts = languageCode.split("-")
+        val myLocale = if (localeParts.size > 1) {
+            Locale(localeParts[0], localeParts[1])
+        } else {
+            Locale(languageCode)
+        }
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(myLocale)
+        val localizedContext = context.createConfigurationContext(config)
+        return localizedContext.resources.getString(resId)
     }
 }

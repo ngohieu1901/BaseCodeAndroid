@@ -1,4 +1,4 @@
-package com.stylify.rbx.clothes.skincreator.widget
+package com.hieunt.base.widget
 
 import kotlinx.coroutines.withContext
 import kotlin.contracts.ExperimentalContracts

@@ -1,95 +1,86 @@
 package com.hieunt.base.presentations.feature.screen_base.language_start_new
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
-import androidx.recyclerview.widget.RecyclerView
-import com.hieunt.base.R
-import com.hieunt.base.databinding.ItemLanguageNewBinding
 import com.hieunt.base.domain.model.LanguageParentModel
-import com.hieunt.base.domain.model.LanguageSubModel
+import com.hieunt.base.R
+import com.hieunt.base.base.BaseAdapter
+import com.hieunt.base.base.BaseViewHolder
+import com.hieunt.base.databinding.ItemLanguageNewBinding
+import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewAdapter.LanguageStartNewVH
+import com.hieunt.base.widget.gone
+import com.hieunt.base.widget.layoutInflate
 import com.hieunt.base.widget.tap
+import com.hieunt.base.widget.visible
 
 class LanguageStartNewAdapter(
-    private val lists: List<LanguageParentModel>?,
-    private val onClickSubLanguage: (LanguageSubModel) -> Unit,
-    private val onClickDropDown: (LanguageParentModel) -> Unit,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var languageSubAdapter: LanguageSubAdapter? = null
+    private val onSelectLanguage: (String, String) -> Unit,
+    private val onExpand: (LanguageParentModel) -> Unit,
+): BaseAdapter<LanguageParentModel, LanguageStartNewVH>() {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
+    override fun createViewHolder(
         viewType: Int,
-    ): RecyclerView.ViewHolder {
-        return LanguageViewHolder(ItemLanguageNewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
+        parent: ViewGroup,
+    ): LanguageStartNewVH = LanguageStartNewVH(ItemLanguageNewBinding.inflate(parent.layoutInflate(), parent, false))
 
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-    ) {
-        val data = lists!![position]
-        if (holder is LanguageViewHolder) {
-            holder.bind(data, position)
+    override fun layoutResource(position: Int): Int = R.layout.item_language_new
+
+    override fun areItemsTheSame(
+        oldItem: LanguageParentModel,
+        newItem: LanguageParentModel,
+    ): Boolean = oldItem.languageName == newItem.languageName
+
+    override fun areContentsTheSame(
+        oldItem: LanguageParentModel,
+        newItem: LanguageParentModel,
+    ): Boolean = oldItem == newItem
+
+    inner class LanguageStartNewVH(binding: ItemLanguageNewBinding): BaseViewHolder<LanguageParentModel, ItemLanguageNewBinding>(binding = binding) {
+        override fun bindData(data: LanguageParentModel) {
+            super.bindData(data)
+            binding.apply {
+                if (data.isExpand) {
+                    binding.tvTitle.setTextColor("#FFFFFF".toColorInt())
+                    binding.recyclerView.visibility = View.VISIBLE
+                    binding.imgDropdown.setImageResource(R.drawable.ic_arrow_down)
+                    binding.rlLayoutParent.setBackgroundResource(R.drawable.bg_item_language_select)
+                } else {
+                    binding.tvTitle.setTextColor("#000000".toColorInt())
+                    binding.recyclerView.visibility = View.GONE
+                    binding.imgDropdown.setImageResource(R.drawable.ic_arrow_right)
+                    binding.rlLayoutParent.setBackgroundResource(R.drawable.bg_item_language)
+                }
+
+                binding.recyclerView.adapter = LanguageSubAdapter {
+                    onSelectLanguage(it.languageName, it.isoLanguage)
+                }.apply { submitList(data.listLanguageSubModel) }
+
+                binding.rbLanguage.isChecked = data.isCheck
+                binding.rbLanguage.tap {
+                    onSelectLanguage(data.languageName, data.isoLanguage)
+                }
+
+                binding.imgAvatar.setImageResource(data.image)
+                binding.tvTitle.text = data.languageName
+
+                if (data.listLanguageSubModel.isEmpty()) {
+                    binding.imgDropdown.gone()
+                    binding.rbLanguage.visible()
+                } else {
+                    binding.imgDropdown.visible()
+                    binding.rbLanguage.gone()
+                }
+            }
         }
-    }
 
-    override fun getItemCount(): Int {
-        return lists?.size ?: 0
-    }
-
-    inner class LanguageViewHolder(private var binding: ItemLanguageNewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: LanguageParentModel, position: Int) {
-            if (data.isExpand) {
-                binding.tvTitle.setTextColor("#FFFFFF".toColorInt())
-                binding.imgDropdown.setImageResource(R.drawable.ic_arrow_down)
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.rlLayoutParent.setBackgroundResource(R.drawable.bg_item_language_select)
+        override fun onItemClickListener(data: LanguageParentModel) {
+            super.onItemClickListener(data)
+            if (data.listLanguageSubModel.isEmpty()) {
+                onSelectLanguage(data.languageName, data.isoLanguage)
             } else {
-                binding.tvTitle.setTextColor("#2C2C2E".toColorInt())
-                binding.imgDropdown.setImageResource(R.drawable.ic_arrow_right)
-                binding.recyclerView.visibility = View.GONE
-                binding.rlLayoutParent.setBackgroundResource(R.drawable.bg_item_language)
-
-            }
-            data.image?.let { binding.imgAvatar.setImageResource(it) }
-            binding.tvTitle.text = data.languageName
-
-            languageSubAdapter = LanguageSubAdapter(data.listLanguageSubModel,
-                onClickSubLanguage = {
-                    notifyItemChanged(findSelectedLanguageIndex())
-                    it.isCheck = true
-                    notifyItemChanged(position)
-                    onClickSubLanguage.invoke(it)
-                }
-            )
-            binding.recyclerView.adapter = languageSubAdapter
-            binding.root.tap {
-                val isCurrentlyExpanded = data.isExpand
-
-                lists?.forEachIndexed { index, item ->
-                    if (item.isExpand && index != position) {
-                        item.isExpand = false
-                        notifyItemChanged(index)
-                    }
-                }
-                data.isExpand = !isCurrentlyExpanded
-                notifyItemChanged(position)
-                onClickDropDown.invoke(data)
+                onExpand(data)
             }
         }
-    }
-
-    fun findSelectedLanguageIndex(): Int {
-        lists?.forEachIndexed { index, languageModel ->
-            languageModel.listLanguageSubModel.forEach {
-                if (it.isCheck) {
-                    it.isCheck = false
-                    return index
-                }
-            }
-        }
-        return -1
     }
 }

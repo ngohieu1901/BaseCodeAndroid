@@ -5,6 +5,4 @@ data class LanguageSubModel(
     var languageName: String,
     var isoLanguage: String,
     var isCheck: Boolean,
-) {
-    constructor() : this(0,"", "", false)
-}
+)
