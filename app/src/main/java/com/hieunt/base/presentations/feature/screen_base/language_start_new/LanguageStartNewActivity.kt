@@ -126,6 +126,8 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
                 )
             },
             onExpand = {
+                nativeManager?.cancelAutoReloadNative()
+                showNativeClickLanguagePreloadAtSplash()
                 viewModel.handleExpand(it)
             }
         )

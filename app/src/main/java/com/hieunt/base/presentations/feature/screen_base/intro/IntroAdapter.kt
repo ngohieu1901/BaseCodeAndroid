@@ -21,11 +21,13 @@ import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL1
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL1_2
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL_2
+import com.hieunt.base.widget.tap
 import java.util.Locale
 
 class IntroAdapter(
     private val context: AppCompatActivity,
     private val list: List<IntroModel> = emptyList(),
+    private val onCloseAds: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var nativeAdFullScreen: NativeAd? = null
@@ -90,6 +92,9 @@ class IntroAdapter(
 
             IntroType.ADS.ordinal, IntroType.ADS_1.ordinal -> {
                 val viewHolderAdsNative = holder as IntroAdsNativeVH
+                viewHolderAdsNative.binding.ivClose.tap {
+                    onCloseAds()
+                }
                 if (list[position].type == IntroType.ADS) {
                     showNativeFullScreen(nativeAdFullScreen, R.layout.ads_native_intro_full_screen, R.layout.ads_native_intro_full_screen, viewHolderAdsNative.binding.frAds, context, NATIVE_INTRO_FULL)
                     Handler(context.mainLooper).postDelayed({

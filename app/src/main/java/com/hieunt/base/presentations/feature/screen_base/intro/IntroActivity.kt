@@ -109,7 +109,9 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
             R.layout.ads_shimmer_small_button_above,
         )
 
-        introAdapter = IntroAdapter(this, initData())
+        introAdapter = IntroAdapter(this, initData()) {
+            binding.viewPager2.currentItem += 1
+        }
 
         binding.viewPager2.apply {
             adapter = introAdapter

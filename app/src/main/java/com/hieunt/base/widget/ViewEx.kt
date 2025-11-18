@@ -189,6 +189,18 @@ fun View.visible() {
     visibility = View.VISIBLE
 }
 
+fun View.enable() {
+    isEnabled = true
+    isClickable = true
+    alpha = 1f
+}
+
+fun View.disable() {
+    isEnabled = false
+    isClickable = false
+    alpha = 0.4f
+}
+
 fun View.invisible() {
     visibility = View.INVISIBLE
 }
