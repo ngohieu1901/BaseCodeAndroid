@@ -202,6 +202,16 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 "appUpdateManager register. ${appUpdateManager}_${installStateUpdatedListener}"
             )
             installStateUpdatedListener?.let { appUpdateManager?.registerListener(it) }
+        } else {
+            launchActivity(
+                Bundle().apply {
+                    putString(
+                        Constants.IntentKeys.SCREEN,
+                        Constants.IntentKeys.SPLASH_ACTIVITY,
+                    )
+                },
+                NoInternetActivity::class.java,
+            )
         }
     }
 
