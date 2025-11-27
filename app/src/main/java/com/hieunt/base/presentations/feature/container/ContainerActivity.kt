@@ -25,8 +25,8 @@ class ContainerActivity : BaseActivity<ActivityContainerBinding>(ActivityContain
             logEvent(EventName.home_open + "_" + sharePref.countOpenApp)
         }
         if (!isOpenHome) {
-            isOpenApp = true
             sharePref.countOpenHome += 1
+            isOpenHome = true
         }
     }
 

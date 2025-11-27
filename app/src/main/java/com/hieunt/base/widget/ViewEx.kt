@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -21,6 +22,10 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 fun ImageView.setImageWithFade(@DrawableRes resId: Int, duration: Long = 300L) {
     val fadeOut = ObjectAnimator.ofFloat(this, View.ALPHA, 1f, 0f).setDuration(duration / 2)
@@ -210,3 +215,39 @@ fun EditText.getTextEx(): String = text.toString().trim()
 fun loadImage(view: ImageView, url: String) {
     Glide.with(view.context).load(url).into(view)
 }
+
+fun loadImage(
+    imageView: ImageView,
+    url: String,
+    onShowLoading: (() -> Unit)? = null,
+    onDismissLoading: (() -> Unit)? = null,
+) {
+    onShowLoading?.invoke()
+    Glide.with(imageView.context)
+        .load(url)
+        .listener(object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>,
+                isFirstResource: Boolean,
+            ): Boolean {
+                onDismissLoading?.invoke()
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable,
+                model: Any,
+                target: Target<Drawable>?,
+                dataSource: DataSource,
+                isFirstResource: Boolean,
+            ): Boolean {
+                onDismissLoading?.invoke()
+                return false
+            }
+        })
+        .into(imageView)
+}
+
+

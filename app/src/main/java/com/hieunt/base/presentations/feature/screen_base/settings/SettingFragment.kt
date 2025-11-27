@@ -25,6 +25,10 @@ class SettingFragment: BaseFragment<FragmentSettingsBinding>(FragmentSettingsBin
     lateinit var sharePref: SharePrefUtils
 
     override fun initData() {
+    }
+
+    override fun setupView() {
+        logEvent(EventName.setting_view)
         binding.apply {
             llLanguage.tap {
                 logEvent(EventName.setting_language_click)
@@ -58,10 +62,6 @@ class SettingFragment: BaseFragment<FragmentSettingsBinding>(FragmentSettingsBin
                 startActivity(browserIntent)
             }
         }
-    }
-
-    override fun setupView() {
-
     }
 
     override fun dataCollect() {

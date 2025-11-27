@@ -72,5 +72,9 @@
     <string name="exit_app">Exit app?</string>
     <string name="are_you_sure_you_want_to_exit_the_app">Are you sure you want to exit the app?</string>
     <string name="exit">Exit</string>
+    <string name="watch_video">Watch video</string>
+    <string name="unlock_all">Unlock all</string>
+    <string name="unlock_function">Unlock function</string>
+    <string name="watch_ads_to_unlock_for_free">Watch ads to unlock for free</string>
 
 </resources>

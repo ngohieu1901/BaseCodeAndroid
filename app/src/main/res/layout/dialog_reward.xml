@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:background="@drawable/bg_dialog_white"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="24dp"
+    android:gravity="center"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_width="254dp"
+        android:layout_height="150dp"
+        android:src="@drawable/img_reward"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/unlock_function"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/inter_semi_bold"
+        android:layout_marginBottom="8dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/watch_ads_to_unlock_for_free"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:alpha="0.6"
+        android:fontFamily="@font/inter_medium"
+        android:layout_marginBottom="24dp" />
+
+    <LinearLayout
+        android:id="@+id/llWatchVideo"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_btn_app_color"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_ads"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/watch_video"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_unlock_all"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_btn_app_color"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_ads"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/unlock_all"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium" />
+    </LinearLayout>
+</LinearLayout>
