@@ -97,8 +97,8 @@ class LanguageUtils @Inject constructor() {
                         false
                     ),
                     LanguageSubModel(
-                        R.drawable.flag_indo_japan,
-                        "Indonesian (Japanese-influenced)",
+                        R.drawable.flag_indo_spain,
+                        "Indonesian (Javanese-influenced)",
                         "in",
                         false
                     )
