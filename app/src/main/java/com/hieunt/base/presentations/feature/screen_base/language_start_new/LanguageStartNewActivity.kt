@@ -5,8 +5,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
@@ -32,12 +32,15 @@ import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.C
 import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.nativeLanguagePreload
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.utils.SystemUtils
+import com.hieunt.base.widget.gone
 import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.launchAndRepeatWhenStarted
 import com.hieunt.base.widget.logEvent
 import com.hieunt.base.widget.tap
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
@@ -90,8 +93,6 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
             isAlwaysReloadOnResume = false
         )
 
-        preloadANativeMainIntro()
-
         adapter = LanguageStartNewAdapter(
             onSelectLanguage = { languageName, languageCode ->
                 this@LanguageStartNewActivity.languageName = languageName
@@ -134,7 +135,9 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
         binding.recyclerView.adapter = adapter
 
         binding.ivDone.tap {
-            binding.llApplyLanguage.visibility = View.VISIBLE
+            preloadANativeMainIntro()
+            binding.llSelectLanguage.gone()
+            binding.llApplyLanguage.visible()
             if (Admob.getInstance().checkCondition(this, "inter_splash") &&
                 !TechManager.getInstance().isTech(this) &&
                 Admob.getInstance().interstitialAdSplash != null
@@ -158,18 +161,21 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
     }
 
     private fun startNextAct() {
-        logEvent(
-            EventName.language_fo_save_click,
-            bundle = Bundle().apply { putString(ParamName.language_name, languageName) })
-        if (sharePref.countOpenApp <= 10) {
-            logEvent(EventName.language_fo_save_click + "_" + sharePref.countOpenApp)
+        lifecycleScope.launch{
+            delay(5000L)
+            logEvent(
+                EventName.language_fo_save_click,
+                bundle = Bundle().apply { putString(ParamName.language_name, languageName) })
+            if (sharePref.countOpenApp <= 10) {
+                logEvent(EventName.language_fo_save_click + "_" + sharePref.countOpenApp)
+            }
+            sharePref.isFirstSelectLanguage = false
+            SystemUtils.setPreLanguageName(this@LanguageStartNewActivity, languageName)
+            SystemUtils.setPreLanguage(this@LanguageStartNewActivity, languageCode)
+            SystemUtils.setLocale(this@LanguageStartNewActivity)
+            launchActivity(IntroActivity::class.java)
+            finish()
         }
-        sharePref.isFirstSelectLanguage = false
-        SystemUtils.setPreLanguageName(this@LanguageStartNewActivity, languageName)
-        SystemUtils.setPreLanguage(this@LanguageStartNewActivity, languageCode)
-        SystemUtils.setLocale(this)
-        launchActivity(IntroActivity::class.java)
-        finish()
     }
 
     override fun dataCollect() {
