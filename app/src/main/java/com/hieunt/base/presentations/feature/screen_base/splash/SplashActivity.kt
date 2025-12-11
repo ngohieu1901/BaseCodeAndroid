@@ -28,6 +28,7 @@ import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.TURN_OFF_CONFIGS
 import com.hieunt.base.firebase.event.EventName
+import com.hieunt.base.presentations.feature.container.ContainerActivity
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewActivity
 import com.hieunt.base.presentations.feature.screen_base.no_internet.NoInternetActivity
 import com.hieunt.base.utils.SharePrefUtils
@@ -129,6 +130,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             finish()
             return
         }
+
+        ContainerActivity.isOpenApp = false
+        ContainerActivity.isOpenHome = false
 
         sharePref.countOpenApp += 1
         logEvent(EventName.splash_open)
