@@ -114,47 +114,37 @@ abstract class BaseFragment<VB : ViewBinding>(
         super.onDestroyView()
     }
 
-    fun safeNavigate(
-        @IdRes resId: Int,
-        args: Bundle? = null,
-    ) {
-        try {
-            findNavControllerOrNull()?.navigate(resId, args)
-        } catch (e: Exception) {
-            Log.e("safeNavigate", "safeNavigate: $e")
-        }
-    }
-
-    fun safeNavigate(
-        navDirections: NavDirections
-    ) {
+    fun safeNavigate(navDirections: NavDirections) {
         try {
             findNavControllerOrNull()?.navigate(navDirections)
-        } catch (e: Exception) {
-            Log.e("safeNavigate", "safeNavigate: $e")
+        } catch (e: IllegalArgumentException) {
+            Log.d("safeNavigateException", "safeNavigate: $e")
         }
     }
 
     private fun findNavControllerOrNull(): NavController? {
         return try {
             findNavController()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    fun safeNavigateParentNav(
-        navDirections: NavDirections
-    ) {
+    fun safeNavigateParentNav(navDirections: NavDirections) {
         try {
-            findParentNavController().navigate(navDirections)
-        } catch (e: Exception) {
-            Log.e("safeNavigate", "safeNavigate: $e")
+            findParentNavController()?.navigate(navDirections)
+        } catch (e: IllegalArgumentException) {
+            Log.e("safeNavigateException", "safeNavigateParentNav: $e")
         }
     }
 
-    private fun findParentNavController(): NavController {
-        return requireActivity().findNavController(R.id.fcv_app)
+    private fun findParentNavController(): NavController? {
+        return try {
+            requireActivity().findNavController(R.id.fcv_app)
+        } catch (e: IllegalStateException) {
+            Log.e("findNavException", "safeNavigateParentNav: $e")
+            null
+        }
     }
 
     fun popBackStack(
@@ -185,11 +175,11 @@ abstract class BaseFragment<VB : ViewBinding>(
         }
     }
 
-    private fun showLoading() {
+    protected fun showLoading() {
         (activity as? BaseActivity<*>)?.showLoading()
     }
 
-    private fun dismissLoading() {
+    protected fun dismissLoading() {
         (activity as? BaseActivity<*>)?.dismissLoading()
     }
 
