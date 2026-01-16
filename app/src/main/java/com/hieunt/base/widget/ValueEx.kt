@@ -26,39 +26,6 @@ fun Float.dpToPx(context: Context): Float {
     return this * context.resources.displayMetrics.density
 }
 
-fun String.isNumber(): Boolean {
-    return try {
-        this.toDouble()
-        true
-    } catch (e: NumberFormatException) {
-        false
-    }
-}
-
-fun Any.isDouble(): Boolean {
-    return this is Double
-}
-
 fun Float.toRadian(): Float {
     return this * (PI / 180).toFloat()
-}
-fun Float.roundToFive(): Int {
-    return ((this / 5.0).roundToInt() * 5.0).toInt()
-}
-fun Int.roundToFive(): Int {
-    return ((this / 5.0).roundToInt() * 5.0).toInt()
-}
-
-fun Double.toDMSLatitude(): String {
-    val degrees = this.toInt()
-    val minutes = ((this - degrees) * 60).toInt()
-    val seconds = ((this - degrees - minutes / 60) * 60 * 60).toInt()
-    return "${degrees}° ${minutes}' ${seconds}\"" + if (this >= 0) " N" else " S"
-}
-
-fun Double.toDMSLongitude(): String {
-    val degrees = this.toInt()
-    val minutes = ((this - degrees) * 60).toInt()
-    val seconds = ((this - degrees - minutes / 60) * 60 * 60).toInt()
-    return "${degrees}° ${minutes}' ${seconds}\"" + if (this >= 0) "E" else "W"
 }

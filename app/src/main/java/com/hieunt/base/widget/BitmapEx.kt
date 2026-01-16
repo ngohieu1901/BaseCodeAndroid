@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
+import androidx.core.graphics.scale
 
 suspend fun Bitmap.saveToFile(filePath: String, maxSize: Int? = null): Boolean = withContext(Dispatchers.IO) {
     return@withContext try {
@@ -21,7 +22,7 @@ suspend fun Bitmap.saveToFile(filePath: String, maxSize: Int? = null): Boolean =
                 targetWidth = (maxSize * ratio).toInt()
             }
 
-            Bitmap.createScaledBitmap(this@saveToFile, targetWidth, targetHeight, true)
+            this@saveToFile.scale(targetWidth, targetHeight)
         } else {
             this@saveToFile
         }

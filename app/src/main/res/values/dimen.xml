@@ -2,6 +2,5 @@
 <resources>
 
     <dimen name="toolbar_height">60dp</dimen>
-    <dimen name="preview_height">180dip</dimen>
 
 </resources>

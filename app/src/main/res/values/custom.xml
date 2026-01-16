@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CompassView">
-        <attr name="azimuth" format="integer" />
-    </declare-styleable>
-
-    <declare-styleable name="CurvedProgressBar">
-        <attr name="borderSize" format="dimension" />
-        <attr name="dotWidth" format="dimension" />
-        <attr name="dotHeight" format="dimension" />
-        <attr name="progress" format="integer" />
-        <attr name="maxValue" format="integer" />
-        <attr name="textSizeProgress" format="dimension" />
-        <attr name="textFontProgress" format="reference" />
-        <attr name="textColorProgress" format="color" />
-        <attr name="colorDotBackground" format="color" />
-        <attr name="colorDotProgress" format="color" />
-    </declare-styleable>
-
     <declare-styleable name="TextViewGradient">
         <attr name="text" format="string" />
         <attr name="textSize" format="dimension" />
@@ -27,8 +10,4 @@
         <attr name="endColor" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="ToggleImageView">
-        <attr name="checkedImage" format="reference" />
-        <attr name="uncheckedImage" format="reference" />
-    </declare-styleable>
 </resources>
