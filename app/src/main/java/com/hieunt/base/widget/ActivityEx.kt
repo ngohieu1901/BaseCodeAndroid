@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -22,28 +23,6 @@ import com.hieunt.base.R
 import com.hieunt.base.firebase.event.AdmobEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-fun AppCompatActivity.changeStatusBarColor(@ColorRes color: Int, lightStatusBar: Boolean = false) {
-    if (window != null) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, color)
-    }
-    if (lightStatusBar)
-        this.lightStatusBar()
-
-}
-
-fun AppCompatActivity.lightStatusBar() {
-    val decorView: View? = this.window?.decorView
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        val wic = decorView?.windowInsetsController
-        wic?.setSystemBarsAppearance(
-            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-        )
-    } else
-        decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-}
 
 //get multiple permissions
 fun AppCompatActivity.callMultiplePermissions(
@@ -77,14 +56,6 @@ fun AppCompatActivity.launchActivity(
     startActivity(intent)
 }
 
-fun AppCompatActivity.launchActivityForResult(
-    callback: (Boolean) -> Unit
-) {
-    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        callback.invoke(result.resultCode == AppCompatActivity.RESULT_OK)
-    }
-}
-
 fun AppCompatActivity.currentBundle(): Bundle? {
     return intent.getBundleExtra("data_bundle")
 }
@@ -101,6 +72,16 @@ inline fun <reified T : Parcelable> AppCompatActivity.currentParcelable(key: Str
 
 fun AppCompatActivity.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+
+fun AppCompatActivity.callPermissions(
+    callbackPermission: (Boolean) -> Unit
+): ActivityResultLauncher<String> {
+    return registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { callback ->
+        callbackPermission.invoke(callback)
+    }
 }
 
 fun LifecycleOwner.launchAndRepeatWhenStarted(

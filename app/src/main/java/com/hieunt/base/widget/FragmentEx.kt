@@ -55,16 +55,9 @@ fun Fragment.launchActivityForResult(
     }
 }
 
-fun Fragment.toast(msg: String) {
+fun Fragment.toast(msg: String?) {
+    if (msg == null) return
     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-}
-
-fun Fragment.findParentNavController(): NavController? {
-    var parent = parentFragment
-    while (parent != null && parent !is NavHostFragment) {
-        parent = parent.parentFragment
-    }
-    return parent?.parentFragment?.findNavController()
 }
 
 fun Fragment.launchAndRepeatWhenViewStarted(
@@ -96,6 +89,16 @@ fun Fragment.callMultiplePermissions(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { callback ->
         callbackPermission.invoke(!callback.containsValue(false))
+    }
+}
+
+fun Fragment.callPermissions(
+    callbackPermission: (Boolean) -> Unit
+): ActivityResultLauncher<String> {
+    return registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { callback ->
+        callbackPermission.invoke(callback)
     }
 }
 
