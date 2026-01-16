@@ -22,7 +22,7 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
         viewModel.initLanguagesSetting()
     }
 
-    override fun setupView() {
+    override fun FragmentLanguageBinding.setupView() {
         adapter = LanguageStartNewAdapter(
             onSelectLanguage = { languageName, languageCode ->
                 SystemUtils.saveLocale(requireContext(), languageCode)

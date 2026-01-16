@@ -64,10 +64,6 @@ class LanguageStartActivity : BaseActivity<ActivityLanguageStartBinding>(Activit
     @Inject
     lateinit var sharePref: SharePrefUtils
 
-    override fun handleOnBackPressed() {
-        finishAffinity()
-    }
-
     override fun initView() {
         logEvent(EventName.language_fo_open)
         if (sharePref.countOpenApp <= 10) {

@@ -18,6 +18,8 @@ class WelcomeBackActivity :
     BaseActivity<ActivityWelcomeBackBinding>(ActivityWelcomeBackBinding::inflate) {
 
     override fun initView() {
+        blockBackPress()
+
         loadNative(
             remoteKey = NATIVE_WB,
             remoteKeySecondary = NATIVE_WB,
@@ -60,10 +62,6 @@ class WelcomeBackActivity :
     }
 
     override fun dataCollect() {
-
-    }
-
-    override fun handleOnBackPressed() {
 
     }
 }

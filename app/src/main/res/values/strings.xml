@@ -76,5 +76,6 @@
     <string name="unlock_all">Unlock all</string>
     <string name="unlock_function">Unlock function</string>
     <string name="watch_ads_to_unlock_for_free">Watch ads to unlock for free</string>
+    <string name="welcome">Welcome</string>
 
 </resources>

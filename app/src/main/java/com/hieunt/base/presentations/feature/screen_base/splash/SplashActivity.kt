@@ -130,6 +130,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             finish()
             return
         }
+        blockBackPress()
 
         ContainerActivity.isOpenApp = false
         ContainerActivity.isOpenHome = false
@@ -314,9 +315,5 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         super.onResume()
         AdsHelper.disableResume(this)
         AsyncSplash.getInstance().checkShowSplashWhenFail()
-    }
-
-    override fun handleOnBackPressed() {
-
     }
 }

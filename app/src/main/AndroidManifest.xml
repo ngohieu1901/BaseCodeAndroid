@@ -36,6 +36,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".presentations.feature.screen_base.welcome.WelcomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".presentations.feature.screen_base.welcome_back.WelcomeBackActivity"
             android:exported="false"
             android:launchMode="singleTask"

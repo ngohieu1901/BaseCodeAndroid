@@ -12,7 +12,6 @@ import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.constants.Constants
 import com.hieunt.base.databinding.ActivityPermissionBinding
 import com.hieunt.base.firebase.ads.AdsHelper
-import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_PERMISSION
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.components.dialogs.WarningPermissionDialogFragment

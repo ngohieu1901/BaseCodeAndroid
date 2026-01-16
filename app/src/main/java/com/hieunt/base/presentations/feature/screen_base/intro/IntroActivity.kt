@@ -248,10 +248,6 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
         }
     }
 
-    override fun handleOnBackPressed() {
-        finishAffinity()
-    }
-
     override fun onResume() {
         super.onResume()
         isPause = false

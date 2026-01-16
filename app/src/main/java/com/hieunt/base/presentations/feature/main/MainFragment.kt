@@ -10,7 +10,7 @@ class MainFragment: BaseFragment<FragmentMainBinding>(FragmentMainBinding::infla
 
     }
 
-    override fun setupView() {
+    override fun FragmentMainBinding.setupView() {
 
     }
 

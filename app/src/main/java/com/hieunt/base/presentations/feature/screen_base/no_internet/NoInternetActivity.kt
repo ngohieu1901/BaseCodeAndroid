@@ -13,6 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>(ActivityNoInternetBinding::inflate) {
     override fun initView() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finishAffinity()
+            }
+        })
+
         binding.tvTryAgain.tap {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
@@ -27,9 +33,5 @@ class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>(ActivityNoInte
 
     override fun dataCollect() {
 
-    }
-
-    override fun handleOnBackPressed() {
-        finishAffinity()
     }
 }

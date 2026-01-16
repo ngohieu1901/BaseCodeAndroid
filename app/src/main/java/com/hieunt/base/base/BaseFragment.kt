@@ -13,10 +13,8 @@ import android.widget.FrameLayout
 import android.widget.PopupWindow
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.CallSuper
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
@@ -25,8 +23,6 @@ import androidx.viewbinding.ViewBinding
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.banner_ads.BannerBuilder
-import com.amazic.library.ads.banner_ads.BannerManager
 import com.amazic.library.ads.callback.InterCallback
 import com.amazic.library.ads.callback.RewardedCallback
 import com.amazic.library.ads.collapse_banner_ads.CollapseBannerBuilder
@@ -51,14 +47,16 @@ abstract class BaseFragment<VB : ViewBinding>(
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
-    protected val permissionUtils by lazy { PermissionUtils(requireActivity())}
+    protected val permissionUtils by lazy { PermissionUtils(requireActivity()) }
 
-    val exceptionHandler: CoroutineExceptionHandler by lazy { CoroutineExceptionHandler { _, exception ->
-        Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
-    } }
+    val exceptionHandler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, exception ->
+            Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
+        }
+    }
 
     protected abstract fun initData()
-    protected abstract fun setupView()
+    protected abstract fun VB.setupView()
     protected abstract fun dataCollect()
 
     open fun hideSoftKeyboard() {
@@ -97,14 +95,15 @@ abstract class BaseFragment<VB : ViewBinding>(
         val callback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (!this@BaseFragment.handleOnBackPressed()) {
-                        popBackStack()
-                    }
+                    if (this@BaseFragment.handleOnBackPressed()) return
+                    isEnabled = false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        setupView()
+        binding.setupView()
         dataCollect()
     }
 
@@ -183,7 +182,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         (activity as? BaseActivity<*>)?.dismissLoading()
     }
 
-    fun renderStateLoading(isShowLoading: Boolean){
+    fun renderStateLoading(isShowLoading: Boolean) {
         if (isShowLoading) showLoading() else dismissLoading()
     }
 
@@ -211,13 +210,31 @@ abstract class BaseFragment<VB : ViewBinding>(
     ): NativeManager? {
         val frAds = binding.root.findViewById<FrameLayout>(R.id.fr_ads)
         if (frAds != null) {
-            val nativeBuilder = NativeBuilder(requireContext(), frAds, idLayoutShimmer, idLayoutNative, idLayoutNative, true)
+            val nativeBuilder = NativeBuilder(
+                requireContext(),
+                frAds,
+                idLayoutShimmer,
+                idLayoutNative,
+                idLayoutNative,
+                true
+            )
             nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
-            nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
-            val nativeManager = NativeManager(requireContext(), viewLifecycleOwner, nativeBuilder, remoteKey, remoteKeySecondary)
+            nativeBuilder.setListIdAdSecondary(
+                AdmobApi.getInstance().getListIDByName(adsKeySecondary)
+            )
+            val nativeManager = NativeManager(
+                requireContext(),
+                viewLifecycleOwner,
+                nativeBuilder,
+                remoteKey,
+                remoteKeySecondary
+            )
             nativeManager.timeOutCallAds = 12000
             nativeManager.setIntervalReloadNative(
-                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteConfigHelper.interval_reload_native) * 1000,
+                RemoteConfigHelper.getInstance().get_config_long(
+                    requireContext(),
+                    RemoteConfigHelper.interval_reload_native
+                ) * 1000,
             )
             nativeManager.setAlwaysReloadOnResume(true)
             return nativeManager
@@ -229,13 +246,29 @@ abstract class BaseFragment<VB : ViewBinding>(
     protected fun loadNativeAll(): NativeManager? {
         val frAds = binding.root.findViewById<FrameLayout>(R.id.fr_ads)
         if (frAds != null) {
-            val nativeBuilder = NativeBuilder(requireContext(), frAds, R.layout.ads_shimmer_large_button_above, R.layout.ads_native_large_button_above,R.layout.ads_native_large_button_above, true)
+            val nativeBuilder = NativeBuilder(
+                requireContext(),
+                frAds,
+                R.layout.ads_shimmer_large_button_above,
+                R.layout.ads_native_large_button_above,
+                R.layout.ads_native_large_button_above,
+                true
+            )
             nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(NATIVE_ALL))
             nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(NATIVE_ALL))
-            val nativeManager = NativeManager(requireContext(), viewLifecycleOwner, nativeBuilder, NATIVE_ALL, NATIVE_ALL)
+            val nativeManager = NativeManager(
+                requireContext(),
+                viewLifecycleOwner,
+                nativeBuilder,
+                NATIVE_ALL,
+                NATIVE_ALL
+            )
             nativeManager.timeOutCallAds = 12000
             nativeManager.setIntervalReloadNative(
-                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteConfigHelper.interval_reload_native) * 1000,
+                RemoteConfigHelper.getInstance().get_config_long(
+                    requireContext(),
+                    RemoteConfigHelper.interval_reload_native
+                ) * 1000,
             )
             nativeManager.setAlwaysReloadOnResume(true)
             return nativeManager
@@ -299,10 +332,19 @@ abstract class BaseFragment<VB : ViewBinding>(
     }
 
     private fun setIntervalInterAll(adsKey: String) {
-        val intervalInterAll = RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.INTERVAL_INTER_ALL)
+        val intervalInterAll = RemoteConfigHelper.getInstance()
+            .get_config_long(requireContext(), RemoteName.INTERVAL_INTER_ALL)
         if (adsKey == INTER_ALL && intervalInterAll > 0) {
             Admob.getInstance().setTimeInterval(intervalInterAll * 1000, false)
         }
+    }
+
+    fun loadReward(adsKey: String, remoteKey: String) {
+        RewardManager.loadRewardAds(requireActivity(), adsKey, remoteKey)
+    }
+
+    fun loadReward(remoteKey: String) {
+        RewardManager.loadRewardAds(requireActivity(), remoteKey, remoteKey)
     }
 
     fun showReward(
@@ -333,14 +375,51 @@ abstract class BaseFragment<VB : ViewBinding>(
         )
     }
 
+    fun showReward(
+        remoteKey: String,
+        isReloadAfterShow: Boolean,
+        onNextAction: () -> Unit,
+    ) {
+        var earnedReward = false
+        RewardManager.showRewardAds(
+            requireActivity(),
+            remoteKey,
+            remoteKey,
+            object : RewardedCallback() {
+                override fun onUserEarnedReward() {
+                    super.onUserEarnedReward()
+                    earnedReward = true
+                }
+
+                override fun onNextAction() {
+                    super.onNextAction()
+                    if (earnedReward) {
+                        onNextAction.invoke()
+                    }
+                }
+            },
+            isReloadAfterShow,
+        )
+    }
+
     protected fun loadCollapseBanner(remoteKey: String): CollapseBannerManager? {
-        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
+        val frContainerAds =
+            binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
         if (frContainerAds != null) {
             val collapseBannerBuilder = CollapseBannerBuilder()
-            collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(RemoteName.COLLAPSE_BANNER))
-            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, viewLifecycleOwner, collapseBannerBuilder, remoteKey)
+            collapseBannerBuilder.setListId(
+                AdmobApi.getInstance().getListIDByName(RemoteName.COLLAPSE_BANNER)
+            )
+            val collapseBannerManager = CollapseBannerManager(
+                requireActivity() as AppCompatActivity,
+                frContainerAds,
+                viewLifecycleOwner,
+                collapseBannerBuilder,
+                remoteKey
+            )
             collapseBannerManager.setIntervalReloadBanner(
-                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
+                RemoteConfigHelper.getInstance()
+                    .get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
             )
             collapseBannerManager.setAlwaysReloadOnResume(true)
             return collapseBannerManager
@@ -349,13 +428,21 @@ abstract class BaseFragment<VB : ViewBinding>(
     }
 
     protected fun loadCollapseBanner(adsKey: String, remoteKey: String): CollapseBannerManager? {
-        val frContainerAds = binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
+        val frContainerAds =
+            binding.root.findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
         if (frContainerAds != null) {
             val collapseBannerBuilder = CollapseBannerBuilder()
             collapseBannerBuilder.setListId(AdmobApi.getInstance().getListIDByName(adsKey))
-            val collapseBannerManager = CollapseBannerManager(requireActivity() as AppCompatActivity, frContainerAds, viewLifecycleOwner, collapseBannerBuilder, remoteKey)
+            val collapseBannerManager = CollapseBannerManager(
+                requireActivity() as AppCompatActivity,
+                frContainerAds,
+                viewLifecycleOwner,
+                collapseBannerBuilder,
+                remoteKey
+            )
             collapseBannerManager.setIntervalReloadBanner(
-                RemoteConfigHelper.getInstance().get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
+                RemoteConfigHelper.getInstance()
+                    .get_config_long(requireContext(), RemoteName.COLLAPSE_RELOAD_INTERVAL) * 1000
             )
             collapseBannerManager.setAlwaysReloadOnResume(true)
             return collapseBannerManager
@@ -365,7 +452,8 @@ abstract class BaseFragment<VB : ViewBinding>(
     }
 
     protected fun loadNativeBanner(remoteKey: String): CollapseBannerManager? {
-        val testAdsBanner = RemoteConfigHelper.getInstance().get_config(requireContext(), RemoteName.TEST_ADS_BANNER)
+        val testAdsBanner = RemoteConfigHelper.getInstance()
+            .get_config(requireContext(), RemoteName.TEST_ADS_BANNER)
         /*
             testAdsBanner = true -> native
             testAdsBanner = false -> collapse

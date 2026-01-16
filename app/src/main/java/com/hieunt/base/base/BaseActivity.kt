@@ -2,6 +2,7 @@ package com.hieunt.base.base
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -29,25 +30,31 @@ import com.amazic.library.ads.reward_ads.RewardManager
 import com.google.android.play.core.install.model.InstallStatus
 import com.hieunt.base.R
 import com.hieunt.base.base.network.NetworkCallbackHandler
+import com.hieunt.base.constants.Constants.IntentKeys.SCREEN
+import com.hieunt.base.constants.Constants.IntentKeys.SPLASH_ACTIVITY
 import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.INTER_ALL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_ALL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_BANNER
 import com.hieunt.base.presentations.components.dialogs.LoadingDialog
+import com.hieunt.base.presentations.feature.screen_base.no_internet.NoInternetActivity
+import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity
 import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.appUpdateManager
 import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.installStateUpdatedListener
 import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
+import com.hieunt.base.widget.currentBundle
 import com.hieunt.base.widget.hideNavigation
 import com.hieunt.base.widget.hideStatusBar
+import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 
 abstract class BaseActivity<VB : ViewBinding>(
     private val bindingInflater: (LayoutInflater) -> VB,
-) : AppCompatActivity() {    protected lateinit var binding: VB
-    private var isRegistered = false
+) : AppCompatActivity() {
+    protected lateinit var binding: VB
     private var networkCallback: NetworkCallbackHandler? = null
 
     protected val permissionUtils by lazy { PermissionUtils(this) }
@@ -57,13 +64,6 @@ abstract class BaseActivity<VB : ViewBinding>(
             Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
         }
     }
-
-    private val backPressedCallback =
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                this@BaseActivity.handleOnBackPressed()
-            }
-        }
 
     private val loadingDialog by lazy { LoadingDialog(this) }
     protected abstract fun initView()
@@ -76,31 +76,29 @@ abstract class BaseActivity<VB : ViewBinding>(
         super.onCreate(savedInstanceState)
         binding = bindingInflater.invoke(layoutInflater)
         setContentView(binding.root)
-        //onBackPress
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         //internet
-//        networkCallback = NetworkCallbackHandler {
-//            if (!it) {
-//                if (this !is NoInternetActivity) {
-//                    launchActivity(NoInternetActivity::class.java)
-//                }
-//            } else {
-//                if (this is NoInternetActivity && this.currentBundle()
-//                        ?.getString(SCREEN) != SPLASH_ACTIVITY
-//                ) {
-//                    finish()
-//                } else if (this is NoInternetActivity && this.currentBundle()
-//                        ?.getString(SCREEN) == SPLASH_ACTIVITY
-//                ) {
-//                    val myIntent = Intent(this, SplashActivity::class.java)
-//                    myIntent.flags =
-//                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                    startActivity(myIntent)
-//                    finishAffinity()
-//                }
-//            }
-//        }
-//        networkCallback?.register(this)
+        networkCallback = NetworkCallbackHandler {
+            if (!it) {
+                if (this !is NoInternetActivity) {
+                    launchActivity(NoInternetActivity::class.java)
+                }
+            } else {
+                if (this is NoInternetActivity && this.currentBundle()
+                        ?.getString(SCREEN) != SPLASH_ACTIVITY
+                ) {
+                    finish()
+                } else if (this is NoInternetActivity && this.currentBundle()
+                        ?.getString(SCREEN) == SPLASH_ACTIVITY
+                ) {
+                    val myIntent = Intent(this, SplashActivity::class.java)
+                    myIntent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(myIntent)
+                    finishAffinity()
+                }
+            }
+        }
+        networkCallback?.register(this)
         initView()
         dataCollect()
     }
@@ -126,12 +124,11 @@ abstract class BaseActivity<VB : ViewBinding>(
         installStateUpdatedListener?.let { appUpdateManager?.unregisterListener(it) }
     }
 
-    open fun handleOnBackPressed() {
-        backPressedCallback.isEnabled = false
-        onBackPressedDispatcher.onBackPressed()
-        backPressedCallback.isEnabled = true
+    protected fun blockBackPress() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {}
+        })
     }
-
 
     protected fun showPopupWindow(view: View, popupWindow: PopupWindow) {
         val location = IntArray(2)
