@@ -2,7 +2,6 @@ package com.hieunt.base.presentations.feature.screen_base.uninstall
 
 import android.view.ViewGroup
 import com.hieunt.base.R
-import com.hieunt.base.base.BaseSyncDifferAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemAnswerBinding
 import com.hieunt.base.domain.model.AnswerModel

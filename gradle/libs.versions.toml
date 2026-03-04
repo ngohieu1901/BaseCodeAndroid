@@ -1,0 +1,215 @@
+[versions]
+
+# App Configuration
+project-namespace = "com.hieunt.base"
+project-applicationId = "com.hieunt.base"
+project-compileSdk = "36"
+project-minSdk = "26"
+project-targetSdk = "36"
+project-versionCode = "100"
+project-versionName = "1.0.0"
+
+# Build Tools & Plugins
+agp = "9.0.1"
+kotlin = "2.3.10"
+ksp = "2.3.4"
+
+# Core & UI
+androidxCore = "1.13.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+constraintlayout = "2.2.0"
+activityKtx = "1.9.2"
+recyclerview = "1.4.0"
+sspSdp = "1.1.1"
+shimmer = "0.5.0"
+circleImageView = "3.1.0"
+
+# Testing
+junit = "1.2.1"
+espresso = "3.6.1"
+
+# Networking & Logic
+retrofit = "2.9.0"
+moshi = "1.15.1"
+okhttp = "4.12.0"
+flowExt = "1.0.0"
+eventBus = "3.3.1"
+immutable = "0.4.0"
+
+# DI & DB
+hilt = "2.59.2"
+room = "2.7.0"
+
+# Media & Images
+glide = "5.0.5"
+glideCompiler = "4.16.0"
+lottie = "6.7.1"
+lottieCompose = "6.4.0"
+coil = "3.3.0"
+
+# Firebase & Google
+firebaseBom = "34.7.0"
+firebaseCrashlytics = "3.0.6"
+playServicesAds = "24.9.0"
+playReview = "2.0.2"
+playUpdate = "2.1.0"
+googleServices = "4.4.4"
+
+# Navigation & Lifecycle
+navigation = "2.9.7"
+hiltNavigationCompose = "1.3.0"
+hiltNavigationFragment = "1.3.0"
+lifecycle = "2.10.0"
+lifecycleCompose = "2.8.5"
+startup = "1.2.0"
+datastore = "1.2.0"
+
+# Compose
+composeBom = "2026.01.00"
+activityCompose = "1.12.2"
+
+# Ads Mediation
+amazic = "2.2.7"
+facebookSdk = "18.1.3"
+mediationFacebook = "6.21.0.1"
+mediationVungle = "7.7.0.1"
+mediationApplovin = "13.5.1.0"
+mediationPangle = "7.9.0.9.0"
+mediationIronsource = "9.3.0.1"
+unityAds = "4.16.6"
+mediationUnity = "4.16.6.0"
+mediationMintegral = "17.0.81.0"
+
+[libraries]
+navigation-safe-args = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigation" }
+
+# Ads Core
+amazic-library = { group = "com.github.DuongNT3012", name = "AmazicLibrary", version.ref = "amazic" }
+google-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+facebook-sdk = { group = "com.facebook.android", name = "facebook-android-sdk", version.ref = "facebookSdk" }
+unity-ads = { group = "com.unity3d.ads", name = "unity-ads", version.ref = "unityAds" }
+
+# Mediation Adapters
+mediation-facebook = { group = "com.google.ads.mediation", name = "facebook", version.ref = "mediationFacebook" }
+mediation-applovin = { group = "com.google.ads.mediation", name = "applovin", version.ref = "mediationApplovin" }
+mediation-vungle = { group = "com.google.ads.mediation", name = "vungle", version.ref = "mediationVungle" }
+mediation-pangle = { group = "com.google.ads.mediation", name = "pangle", version.ref = "mediationPangle" }
+mediation-unity = { group = "com.google.ads.mediation", name = "unity", version.ref = "mediationUnity" }
+mediation-ironsource = { group = "com.google.ads.mediation", name = "ironsource", version.ref = "mediationIronsource" }
+mediation-mintegral = { group = "com.google.ads.mediation", name = "mintegral", version.ref = "mediationMintegral" }
+
+# Google play
+google-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
+google-update = { group = "com.google.android.play", name = "app-update", version.ref = "playUpdate" }
+
+# Android
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+
+# SSP & SDP
+intuit-ssp = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "sspSdp" }
+intuit-sdp = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "sspSdp" }
+
+# Testing
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+
+# Network & Serializers
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+moshi-core = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# DI & DB
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+# Images & UI
+glide-core = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glideCompiler" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+coil-video = { group = "io.coil-kt.coil3", name = "coil-video", version.ref = "coil" }
+lottie-core = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
+circle-imageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleImageView" }
+facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer" }
+
+# Navigation & Lifecycle
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-navigation-fragment = { group = "androidx.hilt", name = "hilt-navigation-fragment", version.ref = "hiltNavigationFragment" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+# Compose
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+# Others
+flowext = { group = "io.github.hoc081098", name = "FlowExt", version.ref = "flowExt" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable" }
+eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventBus" }
+
+[bundles]
+compose = ["compose-ui", "compose-graphics", "compose-preview", "compose-material3", "compose-activity"]
+firebase = ["firebase-crashlytics", "firebase-analytics", "firebase-messaging", "firebase-config"]
+coil = ["coil-compose", "coil-network", "coil-video"]
+ads-core = [
+    "amazic-library",
+    "google-ads",
+    "facebook-sdk",
+    "unity-ads"
+]
+
+ads-mediation = [
+    "mediation-facebook",
+    "mediation-applovin",
+    "mediation-pangle",
+    "mediation-ironsource",
+    "mediation-vungle",
+    "mediation-mintegral",
+    "mediation-unity"
+]
+
+google-play = [
+    "google-review",
+    "google-update"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize"}
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
