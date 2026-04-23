@@ -2,12 +2,13 @@ package com.hieunt.base.presentations.feature.screen_base.uninstall
 
 import android.view.ViewGroup
 import com.hieunt.base.R
+import com.hieunt.base.base.BaseAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemAnswerBinding
 import com.hieunt.base.domain.model.AnswerModel
 import com.hieunt.base.widget.layoutInflate
 
-class UninstallAdapter(private val onClick: (AnswerModel, position: Int) -> Unit): BaseSyncDifferAdapter<AnswerModel, UninstallAdapter.AnswerVH>() {
+class UninstallAdapter(private val onClick: (AnswerModel, position: Int) -> Unit): BaseAdapter<AnswerModel, UninstallAdapter.AnswerVH>() {
     inner class AnswerVH(binding: ItemAnswerBinding): BaseViewHolder<AnswerModel, ItemAnswerBinding>(binding){
         override fun bindData(data: AnswerModel) {
             super.bindData(data)

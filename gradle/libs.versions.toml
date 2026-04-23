@@ -40,6 +40,8 @@ immutable = "0.4.0"
 # DI & DB
 hilt = "2.59.2"
 room = "2.7.0"
+koinCore = "4.1.0"
+koinAndroid = "4.1.0"
 
 # Media & Images
 glide = "5.0.5"
@@ -61,7 +63,6 @@ navigation = "2.9.7"
 hiltNavigationCompose = "1.3.0"
 hiltNavigationFragment = "1.3.0"
 lifecycle = "2.10.0"
-lifecycleCompose = "2.8.5"
 startup = "1.2.0"
 datastore = "1.2.0"
 
@@ -70,7 +71,7 @@ composeBom = "2026.01.00"
 activityCompose = "1.12.2"
 
 # Ads Mediation
-amazic = "2.2.7"
+amazic = "2.3.9"
 facebookSdk = "18.1.3"
 mediationFacebook = "6.21.0.1"
 mediationVungle = "7.7.0.1"
@@ -80,10 +81,9 @@ mediationIronsource = "9.3.0.1"
 unityAds = "4.16.6"
 mediationUnity = "4.16.6.0"
 mediationMintegral = "17.0.81.0"
+ui = "1.10.6"
 
 [libraries]
-navigation-safe-args = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigation" }
-
 # Ads Core
 amazic-library = { group = "com.github.DuongNT3012", name = "AmazicLibrary", version.ref = "amazic" }
 google-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
@@ -173,6 +173,13 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
+#Koin
+koin-androidx-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koinCore" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
+koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koinCore" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCore" }
+
 # Others
 flowext = { group = "io.github.hoc081098", name = "FlowExt", version.ref = "flowExt" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable" }
@@ -182,6 +189,7 @@ eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventBu
 compose = ["compose-ui", "compose-graphics", "compose-preview", "compose-material3", "compose-activity"]
 firebase = ["firebase-crashlytics", "firebase-analytics", "firebase-messaging", "firebase-config"]
 coil = ["coil-compose", "coil-network", "coil-video"]
+koin = ["koin-core", "koin-android", "koin-androidx-startup", "koin-androidx-navigation", "koin-compose"]
 ads-core = [
     "amazic-library",
     "google-ads",

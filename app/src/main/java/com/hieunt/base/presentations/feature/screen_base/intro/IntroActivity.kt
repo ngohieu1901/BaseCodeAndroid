@@ -20,8 +20,8 @@ import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_2
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.components.dialogs.RatingDialogFragment
 import com.hieunt.base.presentations.feature.container.ContainerActivity
-import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity.Companion.isShowNativeIntroPreloadAtSplash
-import com.hieunt.base.presentations.feature.screen_base.language_start.LanguageStartActivity.Companion.nativeIntroPreload
+import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewActivity.Companion.isShowNativeIntroPreloadAtSplash
+import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewActivity.Companion.nativeIntroPreload
 import com.hieunt.base.presentations.feature.screen_base.permission.PermissionActivity
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.gone
@@ -78,7 +78,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
                     }
                 }
                 binding.apply {
-                    if (listIntroModel[position].type == IntroType.ADS || listIntroModel[position].type == IntroType.ADS_1 ) {
+                    if (listIntroModel[position].type == IntroType.ADS || listIntroModel[position].type == IntroType.ADS_1) {
                         listOf(frAds, linearDots, btnNextTutorial).forEach {
                             it.gone()
                         }
@@ -122,7 +122,12 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
 
         binding.btnNextTutorial.setOnClickListener {
             if (binding.viewPager2.currentItem == listIntroModel.size - 1) {
-                if (listOf(2, 5, 9).contains(sharePref.countOpenHome) && !sharePref.isRated && sharePref.isPassPermission) {
+                if (listOf(
+                        2,
+                        5,
+                        9
+                    ).contains(sharePref.countOpenHome) && !sharePref.isRated && sharePref.isPassPermission
+                ) {
                     RatingDialogFragment(
                         isFinishActivity = false,
                         onClickRate = {},
@@ -264,8 +269,14 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
     }
 
     private fun showNativeIntroPreloadAtSplash() {
-        if (nativeIntroPreload != null && !isShowNativeIntroPreloadAtSplash && !TechManager.getInstance().isTech(this)) {
-            val adView: NativeAdView = layoutInflater.inflate(R.layout.ads_native_small_button_above, binding.frAds, false) as NativeAdView
+        if (nativeIntroPreload != null && !isShowNativeIntroPreloadAtSplash && !TechManager.getInstance()
+                .isTech(this)
+        ) {
+            val adView: NativeAdView = layoutInflater.inflate(
+                R.layout.ads_native_small_button_above,
+                binding.frAds,
+                false
+            ) as NativeAdView
             binding.frAds.addView(adView)
             Admob.getInstance().populateNativeAdView(nativeIntroPreload, adView)
         }
