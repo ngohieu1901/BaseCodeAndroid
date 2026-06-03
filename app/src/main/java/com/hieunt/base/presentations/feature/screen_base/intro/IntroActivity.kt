@@ -7,7 +7,9 @@ import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
+import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.organic.TechManager
+import com.google.android.gms.ads.interstitial.InterstitialAdPreloader
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
@@ -132,23 +134,11 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
                         isFinishActivity = false,
                         onClickRate = {},
                         onDismissListener = {
-                            loadAndShowInter(INTER_INTRO, INTER_INTRO) {
-                                logEvent(EventName.onboarding_next_click)
-                                if (sharePref.countOpenApp <= 10) {
-                                    logEvent(EventName.onboarding_next_click + "_" + sharePref.countOpenApp)
-                                }
-                                startNextScreen()
-                            }
+                            startNextScreen()
                         },
                     ).show(supportFragmentManager, "RatingDialogFragment")
                 } else {
-                    loadAndShowInter(INTER_INTRO, INTER_INTRO) {
-                        logEvent(EventName.onboarding_next_click)
-                        if (sharePref.countOpenApp <= 10) {
-                            logEvent(EventName.onboarding_next_click + "_" + sharePref.countOpenApp)
-                        }
-                        startNextScreen()
-                    }
+                    startNextScreen()
                 }
             } else {
                 binding.viewPager2.currentItem += 1
@@ -231,8 +221,25 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
     }
 
     private fun startNextScreen() {
-        launchActivity(if (sharePref.isPassPermission) ContainerActivity::class.java else PermissionActivity::class.java)
-        finishAffinity()
+        showInterPreload(
+            INTER_INTRO,
+            INTER_INTRO,
+            onNextAction = {
+                logEvent(EventName.onboarding_next_click)
+                if (sharePref.countOpenApp <= 10) {
+                    logEvent(EventName.onboarding_next_click + "_" + sharePref.countOpenApp)
+                }
+                launchActivity(if (sharePref.isPassPermission) ContainerActivity::class.java else PermissionActivity::class.java)
+                finishAffinity()
+            },
+            onImpression = {
+                InterstitialAdPreloader.destroy(
+                    AdmobApi.getInstance().getListIDByName(
+                        "inter_intro"
+                    )[0]
+                )
+            }
+        )
     }
 
     private fun addBottomDots(currentPage: Int) {

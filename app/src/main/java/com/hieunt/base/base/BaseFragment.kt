@@ -55,9 +55,9 @@ abstract class BaseFragment<VB : ViewBinding>(
         }
     }
 
-    protected abstract fun initData()
+    protected open fun initData() {}
     protected abstract fun VB.setupView()
-    protected abstract fun dataCollect()
+    protected open fun dataCollect() {}
 
     open fun hideSoftKeyboard() {
         activity?.currentFocus?.let {
@@ -282,7 +282,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         remoteKey: String,
         onNextAction: () -> Unit,
     ) {
-        InterManager.loadAndShowInterAds(
+        InterManager.loadAndShowInterAdsPreload(
             requireActivity(),
             adsKey,
             remoteKey,
@@ -308,7 +308,7 @@ abstract class BaseFragment<VB : ViewBinding>(
     fun loadAndShowInterAll(
         onNextAction: () -> Unit,
     ) {
-        InterManager.loadAndShowInterAds(
+        InterManager.loadAndShowInterAdsPreload(
             requireActivity(),
             INTER_ALL,
             INTER_ALL,
@@ -339,22 +339,14 @@ abstract class BaseFragment<VB : ViewBinding>(
         }
     }
 
-    fun loadReward(adsKey: String, remoteKey: String) {
-        RewardManager.loadRewardAds(requireActivity(), adsKey, remoteKey)
-    }
-
-    fun loadReward(remoteKey: String) {
-        RewardManager.loadRewardAds(requireActivity(), remoteKey, remoteKey)
-    }
-
-    fun showReward(
+    fun loadAndShowReward(
         adsKey: String,
         remoteKey: String,
         isReloadAfterShow: Boolean,
         onNextAction: () -> Unit,
     ) {
         var earnedReward = false
-        RewardManager.showRewardAds(
+        RewardManager.loadAndShowRewardAdsPreload(
             requireActivity(),
             adsKey,
             remoteKey,
@@ -370,18 +362,17 @@ abstract class BaseFragment<VB : ViewBinding>(
                         onNextAction.invoke()
                     }
                 }
-            },
-            isReloadAfterShow,
+            }
         )
     }
 
-    fun showReward(
+    fun loadAndShowReward(
         remoteKey: String,
         isReloadAfterShow: Boolean,
         onNextAction: () -> Unit,
     ) {
         var earnedReward = false
-        RewardManager.showRewardAds(
+        RewardManager.loadAndShowRewardAdsPreload(
             requireActivity(),
             remoteKey,
             remoteKey,
@@ -397,8 +388,7 @@ abstract class BaseFragment<VB : ViewBinding>(
                         onNextAction.invoke()
                     }
                 }
-            },
-            isReloadAfterShow,
+            }
         )
     }
 

@@ -21,8 +21,4 @@ class WelcomeActivity: BaseActivity<ActivityWelcomeBinding>(ActivityWelcomeBindi
             finishAffinity()
         }
     }
-
-    override fun dataCollect() {
-
-    }
 }

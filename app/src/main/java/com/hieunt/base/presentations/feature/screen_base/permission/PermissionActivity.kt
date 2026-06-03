@@ -82,5 +82,4 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(ActivityPermi
             }
         }
     }
-
 }

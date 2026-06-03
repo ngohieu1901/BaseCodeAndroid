@@ -242,11 +242,13 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 //            AsyncSplash.getInstance().setInitWelcomeBackAboveResumeAds(WelcomeBackActivity::class.java)
             // Case welcome back below ads resume
 //            AsyncSplash.getInstance().setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
+            AsyncSplash.getInstance().setUseAdPreloading(true)
             AsyncSplash.getInstance().handleAsync(
                 this,
                 this,
                 lifecycleScope,
                 onAsyncSplashDone = {
+                    AsyncSplash.getInstance().setKeyNumberPreloading("number_ad_preload")
                     preloadANativeMainLanguage()
                     preloadANativeClickLanguage()
                     AdsHelper.turnOffAllAds()
@@ -305,10 +307,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 }
             }, RemoteName.NATIVE_CLICK
         )
-    }
-
-    override fun dataCollect() {
-
     }
 
     override fun onResume() {

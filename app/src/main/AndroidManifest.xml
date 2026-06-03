@@ -45,16 +45,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentations.feature.screen_base.uninstall.ProblemActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.feature.screen_base.uninstall.UninstallActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".presentations.feature.screen_base.permission.PermissionActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -74,10 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".presentations.feature.screen_base.language_start.LanguageStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".presentations.feature.container.ContainerActivity"
             android:exported="true"

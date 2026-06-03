@@ -60,8 +60,4 @@ class WelcomeBackActivity :
             RemoteName.RESUME_WB
         )
     }
-
-    override fun dataCollect() {
-
-    }
 }

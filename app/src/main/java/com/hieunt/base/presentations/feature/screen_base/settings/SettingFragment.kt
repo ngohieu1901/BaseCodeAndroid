@@ -24,9 +24,6 @@ class SettingFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBi
     @Inject
     lateinit var sharePref: SharePrefUtils
 
-    override fun initData() {
-    }
-
     override fun FragmentSettingsBinding.setupView() {
         logEvent(EventName.setting_view)
         llLanguage.tap {

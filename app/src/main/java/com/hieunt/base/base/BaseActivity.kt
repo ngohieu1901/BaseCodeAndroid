@@ -27,6 +27,7 @@ import com.amazic.library.ads.inter_ads.InterManager
 import com.amazic.library.ads.native_ads.NativeBuilder
 import com.amazic.library.ads.native_ads.NativeManager
 import com.amazic.library.ads.reward_ads.RewardManager
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.play.core.install.model.InstallStatus
 import com.hieunt.base.R
 import com.hieunt.base.base.network.NetworkCallbackHandler
@@ -66,8 +67,8 @@ abstract class BaseActivity<VB : ViewBinding>(
     }
 
     private val loadingDialog by lazy { LoadingDialog(this) }
-    protected abstract fun initView()
-    protected abstract fun dataCollect()
+    protected open fun initView() {}
+    protected open fun dataCollect() {}
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -257,7 +258,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         remoteKey: String,
         onNextAction: () -> Unit,
     ) {
-        InterManager.loadAndShowInterAds(
+        InterManager.loadAndShowInterAdsPreload(
             this,
             adsKey,
             remoteKey,
@@ -274,7 +275,7 @@ abstract class BaseActivity<VB : ViewBinding>(
         adsKey: String,
         onNextAction: () -> Unit,
     ) {
-        InterManager.loadAndShowInterAds(
+        InterManager.loadAndShowInterAdsPreload(
             this,
             adsKey,
             adsKey,
@@ -284,56 +285,6 @@ abstract class BaseActivity<VB : ViewBinding>(
                     onNextAction.invoke()
                 }
             },
-        )
-    }
-
-    protected fun loadReward(adsKey: String?) {
-        RewardManager.loadRewardAds(this, adsKey, adsKey)
-    }
-
-    protected fun loadReward(
-        adsKey: String?,
-        remoteKey: String?,
-    ) {
-        RewardManager.loadRewardAds(this, adsKey, remoteKey)
-    }
-
-    protected fun showReward(
-        adsKey: String?,
-        isReloadAds: Boolean,
-        onNextAction: () -> Unit,
-    ) {
-        RewardManager.showRewardAds(
-            this,
-            adsKey,
-            adsKey,
-            object : RewardedCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    onNextAction()
-                }
-            },
-            isReloadAds,
-        )
-    }
-
-    protected fun showReward(
-        adsKey: String?,
-        remoteKey: String?,
-        isReloadAds: Boolean,
-        onNextAction: () -> Unit,
-    ) {
-        RewardManager.showRewardAds(
-            this,
-            adsKey,
-            remoteKey,
-            object : RewardedCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    onNextAction()
-                }
-            },
-            isReloadAds,
         )
     }
 
@@ -358,7 +309,7 @@ abstract class BaseActivity<VB : ViewBinding>(
     protected fun loadAndShowInterAll(
         onNextAction: () -> Unit,
     ) {
-        InterManager.loadAndShowInterAds(
+        InterManager.loadAndShowInterAdsPreload(
             this,
             INTER_ALL,
             INTER_ALL,
@@ -386,5 +337,57 @@ abstract class BaseActivity<VB : ViewBinding>(
         if (adsKey == INTER_ALL && intervalInterAll > 0) {
             Admob.getInstance().setTimeInterval(intervalInterAll * 1000, false)
         }
+    }
+
+    fun showInterPreload(
+        adsKey: String?,
+        remoteKey: String?,
+        onNextAction: () -> Unit,
+        onLoaded: (() -> Unit)? = null,
+        onFailed: (() -> Unit)? = null,
+        onDismiss: (() -> Unit)? = null,
+        onImpression: (() -> Unit)? = null,
+    ) {
+        InterManager.showInterAdPreload(
+            this,
+            adsKey,
+            remoteKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent()
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd?) {
+                    super.onAdLoaded(interstitialAd)
+                    onLoaded?.invoke()
+                }
+
+                override fun onAdFailedToShowFullScreenContent() {
+                    super.onAdFailedToShowFullScreenContent()
+                    onFailed?.invoke()
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    onFailed?.invoke()
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    onDismiss?.invoke()
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    onImpression?.invoke()
+                }
+            },
+            true
+        )
     }
 }

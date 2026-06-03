@@ -30,8 +30,4 @@ class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>(ActivityNoInte
             }
         }
     }
-
-    override fun dataCollect() {
-
-    }
 }

@@ -13,6 +13,7 @@ import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.ads.callback.BannerCallback
 import com.amazic.library.ads.callback.InterCallback
 import com.amazic.library.ads.callback.NativeCallback
+import com.amazic.library.ads.inter_ads.InterManager
 import com.amazic.library.organic.TechManager
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -135,6 +136,11 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
         binding.recyclerView.adapter = adapter
 
         binding.ivDone.tap {
+            InterManager.loadInterAdPreload(
+                this,
+                RemoteName.INTER_INTRO,
+                RemoteName.INTER_INTRO,
+            )
             preloadANativeMainIntro()
             binding.llSelectLanguage.gone()
             binding.llApplyLanguage.visible()
