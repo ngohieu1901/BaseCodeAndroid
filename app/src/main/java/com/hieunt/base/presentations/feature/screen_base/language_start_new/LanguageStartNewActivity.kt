@@ -41,6 +41,7 @@ import com.hieunt.base.widget.tap
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -167,7 +168,7 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
     }
 
     private fun startNextAct() {
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             delay(5000L)
             logEvent(
                 EventName.language_fo_save_click,
@@ -186,7 +187,7 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
 
     override fun dataCollect() {
         launchAndRepeatWhenStarted({
-            viewModel.uiStateStore.collectLatest {
+            viewModel.uiState.collectLatest {
                 adapter.submitList(it.listLanguage)
             }
         })

@@ -36,7 +36,6 @@ import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.INTER_ALL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_ALL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_BANNER
-import com.hieunt.base.utils.PermissionUtils
 import com.hieunt.base.utils.SystemUtils.setLocale
 import com.hieunt.base.widget.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -46,14 +45,6 @@ abstract class BaseFragment<VB : ViewBinding>(
 ) : Fragment() {
     private var _binding: VB? = null
     protected val binding get() = _binding!!
-
-    protected val permissionUtils by lazy { PermissionUtils(requireActivity()) }
-
-    val exceptionHandler: CoroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler { _, exception ->
-            Log.e("CoroutineExceptionHandler1901", "${this::class.java.name}: ${exception.message}")
-        }
-    }
 
     protected open fun initData() {}
     protected abstract fun VB.setupView()

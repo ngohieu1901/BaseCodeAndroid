@@ -1,20 +1,32 @@
 package com.hieunt.base.presentations.feature.screen_base.language_start_new
 
 import android.content.Context
-import com.hieunt.base.base.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.hieunt.base.domain.model.LanguageParentModel
 import com.hieunt.base.utils.LanguageUtils
 import com.hieunt.base.utils.SystemUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.collections.remove
 
 @HiltViewModel
 class LanguageStartNewViewModel @Inject constructor(
     private val languageUtils: LanguageUtils,
     @ApplicationContext private val context: Context
-): BaseViewModel<LanguageStartNewUiState>() {
-    override fun initState(): LanguageStartNewUiState = LanguageStartNewUiState()
+): ViewModel() {
+
+    private val _uiState = MutableStateFlow(LanguageStartNewUiState())
+    val uiState get() = _uiState.asStateFlow()
+
+    private val currentState get() = _uiState.value
+
+    private fun dispatchStateUi(uiState: LanguageStartNewUiState) {
+        _uiState.update { uiState }
+    }
 
     fun initLanguagesStart() {
         val listLanguageStart = languageUtils.getAllLanguages()

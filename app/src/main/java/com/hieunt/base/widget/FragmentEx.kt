@@ -1,11 +1,13 @@
 package com.hieunt.base.widget
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -82,6 +84,10 @@ fun <T> Fragment.collectLatestLifecycleFlow(
     }
 }
 
+fun Fragment.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
+    AdmobEvent.logEvent(requireContext(), nameEvent, bundle)
+}
+
 fun Fragment.callMultiplePermissions(
     callbackPermission: (Boolean) -> Unit
 ): ActivityResultLauncher<Array<String>> {
@@ -102,6 +108,21 @@ fun Fragment.callPermissions(
     }
 }
 
-fun Fragment.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
-    AdmobEvent.logEvent(requireContext(), nameEvent, bundle)
+fun Fragment.hasPermission(permission: String): Boolean {
+    return ActivityCompat.checkSelfPermission(
+        requireContext(),
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+fun Fragment.hasAllPermissions(permissions: Array<String>): Boolean {
+    return permissions.all { hasPermission(it) }
+}
+
+fun Fragment.shouldShowRationale(permission: String): Boolean {
+    return ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permission)
+}
+
+fun Fragment.shouldShowRationale(permissions: Array<String>): Boolean {
+    return permissions.any { shouldShowRationale(it) }
 }

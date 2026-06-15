@@ -47,8 +47,7 @@
         <FrameLayout
             android:id="@+id/fr_ads"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="220dp"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <com.airbnb.lottie.LottieAnimationView

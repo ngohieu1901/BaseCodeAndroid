@@ -17,6 +17,9 @@
             app:exitAnim="@anim/fade_slide_out_right"
             app:popEnterAnim="@anim/fade_slide_in_left"
             app:popExitAnim="@anim/fade_slide_out_right"/>
+        <action
+            android:id="@+id/action_mainFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
     </fragment>
 
     <fragment
@@ -24,4 +27,9 @@
         android:name="com.hieunt.base.presentations.feature.screen_base.language.LanguageFragment"
         android:label="LanguageFragment"
         tools:layout="@layout/fragment_language"/>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.hieunt.base.presentations.feature.screen_base.settings.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_settings"/>
 </navigation>

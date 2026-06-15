@@ -12,11 +12,12 @@ import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.launchAndRepeatWhenStarted
 import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageBinding::inflate) {
     private lateinit var adapter: LanguageStartNewAdapter
-    private val viewModel : LanguageStartNewViewModel by viewModels()
+    private val viewModel: LanguageStartNewViewModel by viewModels()
 
     override fun initData() {
         viewModel.initLanguagesSetting()
@@ -42,10 +43,10 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
     }
 
     override fun dataCollect() {
-        launchAndRepeatWhenStarted( {
-            viewModel.uiStateStore.collectLatest {
+        launchAndRepeatWhenStarted({
+            viewModel.uiState.collectLatest {
                 adapter.submitList(it.listLanguage)
             }
-        } )
+        })
     }
 }

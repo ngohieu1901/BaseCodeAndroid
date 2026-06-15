@@ -9,22 +9,34 @@
     android:gravity="center_horizontal"
     android:paddingTop="160dp">
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="152dp"
-        android:layout_marginBottom="32dp"/>
+        android:layout_width="220dp"
+        android:layout_height="160dp"
+        android:src="@drawable/img_no_internet"
+        android:layout_marginBottom="12dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_internet"
-        android:textSize="28sp"
+        android:textSize="24sp"
+        android:textColor="@color/app_color"
+        android:fontFamily="@font/poppins_semibold"
         android:layout_marginBottom="8dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Internet"
+        android:text="@string/there_is_no_internet_connection"
         android:textSize="14sp"
-        android:fontFamily="@font/inter_regular"
-        android:textColor="#9CA3AF"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/color_700"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/please_check_your_internet_connection"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/color_700"
         android:gravity="center"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="32dp"/>
@@ -33,11 +45,11 @@
         android:id="@+id/tv_try_again"
         android:layout_width="150dp"
         android:layout_height="48dp"
-        android:text="Try Again"
-        android:textAllCaps="true"
+        android:text="@string/try_again"
         android:gravity="center"
         android:textColor="@color/white"
-        android:fontFamily="@font/inter_semi_bold"
+        android:fontFamily="@font/poppins_semibold"
+        android:background="@drawable/bg_btn_app_gradient"
         android:textSize="14sp"
         />
 
