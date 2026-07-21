@@ -3,7 +3,7 @@ package com.hieunt.base.presentations.feature.screen_base.language_start_new
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
-import com.hieunt.base.domain.model.LanguageParentModel
+import com.hieunt.base.presentations.model.LanguageParentModel
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseAdapter
 import com.hieunt.base.base.BaseViewHolder

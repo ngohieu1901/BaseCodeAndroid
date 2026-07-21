@@ -5,7 +5,7 @@ import com.hieunt.base.R
 import com.hieunt.base.base.BaseAdapter
 import com.hieunt.base.base.BaseViewHolder
 import com.hieunt.base.databinding.ItemLanguageSubBinding
-import com.hieunt.base.domain.model.LanguageSubModel
+import com.hieunt.base.presentations.model.LanguageSubModel
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageSubAdapter.LanguageSubVH
 import com.hieunt.base.widget.layoutInflate
 

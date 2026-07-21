@@ -2,20 +2,17 @@ package com.hieunt.base.presentations.feature.screen_base.language_start_new
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.hieunt.base.domain.model.LanguageParentModel
+import com.hieunt.base.presentations.model.LanguageParentModel
 import com.hieunt.base.utils.LanguageUtils
-import com.hieunt.base.utils.SystemUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import kotlin.collections.remove
 
 @HiltViewModel
 class LanguageStartNewViewModel @Inject constructor(
-    private val languageUtils: LanguageUtils,
     @ApplicationContext private val context: Context
 ): ViewModel() {
 
@@ -29,14 +26,14 @@ class LanguageStartNewViewModel @Inject constructor(
     }
 
     fun initLanguagesStart() {
-        val listLanguageStart = languageUtils.getAllLanguages()
+        val listLanguageStart = LanguageUtils.getAllLanguages()
         dispatchStateUi(currentState.copy(listLanguage = listLanguageStart))
     }
 
     fun initLanguagesSetting() {
-        val languageNameSelected = SystemUtils.getPreLanguageName(context)
+        val languageNameSelected = LanguageUtils.getPreLanguageName(context)
 
-        val listLanguageSetting = languageUtils.getAllLanguages().map { languageParent ->
+        val listLanguageSetting = LanguageUtils.getAllLanguages().map { languageParent ->
             languageParent.copy(
                 isCheck = languageParent.languageName == languageNameSelected,
                 listLanguageSubModel = languageParent.listLanguageSubModel.map { languageSub ->

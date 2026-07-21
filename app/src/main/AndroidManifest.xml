@@ -2,12 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hieunt.base">
 
-
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -24,34 +18,13 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.hieunt.base.provider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
 
-        <activity
-            android:name=".presentations.feature.screen_base.language_start_new.LanguageStartNewActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.feature.screen_base.welcome.WelcomeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.feature.screen_base.welcome_back.WelcomeBackActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.feature.screen_base.permission.PermissionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.feature.screen_base.intro.IntroActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".presentations.feature.screen_base.splash.SplashActivity"
             android:exported="true"
@@ -61,15 +34,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentations.feature.container.ContainerActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:screenOrientation="portrait">
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
+
+        <activity
+            android:name=".presentations.feature.screen_base.language_start_new.LanguageStartNewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".presentations.feature.screen_base.welcome.WelcomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".presentations.feature.screen_base.welcome_back.WelcomeBackActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".presentations.feature.screen_base.permission.PermissionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".presentations.feature.screen_base.intro.IntroActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".presentations.feature.screen_base.no_internet.NoInternetActivity"
             android:exported="false"

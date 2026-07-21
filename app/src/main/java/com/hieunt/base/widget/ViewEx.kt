@@ -51,15 +51,16 @@ fun View.enable() {
     alpha = 1f
 }
 
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
 fun View.disable() {
     isEnabled = false
     isClickable = false
     alpha = 0.4f
 }
 
-fun View.invisible() {
-    visibility = View.INVISIBLE
-}
 
 fun EditText.getTextEx(): String = text.toString().trim()
 

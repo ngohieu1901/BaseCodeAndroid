@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.amazic.library.Utils.EventTrackingHelper.native_language
 import com.amazic.library.Utils.NetworkUtil
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
@@ -27,18 +26,20 @@ import com.hieunt.base.databinding.ActivitySplashBinding
 import com.hieunt.base.firebase.ads.AdsHelper
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.TURN_OFF_CONFIGS
+import com.hieunt.base.firebase.ads.activity.disableResume
 import com.hieunt.base.firebase.event.EventName
+import com.hieunt.base.firebase.event.logEvent
 import com.hieunt.base.presentations.feature.container.ContainerActivity
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewActivity
 import com.hieunt.base.presentations.feature.screen_base.no_internet.NoInternetActivity
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.launchActivity
-import com.hieunt.base.widget.logEvent
 import com.hieunt.base.widget.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
@@ -117,7 +118,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     private fun startNextScreen() {
         launchActivity(LanguageStartNewActivity::class.java)
-//        launchActivity(ContainerActivity::class.java)
         finishAffinity()
     }
 
@@ -145,11 +145,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             for (i in 1..100) {
                 binding.progressBar.progress = i
                 binding.tvProgress.text = getString(R.string.loading) + " ($i)%"
-                delay(30)
+                delay(30.milliseconds)
             }
         }
 
-        UpdateApplicationManager.getInstance().init(this,
+        UpdateApplicationManager.getInstance().init(
+            this,
             object : UpdateApplicationManager.IonUpdateApplication {
                 override fun onUpdateApplicationFail() {
                     handleAsyncSplashJustOnce()
@@ -188,10 +189,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                         state.installStatus() == InstallStatus.CANCELED ||
                         state.installStatus() == InstallStatus.UNKNOWN
                     ) {
-                        Log.d("initView", ": appUpdateManage")
                         handleAsyncSplashJustOnce()
                     } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                        Log.d("initView", ": appUpdateManage_${appUpdateManager}")
                         Toast.makeText(
                             applicationContext,
                             applicationContext.getString(R.string.updated_and_ready_welcome_back),
@@ -202,10 +201,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                         Log.d("initView", ": appUpdateManage else")
                     }
                 }
-            Log.d(
-                "initView",
-                "appUpdateManager register. ${appUpdateManager}_${installStateUpdatedListener}"
-            )
             installStateUpdatedListener?.let { appUpdateManager?.registerListener(it) }
         } else {
             launchActivity(
@@ -248,10 +243,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 this,
                 lifecycleScope,
                 onAsyncSplashDone = {
-                    AsyncSplash.getInstance().setKeyNumberPreloading("number_ad_preload")
+                    AsyncSplash.getInstance().setKeyNumberPreloading(RemoteName.NUMBER_AD_PRELOAD)
                     preloadANativeMainLanguage()
                     preloadANativeClickLanguage()
-                    AdsHelper.turnOffAllAds()
+//                    AdsHelper.turnOffAllAds()
                 },
                 onNoInternetAction = {
                     launchActivity(
@@ -266,7 +261,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 },
             )
             AsyncSplash.getInstance().setOnPrepareLoadInterOpenSplashAds {
-                AdsHelper.turnOffAllAds()
+//                AdsHelper.turnOffAllAds()
             }
             isHandleAsyncSplash = true
         }
@@ -275,7 +270,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private fun preloadANativeMainLanguage() {
         Admob.getInstance().loadNativeAds(
             this,
-            AdmobApi.getInstance().getListIDByName(native_language),
+            AdmobApi.getInstance().getListIDByName(RemoteName.NATIVE_LANG),
             object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
@@ -287,7 +282,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     isShowNativeLanguagePreloadAtSplash = true
                 }
             },
-            native_language,
+            RemoteName.NATIVE_LANG,
         )
     }
 
@@ -311,7 +306,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     override fun onResume() {
         super.onResume()
-        AdsHelper.disableResume(this)
+        disableResume()
         AsyncSplash.getInstance().checkShowSplashWhenFail()
     }
 }

@@ -1,6 +1,6 @@
 package com.hieunt.base.di
 
-import com.hieunt.base.data.apis.AppApi
+import com.hieunt.base.data.api.ApiService
 import com.hieunt.base.constants.Constants
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -50,8 +50,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAppApi(retrofit: Retrofit): AppApi {
-        return retrofit.create(AppApi::class.java)
+    fun provideAppApi(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 
 

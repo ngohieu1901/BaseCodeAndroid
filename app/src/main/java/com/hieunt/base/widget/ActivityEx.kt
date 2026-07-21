@@ -1,30 +1,15 @@
 package com.hieunt.base.widget
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.View
-import android.view.WindowInsetsController
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.hieunt.base.R
-import com.hieunt.base.firebase.event.AdmobEvent
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 //start activity
 fun AppCompatActivity.launchActivity(
@@ -63,64 +48,4 @@ inline fun <reified T : Parcelable> AppCompatActivity.currentParcelable(key: Str
 
 fun AppCompatActivity.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-}
-
-fun LifecycleOwner.launchAndRepeatWhenStarted(
-    launchBlock: suspend () -> Unit,
-    vararg launchBlocks: suspend () -> Unit,
-): Job =
-    lifecycleScope.launch {
-        repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            launch { launchBlock() }
-            launchBlocks.forEach { launch { it() } }
-        }
-    }
-
-fun Activity.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
-    AdmobEvent.logEvent(this, nameEvent, bundle)
-}
-
-// PERMISSION
-
-fun AppCompatActivity.callPermission(
-    callbackPermission: (Boolean) -> Unit
-): ActivityResultLauncher<String> {
-    return registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { callback ->
-        callbackPermission.invoke(callback)
-    }
-}
-
-fun AppCompatActivity.callMultiplePermissions(
-    callbackPermission: (Boolean) -> Unit
-): ActivityResultLauncher<Array<String>> {
-    return registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { callback ->
-        callbackPermission.invoke(!callback.containsValue(false))
-    }
-}
-
-fun AppCompatActivity.hasPermission(permission: String): Boolean {
-    return ActivityCompat.checkSelfPermission(
-        this,
-        permission
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
-fun AppCompatActivity.hasAllPermissions(permissions: Array<String>): Boolean {
-    return permissions.all { hasPermission(it) }
-}
-
-fun AppCompatActivity.shouldShowRationale(permission: String): Boolean {
-    return ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
-}
-
-fun AppCompatActivity.shouldShowRationale(permissions: Array<String>): Boolean {
-    return permissions.any { shouldShowRationale(it) }
-}
-
-fun AppCompatActivity.isPermissionPermanentlyDenied(permission: String): Boolean {
-    return !hasPermission(permission) && !shouldShowRationale(permission)
 }

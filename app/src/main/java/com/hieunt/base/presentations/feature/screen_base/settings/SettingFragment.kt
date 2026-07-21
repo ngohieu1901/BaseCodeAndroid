@@ -2,20 +2,20 @@ package com.hieunt.base.presentations.feature.screen_base.settings
 
 import android.content.Intent
 import androidx.core.net.toUri
+import androidx.core.view.isGone
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseFragment
 import com.hieunt.base.constants.Constants
 import com.hieunt.base.databinding.FragmentSettingsBinding
-import com.hieunt.base.firebase.ads.AdsHelper
+import com.hieunt.base.firebase.ads.fragment.disableResume
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.components.dialogs.RatingDialogFragment
 import com.hieunt.base.presentations.feature.main.MainFragmentDirections
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.gone
 import com.hieunt.base.widget.launchAndRepeatWhenViewStarted
-import com.hieunt.base.widget.logEvent
+import com.hieunt.base.firebase.event.logEvent
 import com.hieunt.base.widget.tap
-import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,7 +32,8 @@ class SettingFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBi
         }
         llShare.tap {
             logEvent(EventName.setting_share_click)
-            AdsHelper.disableResume(requireActivity())
+            disableResume()
+
             val intentShare = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
@@ -53,7 +54,8 @@ class SettingFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBi
         }
         llPolicy.tap {
             logEvent(EventName.setting_privacy_policy_click)
-            AdsHelper.disableResume(requireActivity())
+            disableResume()
+
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Constants.PRIVACY_POLICY.toUri()
@@ -64,13 +66,7 @@ class SettingFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBi
 
     override fun dataCollect() {
         launchAndRepeatWhenViewStarted({
-            binding.apply {
-                if (sharePref.isRated) {
-                    llRate.gone()
-                } else {
-                    llRate.visible()
-                }
-            }
+            binding.llRate.isGone = sharePref.isRated
         })
     }
 }

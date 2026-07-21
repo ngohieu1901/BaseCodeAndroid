@@ -33,4 +33,7 @@
 -keep class com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.** { *; }
 
 -keep class com.hieunt.base.domain.model.** { *; }
--keep class com.hieunt.base.data.dto.** { *; }
+-keep class com.hieunt.base.presentations.model.** { *; }
+-keep class com.hieunt.base.presentations.mapper.** { *; }
+-keep class com.hieunt.base.data.model.** { *; }
+-keep class com.hieunt.base.data.mapper.** { *; }

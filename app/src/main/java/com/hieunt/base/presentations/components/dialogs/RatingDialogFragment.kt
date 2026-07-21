@@ -1,7 +1,7 @@
 package com.hieunt.base.presentations.components.dialogs
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
-import android.os.Bundle
 import android.view.View
 import android.widget.RatingBar.OnRatingBarChangeListener
 import android.widget.Toast
@@ -12,8 +12,8 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseDialogFragment
 import com.hieunt.base.databinding.DialogRatingBinding
-import com.hieunt.base.firebase.event.AdmobEvent
 import com.hieunt.base.utils.SharePrefUtils
+import com.hieunt.base.firebase.event.logEvent
 import com.hieunt.base.widget.tap
 
 class RatingDialogFragment(
@@ -26,8 +26,11 @@ class RatingDialogFragment(
         super.onDismiss(dialog)
         onDismissListener()
     }
+
+    @SuppressLint("StringFormatInvalid")
     override fun setupView() {
-        AdmobEvent.logEvent(context, "rate_show", Bundle())
+        logEvent("rate_show")
+
         binding.tvContent.text = getString(
             R.string.we_d_greatly_appreciate_if_you_can_rate_us,
             getString(R.string.app_name)
@@ -41,7 +44,8 @@ class RatingDialogFragment(
                         .show()
                     return@tap
                 }
-                AdmobEvent.logEvent(context, "rate_submit", Bundle())
+                logEvent("rate_submit")
+
                 dismiss()
                 if (rtb.rating < 4) {
                     sendMail()
@@ -52,11 +56,12 @@ class RatingDialogFragment(
                 onClickRate.invoke()
             }
             btnLater.tap {
-                AdmobEvent.logEvent(context, "rate_not_now", Bundle())
+                logEvent("rate_not_now")
                 dismiss()
                 checkFinishApplication()
             }
-        }    }
+        }
+    }
 
     override fun initData() {
 

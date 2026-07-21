@@ -1,13 +1,79 @@
 package com.hieunt.base.utils
 
+import android.content.Context
+import android.content.res.Configuration
+import android.util.Log
 import com.hieunt.base.R
-import com.hieunt.base.domain.model.LanguageParentModel
-import com.hieunt.base.domain.model.LanguageSubModel
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.hieunt.base.presentations.model.LanguageParentModel
+import com.hieunt.base.presentations.model.LanguageSubModel
+import java.util.Locale
 
-@Singleton
-class LanguageUtils @Inject constructor() {
+object LanguageUtils {
+    fun saveLocale(context: Context, lang: String?) {
+        setPreLanguage(context, lang)
+    }
+
+    // Load lại ngôn ngữ đã lưu và thay đổi chúng
+    fun setLocale(context: Context) : Context {
+        val language = getPreLanguage(context)
+        val langToApply = if (language.isBlank()) Locale.getDefault().toString() else language
+        return changeLang(langToApply, context)
+    }
+
+    // method phục vụ cho việc thay đổi ngôn ngữ.
+    fun changeLang(lang: String, context: Context): Context {
+        val deviceLanguageParts = when {
+            lang.contains("_") -> lang.split("_")
+            lang.contains("-") -> lang.split("-")
+            else -> listOf(lang)
+        }
+        val appLanguageCode = if (deviceLanguageParts.size > 1) {
+            Locale(deviceLanguageParts[0], deviceLanguageParts[1])
+        }else{
+            Locale(deviceLanguageParts[0])
+        }
+
+        Locale.setDefault(appLanguageCode)
+
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(appLanguageCode)
+
+        return context.createConfigurationContext(config)
+    }
+
+    fun getPreLanguage(mContext: Context?): String {
+        if (mContext == null) return "en"
+        val preferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE)
+        return preferences.getString("KEY_LANGUAGE", "").toString()
+    }
+
+    fun setPreLanguage(context: Context, language: String?) {
+        if (language != null && language != "") {
+            val preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+            val editor = preferences.edit()
+            editor.putString("KEY_LANGUAGE", language)
+            editor.apply()
+        }
+    }
+
+    fun getPreLanguageName(mContext: Context?): String {
+        if (mContext == null) return "English (Uk)"
+        val preferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE)
+        Log.d("SystemUtils", "getPreLanguageName: ${preferences.getString("KEY_LANGUAGE_NAME", "").toString()}")
+        return preferences.getString("KEY_LANGUAGE_NAME", "").toString()
+    }
+
+    fun setPreLanguageName(context: Context, language: String) {
+        if (language != "") {
+            val preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+            val editor = preferences.edit()
+            editor.putString("KEY_LANGUAGE_NAME", language)
+            editor.apply()
+            Log.d("SystemUtils", "setPreLanguageName: $language")
+
+        }
+    }
+
     fun getAllLanguages(): List<LanguageParentModel> {
         val lists: MutableList<LanguageParentModel> = ArrayList()
         lists.add(

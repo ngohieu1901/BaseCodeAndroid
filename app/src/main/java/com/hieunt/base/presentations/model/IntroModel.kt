@@ -1,4 +1,4 @@
-package com.hieunt.base.domain.model
+package com.hieunt.base.presentations.model
 
 import com.hieunt.base.presentations.feature.screen_base.intro.IntroType
 

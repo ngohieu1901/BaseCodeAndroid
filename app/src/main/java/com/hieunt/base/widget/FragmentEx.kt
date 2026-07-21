@@ -3,6 +3,7 @@ package com.hieunt.base.widget
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,10 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import com.hieunt.base.firebase.event.AdmobEvent
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -49,80 +47,9 @@ fun Fragment.currentBundle(): Bundle? {
     return activity?.intent?.getBundleExtra("data_bundle")
 }
 
-fun Fragment.launchActivityForResult(
-    callback: (Boolean) -> Unit
-) {
-    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        callback.invoke(result.resultCode == AppCompatActivity.RESULT_OK)
-    }
-}
-
 fun Fragment.toast(msg: String?) {
     if (msg == null) return
     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
 }
 
-fun Fragment.launchAndRepeatWhenViewStarted(
-    launchBlock: suspend () -> Unit,
-    vararg launchBlocks: suspend () -> Unit,
-): Job =
-    viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            launch { launchBlock() }
-            launchBlocks.forEach { launch { it() } }
-        }
-    }
 
-fun <T> Fragment.collectLatestLifecycleFlow(
-    flow: Flow<T>,
-    action: suspend (T) -> Unit,
-) {
-    viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            flow.collectLatest(action)
-        }
-    }
-}
-
-fun Fragment.logEvent(nameEvent: String, bundle: Bundle = Bundle()) {
-    AdmobEvent.logEvent(requireContext(), nameEvent, bundle)
-}
-
-fun Fragment.callMultiplePermissions(
-    callbackPermission: (Boolean) -> Unit
-): ActivityResultLauncher<Array<String>> {
-    return registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { callback ->
-        callbackPermission.invoke(!callback.containsValue(false))
-    }
-}
-
-fun Fragment.callPermissions(
-    callbackPermission: (Boolean) -> Unit
-): ActivityResultLauncher<String> {
-    return registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { callback ->
-        callbackPermission.invoke(callback)
-    }
-}
-
-fun Fragment.hasPermission(permission: String): Boolean {
-    return ActivityCompat.checkSelfPermission(
-        requireContext(),
-        permission
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
-fun Fragment.hasAllPermissions(permissions: Array<String>): Boolean {
-    return permissions.all { hasPermission(it) }
-}
-
-fun Fragment.shouldShowRationale(permission: String): Boolean {
-    return ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permission)
-}
-
-fun Fragment.shouldShowRationale(permissions: Array<String>): Boolean {
-    return permissions.any { shouldShowRationale(it) }
-}

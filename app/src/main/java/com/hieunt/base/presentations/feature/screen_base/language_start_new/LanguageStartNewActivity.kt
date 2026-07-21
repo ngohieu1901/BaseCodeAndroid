@@ -10,10 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.callback.BannerCallback
-import com.amazic.library.ads.callback.InterCallback
 import com.amazic.library.ads.callback.NativeCallback
-import com.amazic.library.ads.inter_ads.InterManager
 import com.amazic.library.organic.TechManager
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -23,6 +20,10 @@ import com.hieunt.base.databinding.ActivityLanguageStartNewBinding
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_LANG
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_LANG_2
+import com.hieunt.base.firebase.ads.activity.loadBannerSettings
+import com.hieunt.base.firebase.ads.activity.loadInterIntroAdsPreload
+import com.hieunt.base.firebase.ads.activity.loadNative
+import com.hieunt.base.firebase.ads.activity.showInterAdsSplash
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.firebase.event.ParamName
 import com.hieunt.base.presentations.feature.screen_base.intro.IntroActivity
@@ -32,11 +33,11 @@ import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.C
 import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.nativeLanguageClickPreload
 import com.hieunt.base.presentations.feature.screen_base.splash.SplashActivity.Companion.nativeLanguagePreload
 import com.hieunt.base.utils.SharePrefUtils
-import com.hieunt.base.utils.SystemUtils
+import com.hieunt.base.utils.LanguageUtils
 import com.hieunt.base.widget.gone
 import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.launchAndRepeatWhenStarted
-import com.hieunt.base.widget.logEvent
+import com.hieunt.base.firebase.event.logEvent
 import com.hieunt.base.widget.tap
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
 class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
@@ -76,14 +78,7 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
             logEvent(EventName.language_fo_open + "_" + sharePref.countOpenApp)
         }
 
-        Admob.getInstance().loadBannerAds(
-            this,
-            AdmobApi.getInstance().getListIDByName(RemoteName.BANNER_SETTING),
-            binding.bannerSetting,
-            object : BannerCallback() {},
-            {},
-            RemoteName.BANNER_SETTING
-        )
+        loadBannerSettings()
 
         val nativeManager = loadNative(
             remoteKey = NATIVE_LANG,
@@ -111,7 +106,7 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
                     nativeManager?.cancelAutoReloadNative()
                     showNativeClickLanguagePreloadAtSplash()
                 }
-                SystemUtils.setLocale(this)
+                LanguageUtils.setLocale(this)
                 binding.ivDone.visible()
 
                 binding.tvSelectLanguage.text = getLocalizedString(
@@ -137,31 +132,11 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
         binding.recyclerView.adapter = adapter
 
         binding.ivDone.tap {
-            InterManager.loadInterAdPreload(
-                this,
-                RemoteName.INTER_INTRO,
-                RemoteName.INTER_INTRO,
-            )
+            loadInterIntroAdsPreload()
             preloadANativeMainIntro()
             binding.llSelectLanguage.gone()
             binding.llApplyLanguage.visible()
-            if (Admob.getInstance().checkCondition(this, "inter_splash") &&
-                !TechManager.getInstance().isTech(this) &&
-                Admob.getInstance().interstitialAdSplash != null
-            ) {
-                Admob.getInstance().showInterAds(
-                    this,
-                    Admob.getInstance().interstitialAdSplash,
-                    object : InterCallback() {
-                        override fun onNextAction() {
-                            super.onNextAction()
-                            startNextAct()
-                        }
-                    },
-                    false,
-                    "inter_splash"
-                )
-            } else {
+            showInterAdsSplash {
                 startNextAct()
             }
         }
@@ -169,7 +144,7 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
 
     private fun startNextAct() {
         lifecycleScope.launch {
-            delay(5000L)
+            delay(5000L.milliseconds)
             logEvent(
                 EventName.language_fo_save_click,
                 bundle = Bundle().apply { putString(ParamName.language_name, languageName) })
@@ -177,9 +152,9 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
                 logEvent(EventName.language_fo_save_click + "_" + sharePref.countOpenApp)
             }
             sharePref.isFirstSelectLanguage = false
-            SystemUtils.setPreLanguageName(this@LanguageStartNewActivity, languageName)
-            SystemUtils.setPreLanguage(this@LanguageStartNewActivity, languageCode)
-            SystemUtils.setLocale(this@LanguageStartNewActivity)
+            LanguageUtils.setPreLanguageName(this@LanguageStartNewActivity, languageName)
+            LanguageUtils.setPreLanguage(this@LanguageStartNewActivity, languageCode)
+            LanguageUtils.setLocale(this@LanguageStartNewActivity)
             launchActivity(IntroActivity::class.java)
             finish()
         }
@@ -226,24 +201,18 @@ class LanguageStartNewActivity : BaseActivity<ActivityLanguageStartNewBinding>(
             if (SplashActivity.isShowSplashAds) {
                 if (SplashActivity.isCloseSplashAds) {
                     if (!isLogEventLanguageUserView && !isPause) {
-                        EventTrackingHelper.logEvent(this, "language_user_view")
+                        logEvent( "language_user_view")
                         if (sharePref.countOpenApp <= 10) {
-                            EventTrackingHelper.logEvent(
-                                this,
-                                "language_user_view" + "_${sharePref.countOpenApp}"
-                            )
+                            logEvent("language_user_view" + "_${sharePref.countOpenApp}")
                             isLogEventLanguageUserView = true
                         }
                     }
                 }
             } else {
                 if (isLogEventLanguageUserView && !isPause) {
-                    EventTrackingHelper.logEvent(this, "language_user_view")
+                    logEvent( "language_user_view")
                     if (sharePref.countOpenApp <= 10) {
-                        EventTrackingHelper.logEvent(
-                            this,
-                            "language_user_view" + "_${sharePref.countOpenApp}"
-                        )
+                        logEvent("language_user_view" + "_${sharePref.countOpenApp}")
                         isLogEventLanguageUserView = true
                     }
                 }

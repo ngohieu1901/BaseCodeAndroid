@@ -1,4 +1,4 @@
-package com.hieunt.base.domain.model
+package com.hieunt.base.presentations.model
 
 data class LanguageSubModel(
     var flag : Int,

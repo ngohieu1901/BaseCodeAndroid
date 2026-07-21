@@ -6,7 +6,7 @@ import android.provider.Settings
 import androidx.activity.OnBackPressedCallback
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityNoInternetBinding
-import com.hieunt.base.firebase.ads.AdsHelper
+import com.hieunt.base.firebase.ads.activity.disableResume
 import com.hieunt.base.widget.tap
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +24,7 @@ class NoInternetActivity: BaseActivity<ActivityNoInternetBinding>(ActivityNoInte
                 val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
                 startActivity(panelIntent)
             } else {
-                AdsHelper.disableResume(this)
+                disableResume()
                 val wifiSettingsIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
                 startActivity(wifiSettingsIntent)
             }

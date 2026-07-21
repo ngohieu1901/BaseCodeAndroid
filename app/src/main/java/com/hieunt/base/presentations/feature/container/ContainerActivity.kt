@@ -4,7 +4,7 @@ import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityContainerBinding
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.utils.SharePrefUtils
-import com.hieunt.base.widget.logEvent
+import com.hieunt.base.firebase.event.logEvent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

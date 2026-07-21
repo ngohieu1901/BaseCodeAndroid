@@ -16,7 +16,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.databinding.ItemIntroAdsNativeBinding
 import com.hieunt.base.databinding.ItemIntroBinding
-import com.hieunt.base.domain.model.IntroModel
+import com.hieunt.base.presentations.model.IntroModel
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL1
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_FULL1_2
@@ -37,15 +37,15 @@ class IntroAdapter(
 
     init {
         loadNativeIntroFull(NATIVE_INTRO_FULL, NATIVE_INTRO_FULL)
-        loadNativeIntroFull(NATIVE_INTRO_FULL_2, NATIVE_INTRO_FULL_2)
+        loadNativeIntroFull(NATIVE_INTRO_FULL_2, NATIVE_INTRO_FULL)
         loadNativeIntroFull1(NATIVE_INTRO_FULL1, NATIVE_INTRO_FULL1)
-        loadNativeIntroFull1(NATIVE_INTRO_FULL1_2, NATIVE_INTRO_FULL1_2)
+        loadNativeIntroFull1(NATIVE_INTRO_FULL1_2, NATIVE_INTRO_FULL1)
     }
 
-    inner class IntroDefaultVH(val binding: ItemIntroBinding) :
+    class IntroDefaultVH(val binding: ItemIntroBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    inner class IntroAdsNativeVH(val binding: ItemIntroAdsNativeBinding) :
+    class IntroAdsNativeVH(val binding: ItemIntroAdsNativeBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

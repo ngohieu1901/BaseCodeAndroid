@@ -6,7 +6,7 @@ import com.hieunt.base.databinding.FragmentLanguageBinding
 import com.hieunt.base.presentations.feature.container.ContainerActivity
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewAdapter
 import com.hieunt.base.presentations.feature.screen_base.language_start_new.LanguageStartNewViewModel
-import com.hieunt.base.utils.SystemUtils
+import com.hieunt.base.utils.LanguageUtils
 import com.hieunt.base.widget.finishAffinity
 import com.hieunt.base.widget.launchActivity
 import com.hieunt.base.widget.launchAndRepeatWhenStarted
@@ -26,8 +26,8 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
     override fun FragmentLanguageBinding.setupView() {
         adapter = LanguageStartNewAdapter(
             onSelectLanguage = { languageName, languageCode ->
-                SystemUtils.saveLocale(requireContext(), languageCode)
-                SystemUtils.setPreLanguageName(requireContext(), languageName)
+                LanguageUtils.saveLocale(requireContext(), languageCode)
+                LanguageUtils.setPreLanguageName(requireContext(), languageName)
                 launchActivity(ContainerActivity::class.java)
                 finishAffinity()
             },

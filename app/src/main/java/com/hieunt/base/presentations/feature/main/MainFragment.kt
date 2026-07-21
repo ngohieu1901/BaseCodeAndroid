@@ -2,6 +2,7 @@ package com.hieunt.base.presentations.feature.main
 
 import com.hieunt.base.base.BaseFragment
 import com.hieunt.base.databinding.FragmentMainBinding
+import com.hieunt.base.firebase.ads.fragment.loadNativeAll
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -11,7 +12,7 @@ class MainFragment: BaseFragment<FragmentMainBinding>(FragmentMainBinding::infla
     }
 
     override fun FragmentMainBinding.setupView() {
-
+        loadNativeAll()
     }
 
     override fun dataCollect() {

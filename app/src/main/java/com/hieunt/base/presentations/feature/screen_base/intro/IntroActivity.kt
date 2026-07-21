@@ -5,7 +5,6 @@ import android.os.Looper
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.organic.TechManager
@@ -14,11 +13,13 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.hieunt.base.R
 import com.hieunt.base.base.BaseActivity
 import com.hieunt.base.databinding.ActivityIntroBinding
-import com.hieunt.base.domain.model.IntroModel
+import com.hieunt.base.presentations.model.IntroModel
 import com.hieunt.base.firebase.ads.RemoteName
 import com.hieunt.base.firebase.ads.RemoteName.INTER_INTRO
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO
 import com.hieunt.base.firebase.ads.RemoteName.NATIVE_INTRO_2
+import com.hieunt.base.firebase.ads.activity.loadNative
+import com.hieunt.base.firebase.ads.activity.showInterPreload
 import com.hieunt.base.firebase.event.EventName
 import com.hieunt.base.presentations.components.dialogs.RatingDialogFragment
 import com.hieunt.base.presentations.feature.container.ContainerActivity
@@ -28,7 +29,7 @@ import com.hieunt.base.presentations.feature.screen_base.permission.PermissionAc
 import com.hieunt.base.utils.SharePrefUtils
 import com.hieunt.base.widget.gone
 import com.hieunt.base.widget.launchActivity
-import com.hieunt.base.widget.logEvent
+import com.hieunt.base.firebase.event.logEvent
 import com.hieunt.base.widget.visible
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -37,13 +38,11 @@ import javax.inject.Inject
 class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
     private var listIntroModel = mutableListOf<IntroModel>()
     private lateinit var introAdapter: IntroAdapter
+    private var isFirst = true
+    private var isPause = false
 
     @Inject
     lateinit var sharePref: SharePrefUtils
-
-    var isFirst = true
-    private var isPause = false
-
     private val myPageChangeCallback: ViewPager2.OnPageChangeCallback =
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -54,29 +53,29 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
 
                 when (listIntroModel[position].type) {
                     IntroType.GUIDE_1 -> {
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_1_view")
+                        logEvent( "Onboarding_1_view")
                     }
 
                     IntroType.ADS -> {
                         introAdapter.notifyNativeAdFullScreen()
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_2_view")
+                        logEvent( "Onboarding_2_view")
                     }
 
                     IntroType.GUIDE_2 -> {
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_3_view")
+                        logEvent( "Onboarding_3_view")
                     }
 
                     IntroType.GUIDE_3 -> {
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_4_view")
+                        logEvent( "Onboarding_4_view")
                     }
 
                     IntroType.ADS_1 -> {
                         introAdapter.notifyNativeAdFullScreen1()
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_5_view")
+                        logEvent( "Onboarding_5_view")
                     }
 
                     IntroType.GUIDE_4 -> {
-                        EventTrackingHelper.logEvent(this@IntroActivity, "Onboarding_6_view")
+                        logEvent( "Onboarding_6_view")
                     }
                 }
                 binding.apply {
@@ -104,7 +103,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
 
         loadNative(
             NATIVE_INTRO,
-            NATIVE_INTRO_2,
+            NATIVE_INTRO,
             NATIVE_INTRO,
             NATIVE_INTRO_2,
             R.layout.ads_native_small_button_above,
@@ -164,8 +163,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
             if (Admob.getInstance().checkCondition(
                     this@IntroActivity,
                     RemoteName.NATIVE_INTRO_FULL
-                ) || Admob.getInstance()
-                    .checkCondition(this@IntroActivity, RemoteName.NATIVE_INTRO_FULL_2)
+                )
             ) {
                 add(
                     IntroModel(
@@ -195,8 +193,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
             if (Admob.getInstance().checkCondition(
                     this@IntroActivity,
                     RemoteName.NATIVE_INTRO_FULL1
-                ) || Admob.getInstance()
-                    .checkCondition(this@IntroActivity, RemoteName.NATIVE_INTRO_FULL1_2)
+                )
             ) {
                 add(
                     IntroModel(
@@ -245,7 +242,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>(ActivityIntroBinding::i
     private fun addBottomDots(currentPage: Int) {
         binding.linearDots.removeAllViews()
         val dots = arrayOfNulls<ImageView>(listIntroModel.size)
-        for (i in 0 until listIntroModel.size) {
+        for (i in listIntroModel.indices) {
             dots[i] = ImageView(this)
             if (i == currentPage)
                 dots[i]!!.setImageResource(R.drawable.ic_intro_selected)

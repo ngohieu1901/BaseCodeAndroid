@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.viewbinding.ViewBinding
 import com.hieunt.base.R
-import com.hieunt.base.utils.SystemUtils
+import com.hieunt.base.utils.LanguageUtils
 
 abstract class BaseDialog<VB : ViewBinding>(context: Context, private val isCancel: Boolean) :
     Dialog(context, R.style.BaseDialog) {
@@ -18,7 +18,7 @@ abstract class BaseDialog<VB : ViewBinding>(context: Context, private val isCanc
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
-        SystemUtils.setLocale(context)
+        LanguageUtils.setLocale(context)
         binding = setViewBinding(layoutInflater)
         setCancelable(isCancel)
         initView()

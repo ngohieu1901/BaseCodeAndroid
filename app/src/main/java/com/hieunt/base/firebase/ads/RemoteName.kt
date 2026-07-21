@@ -23,9 +23,8 @@ object RemoteName {
     const val BANNER_SETTING = "banner_setting"
     const val NATIVE_BANNER = "native_banner"
     const val COLLAPSE_BANNER = "collapse_banner"
-    const val TEST_ADS_BANNER = "test_ads_banner"
+    const val NUMBER_AD_PRELOAD = "number_ad_preload"
 
-    const val INTERVAL_RELOAD_NATIVE  = "interval_reload_native"
     const val INTERVAL_INTER_ALL = "interval_inter_all"
     const val COLLAPSE_RELOAD_INTERVAL = "collapse_reload_interval"
 

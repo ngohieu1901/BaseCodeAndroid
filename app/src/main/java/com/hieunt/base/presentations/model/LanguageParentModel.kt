@@ -1,4 +1,4 @@
-package com.hieunt.base.domain.model
+package com.hieunt.base.presentations.model
 
 data class LanguageParentModel(
     val languageName: String,

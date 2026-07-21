@@ -1,14 +1,13 @@
 package com.hieunt.base.widget
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.hieunt.base.firebase.ads.AdsHelper
+import androidx.appcompat.app.AppCompatActivity
+import com.hieunt.base.firebase.ads.activity.disableResume
 
-fun Context.goToSetting(activity: Activity) {
-    AdsHelper.disableResume(activity)
+fun Context.goToSetting() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
     val uri = Uri.fromParts(
         "package",
@@ -19,8 +18,8 @@ fun Context.goToSetting(activity: Activity) {
     startActivity(intent)
 }
 
-fun Context.goToWifiSetting(activity: Activity) {
-    AdsHelper.disableResume(activity)
+fun Context.goToWifiSetting(activity: AppCompatActivity) {
+    activity.disableResume()
     val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
